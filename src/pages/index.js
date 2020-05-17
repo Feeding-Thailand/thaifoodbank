@@ -13,7 +13,7 @@ const AboutUs = () => (
 			</div>
 			<div className='col-md-6'></div>
 		</div>
-		<hr/>
+		<hr />
 		<h2 className='text-center'>โครงการของเรา</h2>
 		<div className='row mt-5 mb-5'>
 			<div className='col-md-4'>
@@ -59,16 +59,13 @@ const IndexPage = () => (
 		<Header>
 			<title>Feeding Thailand</title>
 		</Header>
-		<div className='hero d-flex'>
+		<div className='hero d-flex' style={{ backgroundImage: `url(${require('../assets/images/cover.jpg')})` }}>
 			<div className='container'>
 				<div className='row'>
-					<div className='col-md-6 mb-5 mb-md-0 d-flex' style={{justifyContent: 'center', flexDirection: 'column', alignItems: 'flex-start'}}>
-						<img className='mb-3' src={require('../assets/images/feeding-thailand-logo.svg')} height='120px'/>
-						<h3>ช่วยเหลือคนไทยในภาวะวิกฤต</h3>
+					<div className='col-md-6 mb-5 mb-md-0 d-flex' style={{ justifyContent: 'center', flexDirection: 'column', alignItems: 'flex-start' }}>
+						<img className='mb-3' src={require('../assets/images/feeding-thailand-logo.svg')} height='120px' />
+						<h3 className='text-white'>ช่วยเหลือคนไทยในภาวะวิกฤต</h3>
 						<Button size='lg' className='shadow-md mt-3'>ลงทะเบียนขอรับความช่วยเหลือ</Button>
-					</div>
-					<div className='col-md-6'>
-						<img className='img-fluid' src={require('../assets/images/shopping_landing.svg')} />
 					</div>
 				</div>
 			</div>

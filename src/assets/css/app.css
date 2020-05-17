@@ -7,7 +7,12 @@
   align-items: flex-start;
   flex-direction: column;
   padding-top: 40px;
-  padding-bottom: 40px; }
+  padding-bottom: 40px;
+  min-height: 90vh;
+  background-size: cover; }
+
+.bg-light-grey {
+  background-color: #f7fafc; }
 
 .logo-header {
   content: url("../images/logo-single-line.svg");
