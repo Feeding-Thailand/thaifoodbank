@@ -1,24 +1,18 @@
-import firebase from 'firebase/app'
+import firebase from "firebase/app"
 import "firebase/auth"
 import "firebase/firestore"
 import "firebase/storage"
 
-const config = {
-    apiKey: "AIzaSyAPZRVZklP_UcCHola-iuJ0P24BZzlA4xg",
-    authDomain: "townhall-th.firebaseapp.com",
-    databaseURL: "https://townhall-th.firebaseio.com",
-    projectId: "townhall-th",
-    storageBucket: "townhall-th.appspot.com",
-    messagingSenderId: "848768442775",
-    appId: "1:848768442775:web:bd884398be0a442b6fe4d2",
-    measurementId: "G-6HC6EMHGSM"
+const firebaseConfig = {
+    apiKey: "AIzaSyAui3KOHr9WURfZjvFLn3c9xmSHhylt3Xo",
+    authDomain: "thaifoodbank.firebaseapp.com",
+    databaseURL: "https://thaifoodbank.firebaseio.com",
+    projectId: "thaifoodbank",
+    storageBucket: "thaifoodbank.appspot.com",
+    messagingSenderId: "19021520486",
+    appId: "1:19021520486:web:41f29cdc908c5c1230d7a7",
+    measurementId: "G-L5W39HRCEC",
 }
 
-try {
-    firebase.initializeApp(config)
-}
-
-catch (err) {
-
-}
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig)
 export default firebase
