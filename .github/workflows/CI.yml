@@ -31,6 +31,8 @@ jobs:
       uses: jzweifel/gatsby-cli-github-action@v1.0.0
       with:
         gatsby-arg: build
+      env:
+        GATSBY_PROJECT_PATH: "./"
     
     # Deploy to firebase
     - name: Deploy Firebase Hosting
