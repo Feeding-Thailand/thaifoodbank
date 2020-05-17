@@ -28,11 +28,7 @@ jobs:
     
     # Build gatsby sites
     - name: Github Action for Gatsby CLI
-      uses: jzweifel/gatsby-cli-github-action@v1.0.0
-      with:
-        gatsby-arg: build
-      env:
-        GATSBY_PROJECT_PATH: "./"
+      uses: plumsirawit/gatsby-cli-github-action@master
     
     # Deploy to firebase
     - name: Deploy Firebase Hosting
