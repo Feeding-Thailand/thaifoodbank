@@ -7,7 +7,7 @@ router.get("/tasks/created", checkAuth, createdPosts)
 router.get("/tasks/:lat/:lng/:radius", checkAuth, geolocationPosts)
 const app = express()
 const cors = require("cors")
-app.use(cors)
+app.use(cors({origin: true}))
 app.use(checkAuth)
 app.use(router)
 module.exports = app

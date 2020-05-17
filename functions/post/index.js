@@ -9,7 +9,7 @@ router.get("/task/:id/contact", contactPost)
 router.delete("/task/:id/delete", deletePost)
 const app = express()
 const cors = require("cors")
-app.use(cors)
+app.use(cors({origin: true}))
 app.use(checkAuth)
 app.use(router)
 module.exports = app

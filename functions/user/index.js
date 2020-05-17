@@ -5,7 +5,7 @@ const settingsUser = require('./settingsUser')
 router.get("/user/settings", checkAuth, settingsUser)
 const app = express()
 const cors = require("cors")
-app.use(cors)
+app.use(cors({origin: true}))
 app.use(checkAuth)
 app.use(router)
 module.exports = app
