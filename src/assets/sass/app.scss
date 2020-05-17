@@ -8,6 +8,12 @@
     flex-direction: column;
     padding-top: 40px;
     padding-bottom: 40px;
+    min-height: 90vh;
+    background-size: cover;
+}
+
+.bg-light-grey { 
+    background-color: #f7fafc;
 }
 
 .logo-header {

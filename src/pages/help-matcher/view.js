@@ -45,9 +45,12 @@ export default class View extends React.Component {
                                     <span className='text-primary'><span className='material-icons'>place</span> ศาลายา นครปฐม 73170</span>
                                 </div>
                             </div>
-                            <div className='row'>
-                            <div className='col-12 mt-3'>
+                            <div className='row mt-3'>
+                                <div className='col-6'>
                                     <Button className='w-100'>ติดต่อมอบความช่วบเหลือ</Button>
+                                </div>  
+                                <div className='col-6'>
+                                    <Button variant='light' className='w-100'>แชร์โพสต์นี้</Button>
                                 </div>  
                             </div>
 
