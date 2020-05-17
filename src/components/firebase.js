@@ -1,5 +1,4 @@
 import firebase from "firebase/app"
-import "firebase/analytics"
 import "firebase/auth"
 import "firebase/firestore"
 import "firebase/storage"
@@ -16,4 +15,4 @@ const firebaseConfig = {
 }
 
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig)
-firebase.analytics()
+export default firebase
