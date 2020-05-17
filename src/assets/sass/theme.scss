@@ -1,0 +1,98 @@
+/* create a new purple color */
+$font-family-sans-serif: "Prompt", sans-serif;
+$font-weight-normal: 500;
+$font-weight-bold: 700;
+$headings-font-weight: 600;
+$headings-font-family: "Prompt", sans-serif;
+$input-btn-padding-y: 0.5rem;
+
+$input-btn-padding-y-sm: 0.35rem;
+$input-btn-padding-x-sm: 0.6rem;
+
+$mainYellow: #ffda3d;
+$mainDark: #2e0569;
+
+/*Color Pallete*/
+$mainBlue: #1e96fc;
+$mainBlue-dark: #072ac8;
+$mainBlue-light: #072ac8;
+$mainGreen: #3ecf8e;
+$headings-color: #020030;
+
+$text-muted: #92949c;
+
+$btn-font-weight: 600;
+
+$font-size-base: 0.95rem;
+
+$theme-colors: (
+    "primary": $mainBlue,
+    "secondary": $mainYellow,
+);
+
+$border-radius: 4px;
+
+.btn {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.btn-link {
+    box-shadow: none;
+}
+.btn-light {
+    color: $mainBlue !important;
+}
+
+.mainBlue-light {
+    color: $mainBlue-light;
+}
+.mainBlue-dark {
+    color: $mainBlue-dark;
+}
+
+.menu {
+    .dropdown-item {
+        padding-left: 14px;
+        color: $mainBlue;
+        transition: 0.25s;
+        border-radius: 4px;
+        padding-top: 6px;
+        padding-bottom: 6px;
+        margin-top: 8px;
+        margin-bottom: 8px;
+        color: $mainBlue-dark;
+    }
+    .selected {
+        background-color: white !important;
+        color: $mainBlue;
+        box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .dropdown-item:hover {
+        color: $mainBlue;
+        //background-color: transparent;
+    }
+    .dropdown-item:focus {
+        color: $mainBlue;
+        background-color: transparent;
+        outline: none !important;
+    }
+    .dropdown-item:active {
+        //color: $mainGreen;
+        background-color: transparent;
+    }
+}
+.alert {
+    border: none !important;
+}
+
+button:disabled {
+    cursor: default;
+    pointer-events: all !important;
+}
+
+.modal-content {
+    border: none !important;
+}
+
+@import "node_modules/bootstrap/scss/bootstrap";
