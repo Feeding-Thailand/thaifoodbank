@@ -18,13 +18,25 @@ function base64MimeType(encoded) {
 }
 const bucket = fb.storage().bucket()
 const writeFile = async (base64Raw, fname) => {
-    const fpath = path.join(os.tmpdir(), fname);
-    const base64Data = base64Raw.replace(/^data:image\/png;base64,/, "");
-    await new Promise(res => fs.writeFile(fpath, base64Data, 'base64', (err) => {
-        console.log(err)
-        res()
-    }))
+    const fpath = path.join(os.tmpdir(), fname)
+    const base64Data = base64Raw.replace(/^data:image\/png;base64,/, "")
+    await new Promise(res =>
+        fs.writeFile(fpath, base64Data, "base64", err => {
+            console.log(err)
+            res()
+        })
+    )
     await bucket.upload(fpath)
+}
+const validatePID = (pid) => {
+    if(pid.length !== 13) return false;
+    let checksum = 0
+    for(let i = 0; i < 13; i++){
+        checksum += toInt(pid[i]) * (i+1)
+    }
+    checksum %= 11
+    checksum = (11 - checksum) % 10
+    return toInt(pid[12]) === checksum
 }
 module.exports = async (req, res) => {
     try {
@@ -48,7 +60,11 @@ module.exports = async (req, res) => {
         if (
             Object.keys(user)
                 .map(key => {
-                    if (user[key] === undefined || user[key] === null || !(user[key] instanceof string))
+                    if (
+                        user[key] === undefined ||
+                        user[key] === null ||
+                        !(user[key] instanceof string)
+                    )
                         return res
                             .status(400)
                             .send({ status: `key ${key} not found` })
@@ -57,14 +73,17 @@ module.exports = async (req, res) => {
                 .filter(val => val !== null).length > 0
         )
             return
+        if (!validatePID(pid)) {
+            res.status(400).send({ status: "invalid pid" })
+        }
         const geocode = await axios.get(
             `https://api.mapbox.com/geocoding/v5/mapbox.places/${postcode}.json?access_token=${mapboxToken}&country=TH&types=postcode&language=th`
         )
         const features = geocode.data.features.filter(feature => {
             feature.text_th === postcode
         })
-        if(!features || features.empty) {
-            res.status(400).send({ status: "postcode not found"})
+        if (!features || features.empty) {
+            res.status(400).send({ status: "postcode not found" })
         }
         const placename = features[0].place_name_th
         if (!placename) {
@@ -78,9 +97,9 @@ module.exports = async (req, res) => {
         const userGeo = new fb.firestore.GeoPoint(Number(lat), Number(lng))
         const mimeType = base64MimeType(imageDataURL)
         if (!mimeType)
-            res
-                .status(400)
-                .send({ status: "image mime type not found or invalid" })
+            res.status(400).send({
+                status: "image mime type not found or invalid",
+            })
         const extension = mime.extension(mimeType)
         if (extension !== "png" && extension !== "jpg")
             res.status(400).send({ status: "invalid extension" })
@@ -96,7 +115,10 @@ module.exports = async (req, res) => {
             placename,
             matches: [],
         })
-        await writeFile(imageDataURL, toString(firestoreSnap.id) + "." + extension)
+        await writeFile(
+            imageDataURL,
+            toString(firestoreSnap.id) + "." + extension
+        )
         res.send({ status: "success", firestoreId: firestoreSnap.id })
     } catch (err) {
         console.log(err)
