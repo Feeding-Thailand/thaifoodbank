@@ -10,18 +10,21 @@ module.exports = async (req, res) => {
             postcode, // Postal Code/Zip Code
             description, // Description (how is your current lifestyle)
             imageDataURL, // DataURL of image as a string
-            need, // What do you need
+            extension, // File extension (JPG, PNG) only 
         } = req.body
-        if(!name || !contact || !pid || !postcode || !description || !imageDataURL || !need) return res.status(400).send('invalid request')
-        db.collection("users").doc(req.authId).set({
+        if(extension && imageDataURL){
+            extension = extension.toLowerCase()
+            if(extension !== 'png' && extension !== 'jpg') return res.status(400).send('invalid extension')
+            const snap = await storageRef.child(toString(req.authId) + extension).putString(imageDataURL, 'data_url')
+        }
+        //if(!name || !contact || !pid || !postcode || !description || !imageDataURL || !need) return res.status(400).send('invalid request')
+        db.collection("users").doc(req.authId).update({
             name,
             contact,
             pid,
             postcode,
             description,
-            need
         })
-        const snap = await storageRef.putString(imageDataURL, 'data_url')
         return res.status(200).send()
     } catch (err) {
         console.log(err)
