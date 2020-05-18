@@ -48,7 +48,7 @@ module.exports = async (req, res) => {
         if (
             Object.keys(user)
                 .map(key => {
-                    if (user[key] === undefined || user[key] === null)
+                    if (user[key] === undefined || user[key] === null || !(user[key] instanceof string))
                         return res
                             .status(400)
                             .send({ status: `key ${key} not found` })
@@ -60,12 +60,18 @@ module.exports = async (req, res) => {
         const geocode = await axios.get(
             `https://api.mapbox.com/geocoding/v5/mapbox.places/${postcode}.json?access_token=${mapboxToken}&country=TH&types=postcode&language=th`
         )
-        const placename = geocode.data.features[0].place_name_th
+        const features = geocode.data.features.filter(feature => {
+            feature.text_th === postcode
+        })
+        if(!features || features.empty) {
+            res.status(400).send({ status: "postcode not found"})
+        }
+        const placename = features[0].place_name_th
         if (!placename) {
             res.status(400).send({ status: "geocode failure" })
         }
-        const lat = geocode.data.features[0].center[1]
-        const lng = geocode.data.features[0].center[0]
+        const lat = features[0].center[1]
+        const lng = features[0].center[0]
         if (!lat || !lng) {
             res.status(400).send({ status: "coordinate failure" })
         }
