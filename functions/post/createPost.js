@@ -56,7 +56,7 @@ module.exports = async (req, res) => {
         if (!lat || !lng) {
             res.status(400).send({ status: "coordinate failure" })
         }
-        const userGeo = new admin.firestore.GeoPoint(Number(lat), Number(lng))
+        const userGeo = new fb.firestore.GeoPoint(Number(lat), Number(lng))
         const mimeType = base64MimeType(imageDataURL)
         if (!mimeType)
             res
