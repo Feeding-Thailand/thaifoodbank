@@ -5,7 +5,9 @@ name: Functions Test
 
 on:
   push:
-    branches: [ master, functions ]
+    branches:
+      - master
+      - functions-**
   pull_request:
     branches: [ master, functions ]
 
