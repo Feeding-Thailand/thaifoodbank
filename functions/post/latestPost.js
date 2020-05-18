@@ -17,7 +17,7 @@ module.exports = async (req, res) => {
                 id: doc.id,
             })
         })
-        return res.send(data.length == 1 ? data[0] : "false")
+        return res.send(data.length === 1 ? data[0] : "false")
     } catch (err) {
         console.log(err)
         return res.status(500).send("error")
