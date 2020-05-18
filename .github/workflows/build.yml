@@ -6,8 +6,6 @@ name: Gatsby Build Test
 on:
   push:
     branches: [ master, web-interface ]
-  pull_request:
-    branches: [ master, web-interface ]
 
 jobs:
   build:
