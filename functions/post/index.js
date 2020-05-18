@@ -11,7 +11,7 @@ router.delete("/:id/delete", checkAuth, deletePost)
 router.get("/latest", checkAuth, latestPost)
 const app = express()
 const cors = require("cors")
-app.use(cors)
+app.use(cors({origin: true}))
 app.use(checkAuth)
 app.use(router)
 module.exports = app
