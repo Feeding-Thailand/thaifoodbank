@@ -24,6 +24,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: cd functions
     - run: npm ci
+      working-directory: functions
     - run: npm lint
+      working-directory: functions
