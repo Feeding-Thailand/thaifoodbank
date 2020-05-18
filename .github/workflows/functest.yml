@@ -7,7 +7,7 @@ on:
   push:
     branches:
       - master
-      - functions-**
+      - 'functions**'
   pull_request:
     branches: [ master, functions ]
 
