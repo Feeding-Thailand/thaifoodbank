@@ -63,7 +63,7 @@ module.exports = async (req, res) => {
                     if (
                         user[key] === undefined ||
                         user[key] === null ||
-                        !(user[key] instanceof string)
+                        !(user[key] instanceof String)
                     )
                         return res
                             .status(400)
