@@ -1,5 +1,7 @@
 const firebase = require("firebase-admin");
-firebase.initializeApp();
+firebase.initializeApp({
+    storageBucket: "thaifoodbank.appspot.com"
+});
 const functions = require("firebase-functions")
 const post = require("./post")
 const posts = require("./posts")
