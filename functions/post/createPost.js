@@ -1,10 +1,18 @@
-const fb = require('firebase-admin')
+const fb = require("firebase-admin")
 const db = fb.firestore()
-const { GeoFirestore } = require('geofirestore')
+const { GeoFirestore } = require("geofirestore")
 const geofirestore = new GeoFirestore(db)
-const geocollection = geofirestore.collection('help-harbor')
-const mapboxToken = 'pk.eyJ1IjoidG93bmhhbGwtdGgiLCJhIjoiY2s3bXljdnlqMG5oZTNlb21ucW9qa2RjdyJ9.ybyfBHJyroub6rS-bVh1gQ'
-const axios = require('axios')
+const geocollection = geofirestore.collection("posts")
+const mapboxToken = require("../mapboxToken")
+const axios = require("axios")
+const mime = require("mime-types")
+function base64MimeType(encoded) {
+    var result = null
+    if (typeof encoded !== "string") return result
+    var mime = encoded.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/)
+    if (mime && mime.length) result = mime[1]
+    return result
+}
 module.exports = async (req, res) => {
     try {
         var user = await fb.auth().getUser(req.authId)
@@ -13,29 +21,68 @@ module.exports = async (req, res) => {
             uid: user.uid,
             photoURL: user.photoURL,
             email: user.email,
-            displayName: user.displayName
+            displayName: user.displayName,
         }
-        Object.keys(user).forEach(key => user[key] === undefined ? delete user[key] : {})
-        var userGeo = new admin.firestore.GeoPoint(Number(req.body.geopoint.lat), Number(req.body.geopoint.lng))
-        var geocode = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${req.body.geopoint.lng},${req.body.geopoint.lat}.json?access_token=${mapboxToken}&types=place&language=th`)
-        geocode = geocode.data.features[0].place_name_th
-        if (!geocode) {
-            return res.status(400).send({ status: 'geocode failure' })
+        const {
+            name, // Firstname - Surname
+            contact, // Any contact information (tel/addr/line)
+            pid, // Personal Identification (National)
+            postcode, // Postal Code/Zip Code
+            description, // Description (how is your current lifestyle)
+            imageDataURL, // DataURL of image as a string, with content mime-type
+            need, // What do you need?
+        } = req.body
+        if (
+            Object.keys(user)
+                .map(key => {
+                    if (user[key] === undefined || user[key] === null)
+                        return res
+                            .status(400)
+                            .send({ status: `key ${key} not found` })
+                    else return null
+                })
+                .filter(val => val !== null).length > 0
+        )
+            return
+        const geocode = await axios.get(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${postcode}.json?access_token=${mapboxToken}&country=TH&types=postcode&language=th`
+        )
+        const placename = geocode.data.features[0].place_name_th
+        if (!placename) {
+            res.status(400).send({ status: "geocode failure" })
         }
-        var snap = await geocollection.add({
-            author: user,
+        const lat = geocode.data.features[0].center[1]
+        const lng = geocode.data.features[0].center[0]
+        if (!lat || !lng) {
+            res.status(400).send({ status: "coordinate failure" })
+        }
+        const userGeo = new admin.firestore.GeoPoint(Number(lat), Number(lng))
+        const mimeType = base64MimeType(imageDataURL)
+        if (!mimeType)
+            res
+                .status(400)
+                .send({ status: "image mime type not found or invalid" })
+        const extension = mime.extension(mimeType)
+        if (extension !== "png" && extension !== "jpg")
+            res.status(400).send({ status: "invalid extension" })
+        const firestoreSnap = await geocollection.add({
             uid: user.uid,
+            name,
+            pid,
+            need,
             createdAt: new Date(),
-            description: req.body.description,
-            contact: req.body.contact,
+            description,
+            contact,
             coordinates: userGeo,
-            geocode: geocode,
-            matches: []
+            placename,
+            matches: [],
         })
-        return res.send({ status: 'success', id: snap.id })
-    }
-    catch (err) {
+        const storageSnap = await storageRef
+            .child(toString(snap.id) + extension)
+            .putString(imageDataURL, "data_url")
+        res.send({ status: "success", firestoreId: firestoreSnap.id, storageId: storageSnap.id })
+    } catch (err) {
         console.log(err)
-        return res.status(500).send('error')
+        res.status(500).send("error")
     }
 }
