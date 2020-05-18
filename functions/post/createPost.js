@@ -75,34 +75,42 @@ module.exports = async (req, res) => {
             return
         if (!validatePID(pid)) {
             res.status(400).send({ status: "invalid pid" })
+            return
         }
         const geocode = await axios.get(
             `https://api.mapbox.com/geocoding/v5/mapbox.places/${postcode}.json?access_token=${mapboxToken}&country=TH&types=postcode&language=th`
         )
-        const features = geocode.data.features.filter(feature => {
+        const features = geocode.data.features.filter(feature => 
             feature.text_th === postcode
-        })
+        )
         if (!features || features.empty) {
             res.status(400).send({ status: "postcode not found" })
+            return
         }
         const placename = features[0].place_name_th
         if (!placename) {
             res.status(400).send({ status: "geocode failure" })
+            return
         }
         const lat = features[0].center[1]
         const lng = features[0].center[0]
         if (!lat || !lng) {
             res.status(400).send({ status: "coordinate failure" })
+            return
         }
         const userGeo = new fb.firestore.GeoPoint(Number(lat), Number(lng))
         const mimeType = base64MimeType(imageDataURL)
-        if (!mimeType)
+        if (!mimeType) {
             res.status(400).send({
                 status: "image mime type not found or invalid",
             })
+            return
+        }
         const extension = mime.extension(mimeType)
-        if (extension !== "png" && extension !== "jpg")
+        if (extension !== "png" && extension !== "jpg") {
             res.status(400).send({ status: "invalid extension" })
+            return
+        }
         const firestoreSnap = await geocollection.add({
             uid: user.uid,
             name,
