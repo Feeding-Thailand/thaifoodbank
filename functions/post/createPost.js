@@ -26,17 +26,20 @@ const writeFile = async (base64Raw, fname) => {
             res()
         })
     )
-    await bucket.upload(fpath)
+    console.log(fpath)
+    await bucket.upload(fpath, {
+        destination: fname
+    })
 }
-const validatePID = (pid) => {
-    if(pid.length !== 13) return false;
+const validatePID = pid => {
+    if (pid.length !== 13) return false
     let checksum = 0
-    for(let i = 0; i < 13; i++){
-        checksum += toInt(pid[i]) * (i+1)
+    for (let i = 0; i < 12; i++) {
+        checksum += parseInt(pid[i]) * (13 - i)
     }
     checksum %= 11
     checksum = (11 - checksum) % 10
-    return toInt(pid[12]) === checksum
+    return parseInt(pid[12]) === checksum
 }
 module.exports = async (req, res) => {
     try {
@@ -48,6 +51,41 @@ module.exports = async (req, res) => {
             email: user.email,
             displayName: user.displayName,
         }
+        const extractedBody = (({
+            name, // Firstname - Surname
+            contact, // Any contact information (tel/addr/line)
+            pid, // Personal Identification (National)
+            postcode, // Postal Code/Zip Code
+            description, // Description (how is your current lifestyle)
+            imageDataURL, // DataURL of image as a string, with content mime-type
+            need, // What do you need?
+        }) => ({
+            name, // Firstname - Surname
+            contact, // Any contact information (tel/addr/line)
+            pid, // Personal Identification (National)
+            postcode, // Postal Code/Zip Code
+            description, // Description (how is your current lifestyle)
+            imageDataURL, // DataURL of image as a string, with content mime-type
+            need, // What do you need?
+        }))(req.body)
+        if (
+            Object.keys(extractedBody)
+                .map(key => {
+                    if (
+                        extractedBody[key] === undefined ||
+                        extractedBody[key] === null ||
+                        !(typeof(extractedBody[key]) === 'string' || extractedBody[key] instanceof String)
+                    ) {
+                        res
+                            .status(400)
+                            .send({ status: `key ${key} not found, val = ${extractedBody[key]}` })
+                        return true
+                    }
+                    else return null
+                })
+                .filter(val => val !== null).length > 0
+        )
+            return
         const {
             name, // Firstname - Surname
             contact, // Any contact information (tel/addr/line)
@@ -56,23 +94,7 @@ module.exports = async (req, res) => {
             description, // Description (how is your current lifestyle)
             imageDataURL, // DataURL of image as a string, with content mime-type
             need, // What do you need?
-        } = req.body
-        if (
-            Object.keys(user)
-                .map(key => {
-                    if (
-                        user[key] === undefined ||
-                        user[key] === null ||
-                        !(user[key] instanceof String)
-                    )
-                        return res
-                            .status(400)
-                            .send({ status: `key ${key} not found` })
-                    else return null
-                })
-                .filter(val => val !== null).length > 0
-        )
-            return
+        } = extractedBody
         if (!validatePID(pid)) {
             res.status(400).send({ status: "invalid pid" })
             return
@@ -80,10 +102,10 @@ module.exports = async (req, res) => {
         const geocode = await axios.get(
             `https://api.mapbox.com/geocoding/v5/mapbox.places/${postcode}.json?access_token=${mapboxToken}&country=TH&types=postcode&language=th`
         )
-        const features = geocode.data.features.filter(feature => 
-            feature.text_th === postcode
+        const features = geocode.data.features.filter(
+            feature => feature.text_th === postcode
         )
-        if (!features || features.empty) {
+        if (!features || features.length === 0) {
             res.status(400).send({ status: "postcode not found" })
             return
         }
@@ -106,7 +128,8 @@ module.exports = async (req, res) => {
             })
             return
         }
-        const extension = mime.extension(mimeType)
+        let extension = mime.extension(mimeType)
+        if(extension === "jpeg") extension = "jpg"
         if (extension !== "png" && extension !== "jpg") {
             res.status(400).send({ status: "invalid extension" })
             return
@@ -125,7 +148,7 @@ module.exports = async (req, res) => {
         })
         await writeFile(
             imageDataURL,
-            toString(firestoreSnap.id) + "." + extension
+            firestoreSnap.id + "." + extension
         )
         res.send({ status: "success", firestoreId: firestoreSnap.id })
     } catch (err) {
