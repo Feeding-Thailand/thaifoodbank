@@ -1,4 +1,7 @@
 const fb = require("firebase-admin")
+const fs = require("fs")
+const os = require("os")
+const path = require("path")
 const db = fb.firestore()
 const { GeoFirestore } = require("geofirestore")
 const geofirestore = new GeoFirestore(db)
@@ -12,6 +15,16 @@ function base64MimeType(encoded) {
     var mime = encoded.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/)
     if (mime && mime.length) result = mime[1]
     return result
+}
+const bucket = fb.storage().bucket()
+const writeFile = async (base64Raw, fname) => {
+    const fpath = path.join(os.tmpdir(), fname);
+    const base64Data = base64Raw.replace(/^data:image\/png;base64,/, "");
+    await new Promise(res => fs.writeFile(fpath, base64Data, 'base64', (err) => {
+        console.log(err)
+        res()
+    }))
+    await bucket.upload(fpath)
 }
 module.exports = async (req, res) => {
     try {
@@ -77,10 +90,8 @@ module.exports = async (req, res) => {
             placename,
             matches: [],
         })
-        const storageSnap = await storageRef
-            .child(toString(snap.id) + extension)
-            .putString(imageDataURL, "data_url")
-        res.send({ status: "success", firestoreId: firestoreSnap.id, storageId: storageSnap.id })
+        await writeFile(imageDataURL, toString(firestoreSnap.id) + "." + extension)
+        res.send({ status: "success", firestoreId: firestoreSnap.id })
     } catch (err) {
         console.log(err)
         res.status(500).send("error")
