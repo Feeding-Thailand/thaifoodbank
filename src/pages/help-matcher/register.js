@@ -6,15 +6,7 @@ import Button from 'react-bootstrap/Button'
 import NavHeader from '../../components/navHeader'
 import firebase from '../../components/firebase'
 import axios from 'axios'
-
-var payload = {
-    name: String(),
-    contact: String(),
-    postcode: String(),
-    description: String(),
-    helpNeeded: String(),
-    nationalId: String()
-}
+import { apiEndpoint } from '../../components/constants'
 
 class RegisterForm extends React.Component {
     constructor(props) {
@@ -33,7 +25,26 @@ class RegisterForm extends React.Component {
             this.state.helpNeeded &&
             this.state.nationalId
         ) {
-            await axios.post()
+            var payload = {
+                name: String(this.state.name),
+                contact: String(this.state.contact),
+                postcode: String(this.state.postcode),
+                description: String(this.state.description),
+                helpNeeded: String(this.state.helpNeeded),
+                nationalId: String(this.state.nationalId)
+            }
+            const token = await firebase.auth().currentUser.getIdToken()
+            const req = await axios.post(`${apiEndpoint}/post/create`, payload, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            if (req.data.response === 'success') {
+                //redirect
+            }
+            else {
+                this.setState({ error: true })
+            }
         }
     }
     formHandler(e) {
@@ -142,7 +153,7 @@ export default class Register extends React.Component {
 
                     </div>
                 </div>
-                <Footer/>
+                <Footer />
 
             </div>
         )

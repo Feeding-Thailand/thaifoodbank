@@ -2,6 +2,7 @@ import React from "react"
 import Header from '../components/header'
 import Button from 'react-bootstrap/Button'
 import Footer from '../components/footer'
+import { Link } from 'gatsby'
 
 const AboutUs = () => (
 	<div className='container pt-5 pb-5'>
@@ -65,7 +66,7 @@ const IndexPage = () => (
 					<div className='col-md-6 mb-5 mb-md-0 d-flex' style={{ justifyContent: 'center', flexDirection: 'column', alignItems: 'flex-start' }}>
 						<img className='mb-3' src={require('../assets/images/feeding-thailand-logo.svg')} height='120px' />
 						<h3 className='text-white'>ช่วยเหลือคนไทยในภาวะวิกฤต</h3>
-						<Button size='lg' className='shadow-md mt-3'>ลงทะเบียนขอรับความช่วยเหลือ</Button>
+						<Link to='/help-matcher' className='btn btn-lg btn-primary shadow-md mt-3'>ลงทะเบียนขอรับความช่วยเหลือ</Link>
 					</div>
 				</div>
 			</div>
