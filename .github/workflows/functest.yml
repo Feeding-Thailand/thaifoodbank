@@ -8,8 +8,6 @@ on:
     branches:
       - master
       - 'functions**'
-  pull_request:
-    branches: [ master, functions ]
 
 jobs:
   build:
