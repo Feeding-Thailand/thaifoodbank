@@ -15,6 +15,12 @@ module.exports = async (req, res) => {
         await db.collection("posts").doc(id).update({
             "d.active": false,
         })
+        db.collection("stats")
+            .doc("stats")
+            .update({
+                activePosts: fb.firestore.FieldValue.increment(-1),
+                closedPosts: fb.firestore.FieldValue.increment(1),
+            })
         res.send("OK")
     } catch (err) {
         console.log(err)
