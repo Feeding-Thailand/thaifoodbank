@@ -11,6 +11,26 @@
   min-height: 90vh;
   background-size: cover; }
 
+.btn-icon {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  border: none; }
+
+.btn-icon:focus {
+  outline: none; }
+
+.modal-header {
+  align-items: center; }
+
+.avatar {
+  background-color: #a0aec0;
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  background-size: cover;
+  background-position: center; }
+
 .bg-light-grey {
   background-color: #f7fafc; }
 

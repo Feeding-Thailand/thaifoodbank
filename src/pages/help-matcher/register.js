@@ -9,7 +9,7 @@ import axios from 'axios'
 import { apiEndpoint } from '../../components/constants'
 import { Redirect } from '@reach/router'
 import Alert from 'react-bootstrap/Alert'
-
+import Modal from 'react-bootstrap/Modal'
 class RegisterForm extends React.Component {
     constructor(props) {
         super(props)
@@ -98,6 +98,17 @@ class RegisterForm extends React.Component {
         else {
             return (
                 <Form onChange={(e) => this.formHandler(e)}>
+                    <Modal show={this.state.showPolicy} onHide={() => this.setState({ showPolicy: false })}>
+                        <Modal.Header>
+                            <Modal.Title>ข้อตกลงการใช้ข้อมูลส่วนบุคคล</Modal.Title>
+                            <button onClick={()=>this.setState({showPolicy: false})} className='btn btn-icon'>
+                                <span className='material-icons'>close</span>
+                            </button>
+                        </Modal.Header>
+                        <Modal.Body>
+                            ข้อตกลงการใช้ข้อมูลส่วนบุคคล
+                        </Modal.Body>
+                    </Modal>
                     <Form.Group controlId="name">
                         <Form.Label>ชื่อ-นามสกุล</Form.Label>
                         <Form.Control placeholder="ชื่อ-นามสกุล" isInvalid={!this.state.name && this.state.next} />
@@ -107,8 +118,9 @@ class RegisterForm extends React.Component {
                         <Form.Control placeholder="ข้อมูลติดต่อ" isInvalid={!this.state.contact && this.state.next} />
                     </Form.Group>
                     <Form.Group controlId="pid">
-                        <Form.Label>รหัสประจำตัวประชาชน</Form.Label>
+                        <Form.Label>รหัสประจำตัวประชาชน <button type='button' onClick={()=>this.setState({showPolicy: true, section: 'pid'})} className='btn btn-icon'><span style={{fontSize: 18}} className='text-primary mb-1 material-icons'>help</span></button></Form.Label>
                         <Form.Control placeholder="รหัสประจำตัวประชาชน" isInvalid={(this.state.next && !this.state.pid) || (this.state.errStatus === 'invalid pid')} />
+                        
                         {this.state.errStatus === 'invalid pid' &&
                             <small className='text-danger'>รหัสประจำตัวประชาชนไม่ถูกต้อง</small>
                         }
@@ -142,7 +154,11 @@ class RegisterForm extends React.Component {
                             <b>เกิดข้อผิดพลาด</b> กรุณาตรวจสอบข้อมูล
                         </Alert>
                     }
-                    <Button disabled={this.state.saving} onClick={async () => await this.save()} variant="primary">
+
+
+                    <hr />
+                    <div className='text-dark'>การกด<b>บันทึกข้อมูล</b> หมายความว่าท่านยินยอม<button type='button' onClick={() => this.setState({ showPolicy: true })} className='btn btn-link p-0'>ข้อตกลงการใช้ข้อมูลส่วนบุคคล</button>ของเราแล้ว</div>
+                    <Button className='mt-3' disabled={this.state.saving} onClick={async () => await this.save()} variant="primary">
                         บันทึกข้อมูล
                     </Button>
                 </Form>

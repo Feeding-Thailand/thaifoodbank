@@ -9,13 +9,15 @@ import axios from 'axios'
 import { apiEndpoint } from '../../components/constants'
 import Modal from 'react-bootstrap/Modal'
 import Reaptcha from 'reaptcha'
+import Spinner from 'react-bootstrap/Spinner'
 
 export default class View extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             data: 'loading',
-            images: []
+            images: [],
+            contact: false
         }
     }
     async getContact() {
@@ -38,16 +40,16 @@ export default class View extends React.Component {
         }
 
     }
-    onVerify(response) {
+    async onVerify(response) {
         console.log(response)
-        /*
-        const id = queryString.parse(this.props.location.search).id
-        await axios.get(`${apiEndpoint}/post/${id}/contact`, {
-            headers: {
-                recaptcha: ''
-            }
-        })
-        */
+        try {
+            const id = queryString.parse(this.props.location.search).id
+            const req = await axios.get(`${apiEndpoint}/post/${id}/contact?response=${response}`)
+            this.setState({ contact: req.data.contact })
+        }
+        catch (err) {
+            console.log(err)
+        }
     }
     render() {
         return (
@@ -59,16 +61,36 @@ export default class View extends React.Component {
                 <div className='pt-5 pb-5' style={{ backgroundColor: '#f7fafc' }}>
                     <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })}>
                         <Modal.Header>
-                            <Modal.Title>กรุณายืนยันตัวตน</Modal.Title>
+                            <Modal.Title>ข้อมูลติดต่อ</Modal.Title>
+                            <div>
+                                <button className='btn btn-icon'>
+                                    <span className='material-icons'>close</span>
+                                </button>
+                            </div>
                         </Modal.Header>
                         <Modal.Body>
-
-                            <Reaptcha sitekey="6LetbPkUAAAAALLugqgdf6Lv3FP05a9XnDoED-3P" onVerify={(response) => this.onVerify(response)} />
+                            {this.state.contact === false &&
+                                <>
+                                    <div className='mb-2'><b>กรุณายืนยันตัวตน</b>
+                                    </div>
+                                    <div>
+                                        <Reaptcha sitekey="6LetbPkUAAAAALLugqgdf6Lv3FP05a9XnDoED-3P" onVerify={async (response) => await this.onVerify(response)} />
+                                    </div>
+                                </>
+                            }
+                            {this.state.contact &&
+                                <div className='alert alert-primary'>
+                                    <b>ข้อมูลติดต่อ</b> {this.state.contact}
+                                </div>
+                            }
 
                         </Modal.Body>
                     </Modal>
                     <div className='shadow-md container bg-white rounded p-4 d-flex' style={{ flexDirection: 'column', alignItems: 'center', maxWidth: 800 }}>
                         <div className='featured-image' style={{ backgroundImage: `url(${this.state.images[0]})` }} />
+                        {this.state.data === 'loading' &&
+                            <Spinner className='m-4' animation='border' variant='primary' />
+                        }
                         {this.state.data !== 'loading' && this.state.data !== 'error' &&
                             <div className='w-100'>
                                 <div className='w-100'>

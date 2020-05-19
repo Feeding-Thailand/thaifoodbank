@@ -3,6 +3,7 @@ import { Link } from 'gatsby'
 import axios from 'axios'
 import { apiEndpoint } from './constants'
 import _ from 'lodash'
+import Spinner from 'react-bootstrap/Spinner'
 
 const Person = (props) => (
     <div className='col-md-6 mb-4'>
@@ -39,7 +40,11 @@ export default class HelpList extends React.Component {
     render() {
         return (
             <div className='mt-4 row'>
-
+                {this.state.data === 'loading' &&
+                    <div className='flex-center pt-5 pb-5 w-100' style={{alignItems: 'center'}}>
+                        <Spinner variant='primary' animation="border" />
+                    </div>
+                }
                 {(this.state.data !== 'loading' && this.state.data !== 'error') &&
                     this.state.data.map((item, index) => {
                         console.log(item.data)
