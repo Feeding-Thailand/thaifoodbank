@@ -1,1 +1,0 @@
-module.exports = 'pk.eyJ1IjoidG93bmhhbGwtdGgiLCJhIjoiY2thY2lucGEzMTAxMzJycnU3YWE0NzB2NSJ9.0X4QUmL3u_uZm7otDqxFvQ'
