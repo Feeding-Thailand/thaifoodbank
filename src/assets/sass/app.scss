@@ -12,23 +12,45 @@
     background-size: cover;
 }
 
-.bg-light-grey { 
+.btn-icon {
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+    border: none;
+}
+.btn-icon:focus {
+    outline: none;
+}
+
+.modal-header{
+    align-items: center;
+}
+
+.avatar {
+    background-color: #a0aec0;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    background-size: cover;
+    background-position: center;
+}
+.bg-light-grey {
     background-color: #f7fafc;
 }
 
 .logo-header {
-    content: url('../images/logo-single-line.svg');
+    content: url("../images/logo-single-line.svg");
     display: inline-block;
-    height:40px;
+    height: 40px;
 }
 
-a{
+a {
     font-weight: 600;
     font-size: 1.1em;
 }
 
-.footer{
-    a{
+.footer {
+    a {
         font-size: 1em;
         font-weight: 400;
     }
@@ -114,7 +136,7 @@ a{
     border-bottom: solid 2px #2700f2;
 }
 
-.footer{
+.footer {
     padding-top: 40px;
     padding-bottom: 40px;
 }
