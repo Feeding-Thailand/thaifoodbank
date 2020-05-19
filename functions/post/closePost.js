@@ -7,6 +7,11 @@ module.exports = async (req, res) => {
             res.status(400).send("document id not found")
             return
         }
+        const snap = await db.collection("posts").doc(id).get()
+        if (snap.data().d.uid !== req.authId) {
+            res.status(403).send("invalid ownership")
+            return
+        }
         await db.collection("posts").doc(id).update({
             "d.active": false,
         })
