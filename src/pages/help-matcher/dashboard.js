@@ -1,33 +1,23 @@
 import React from 'react'
 import Header from '../../components/header'
 import NavHeader from '../../components/navHeader'
-import Gallery from 'react-grid-gallery'
 import Button from 'react-bootstrap/Button'
 import Footer from '../../components/footer'
-const IMAGES =
-    [{
-        src: "https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_b.jpg",
-        thumbnail: "https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_n.jpg",
-        thumbnailWidth: 320,
-        thumbnailHeight: 174,
-        caption: "After Rain (Jeshu John - designerspics.com)"
-    },
-    {
-        src: "https://c2.staticflickr.com/9/8356/28897120681_3b2c0f43e0_b.jpg",
-        thumbnail: "https://c2.staticflickr.com/9/8356/28897120681_3b2c0f43e0_n.jpg",
-        thumbnailWidth: 320,
-        thumbnailHeight: 212,
-        caption: "Boats (Jeshu John - designerspics.com)"
-    },
-
-    {
-        src: "https://c4.staticflickr.com/9/8887/28897124891_98c4fdd82b_b.jpg",
-        thumbnail: "https://c4.staticflickr.com/9/8887/28897124891_98c4fdd82b_n.jpg",
-        thumbnailWidth: 320,
-        thumbnailHeight: 212
-    }]
+import axios from 'axios'
+import { apiEndpoint } from '../../components/constants'
+import { FacebookProvider, Comments } from 'react-facebook'
 
 export default class Dashboard extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+
+        }
+    }
+    async componentDidMount() {
+        const req = await axios.get(`${apiEndpoint}/posts/:id`)
+        console.log(req.data)
+    }
     render() {
         return (
             <div>
@@ -52,10 +42,10 @@ export default class Dashboard extends React.Component {
                             </div>
                             <div className='row mt-3'>
                                 <div className='col-6'>
-                                    <Button className='w-100'>ได้รับความช่วยเหลือแล้ว</Button>
+                                    <Button className='w-100 h-100'>ได้รับความช่วยเหลือแล้ว</Button>
                                 </div>
                                 <div className='col-6'>
-                                    <Button variant='light' className='w-100'>แก้ไขข้อมูล</Button>
+                                    <Button variant='light' className='w-100 h-100'>แก้ไขข้อมูล</Button>
                                 </div>
                             </div>
                         </div>
@@ -66,10 +56,12 @@ export default class Dashboard extends React.Component {
                             <p>ตอนนี้ข้อมือหลุด และไม่มีงานทำคับ มีหลาน อีก 2 คนครับ ตอนนี้ข้อมือหลุด และไม่มีงานทำคับ มีหลาน อีก 2 คนครับตอนนี้ข้อมือหลุด และไม่มีงานทำคับ มีหลาน อีก 2 คนครับตอนนี้ข้อมือหลุด และไม่มีงานทำคับ มีหลาน อีก 2 คนครับ</p>
                             <h3>ความช่วยเหลือที่ต้องการ</h3>
                             <p className='mb-0'>ต้องการนมผง Olive oil with extra cheese</p>
-                        </div>
+                        </div>                    
                         <hr />
                         <div className='w-100'>
-                            <Gallery enableImageSelection={false} images={IMAGES} />
+                            <FacebookProvider appId="637224560162543">
+                                <Comments href="https://thaifoodbank.web.app/help-matcher/view" width='100%'/>
+                            </FacebookProvider>
                         </div>
                     </div>
                 </div>

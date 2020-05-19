@@ -19,13 +19,17 @@
     "gatsby-transformer-sharp": "^2.5.2",
     "gulp": "^4.0.2",
     "gulp-sass": "^4.1.0",
+    "lodash": "^4.17.15",
     "mapbox-gl": "^1.10.0",
     "prop-types": "^15.7.2",
+    "query-string": "^6.12.1",
     "react": "^16.12.0",
     "react-bootstrap": "^1.0.1",
     "react-dom": "^16.12.0",
+    "react-facebook": "^8.1.4",
     "react-grid-gallery": "^0.5.5",
-    "react-helmet": "^6.0.0"
+    "react-helmet": "^6.0.0",
+    "reaptcha": "^1.7.2"
   },
   "devDependencies": {
     "prettier": "2.0.5"

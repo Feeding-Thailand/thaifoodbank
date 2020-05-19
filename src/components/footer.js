@@ -3,15 +3,15 @@ import React from 'react'
 const Footer = () => (
     <div className='w-100 footer'>
         <div className='container text-center'>
-        <img className='mb-3' src={require('../assets/images/feeding-thailand-logo-center.svg')} height='80px'/>
+        <img className='mb-2' src={require('../assets/images/feeding-thailand-logo-center.svg')} height='80px'/>
             <div className='m-3'>
-                <button className='btn shadow-none btn-icon'>
+                <button className='btn shadow-none btn-icon p-2'>
                     <img height='25px' src={require('../assets/images/facebook-black.svg')} />
                 </button>
-                <button className='btn shadow-none btn-icon'>
+                <button className='btn shadow-none btn-icon p-2'>
                     <img height='25px' src={require('../assets/images/instagram-black.svg')} />
                 </button>
-                <button className='btn shadow-none btn-icon'>
+                <button className='btn shadow-none btn-icon p-2'>
                     <img height='25px' src={require('../assets/images/youtube-black.svg')} />
                 </button>
             </div>
