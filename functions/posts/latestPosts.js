@@ -9,9 +9,17 @@ module.exports = async (req, res) => {
         var data = []
         query.forEach(doc => {
             var temp = doc.data().d
-            temp.createdAt = temp.createdAt.toDate()
+            const { name, need, uid, photos, placename } = temp
+            const createdAt = temp.createdAt.toDate()
             data.push({
-                data: temp,
+                data: {
+                    name,
+                    need,
+                    uid,
+                    photos,
+                    createdAt,
+                    placename
+                },
                 id: doc.id,
             })
         })
