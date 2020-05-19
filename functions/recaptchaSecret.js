@@ -1,1 +1,0 @@
-module.exports = "<RECAPTCHA_SECRET_HERE>"

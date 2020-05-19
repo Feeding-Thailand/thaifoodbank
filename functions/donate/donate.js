@@ -2,6 +2,7 @@ const fb = require('firebase-admin')
 const db = fb.firestore()
 module.exports = async (req, res) => {
     try {
+        console.log(req)
         const id = req.params.id
         if(!id){
             res.status(400).send('document id not found')
@@ -9,7 +10,7 @@ module.exports = async (req, res) => {
         }
         const { name, isAnonymous } = req.body
         if(isAnonymous === undefined){
-            res.status(400).send('document id not found')
+            res.status(400).send('isAnonymous not found')
             return
         }
         if(isAnonymous === false && !name){
@@ -31,10 +32,10 @@ module.exports = async (req, res) => {
         db.collection('posts').doc(id).update({
             'd.donors': fb.firestore.FieldValue.arrayUnion(user)
         })
-        return res.send('OK')
+        res.send('OK')
     }
     catch (err) {
         console.log(err)
-        return res.status(500).send('error')
+        res.status(500).send('error')
     }
 }
