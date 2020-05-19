@@ -1,14 +1,17 @@
-const fb = require('firebase-admin')
+const fb = require("firebase-admin")
 const db = fb.firestore()
 module.exports = async (req, res) => {
     try {
         const id = req.params.id
-        var snap = await db.collection('posts').doc(id).get()
+        if (!id) {
+            res.status(400).send("document id not found")
+            return
+        }
+        var snap = await db.collection("posts").doc(id).get()
         const { contact } = snap.data().d
-        return res.send({ contact })
-    }
-    catch (err) {
+        res.send({ contact })
+    } catch (err) {
         console.log(err)
-        return res.status(500).send('error')
+        res.status(500).send("error")
     }
 }

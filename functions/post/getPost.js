@@ -4,7 +4,7 @@ module.exports = async (req, res) => {
     try {
         const id = req.params.id
         if (!id) {
-            req.status(400).send("request.params.id not found")
+            res.status(400).send("document id not found")
             return
         }
         var snap = await db.collection("posts").doc(id).get()

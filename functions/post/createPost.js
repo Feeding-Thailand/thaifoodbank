@@ -35,12 +35,17 @@ const writeFile = async (base64Raw, fname) => {
     })
 }
 const writeFiles = async (files, docname) => {
-    if(!fs.existsSync(path.join(os.tmpdir(), docname))){
-        fs.mkdirSync(path.join(os.tmpdir(), docname));
+    if (!fs.existsSync(path.join(os.tmpdir(), docname))) {
+        fs.mkdirSync(path.join(os.tmpdir(), docname))
     }
-    await Promise.all(files.map(async (file, idx) => {
-        await writeFile(file[0], path.join(docname, `${idx + 1}.${file[1]}`))
-    }))
+    await Promise.all(
+        files.map(async (file, idx) => {
+            await writeFile(
+                file[0],
+                path.join(docname, `${idx + 1}.${file[1]}`)
+            )
+        })
+    )
 }
 const validatePID = pid => {
     if (pid.length !== 13) return false
@@ -162,12 +167,12 @@ module.exports = async (req, res) => {
             placename,
             active: true,
             donors: [],
-            photos: parsedImages.map((val, idx) => `${idx+1}.${val[1]}`)
+            photos: parsedImages.map((val, idx) => `${idx + 1}.${val[1]}`),
         })
         await writeFiles(parsedImages, firestoreSnap.id)
         res.send({
             status: "success",
-            firestoreId: firestoreSnap.id
+            firestoreId: firestoreSnap.id,
         })
     } catch (err) {
         console.log(err)
