@@ -151,7 +151,7 @@ module.exports = async (req, res) => {
             imageDataURL,
             firestoreSnap.id + "." + extension
         )
-        res.send({ status: "success", firestoreId: firestoreSnap.id })
+        res.send({ status: "success", firestoreId: firestoreSnap.id, extension })
     } catch (err) {
         console.log(err)
         res.status(500).send("error")
