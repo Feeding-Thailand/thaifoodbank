@@ -5,6 +5,7 @@ module.exports = async (req, res) => {
         var query = await db
             .collection("posts")
             .orderBy("d.createdAt", "desc")
+            .limit(20)
             .get()
         var data = []
         query.forEach(doc => {
