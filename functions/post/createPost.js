@@ -6,7 +6,7 @@ const db = fb.firestore()
 const { GeoFirestore } = require("geofirestore")
 const geofirestore = new GeoFirestore(db)
 const geocollection = geofirestore.collection("posts")
-const mapboxToken = require("../mapboxToken") || ""
+const mapboxToken = require("../mapboxToken")
 const axios = require("axios")
 const mime = require("mime-types")
 function base64MimeType(encoded) {

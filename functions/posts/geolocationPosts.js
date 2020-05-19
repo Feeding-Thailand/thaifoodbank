@@ -22,6 +22,7 @@ module.exports = async (req, res) => {
                 center: userGeo,
                 radius: Number(req.params.radius),
             })
+            .where("active", "==", true)
             .limit(12)
         var snap = await query.get()
         snap = snap.docs
