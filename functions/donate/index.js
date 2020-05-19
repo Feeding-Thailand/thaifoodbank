@@ -1,0 +1,10 @@
+const express = require("express")
+const checkAuth = require("../checkAuth")
+const router = express.Router()
+const donate = require("./donate.js")
+router.put("/:id", checkAuth, donate)
+const app = express()
+const cors = require("cors")
+app.use(cors({origin: true}))
+app.use(router)
+module.exports = app
