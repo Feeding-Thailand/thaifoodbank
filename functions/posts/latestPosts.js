@@ -2,8 +2,6 @@ const fb = require("firebase-admin")
 const db = fb.firestore()
 module.exports = async (req, res) => {
     try {
-        var user = await fb.auth().getUser(req.authId)
-        user = user.toJSON()
         var query = await db
             .collection("posts")
             .orderBy("d.createdAt", "desc")
