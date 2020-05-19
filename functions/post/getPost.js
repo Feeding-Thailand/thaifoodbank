@@ -21,7 +21,7 @@ module.exports = async (req, res) => {
             placename,
         } = snap.data().d
         const createdAt = snap.data().d.createdAt.toDate()
-        return res.send({
+        res.send({
             name,
             description,
             need,
@@ -32,6 +32,6 @@ module.exports = async (req, res) => {
         })
     } catch (err) {
         console.log(err)
-        return res.status(500).send("error")
+        res.status(500).send("error")
     }
 }
