@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
         var query = await db
             .collection("posts")
             .where("d.uid", "==", user.uid)
-            .orderBy("createdAt", "desc")
+            .orderBy("d.createdAt", "desc")
             .limit(1)
             .get()
         var data = []
