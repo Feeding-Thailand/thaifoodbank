@@ -6,7 +6,7 @@ const db = fb.firestore()
 const { GeoFirestore } = require("geofirestore")
 const geofirestore = new GeoFirestore(db)
 const geocollection = geofirestore.collection("posts")
-const mapboxToken = require("../mapboxToken") || ''
+const mapboxToken = require("../mapboxToken") || ""
 const axios = require("axios")
 const mime = require("mime-types")
 function base64MimeType(encoded) {
@@ -19,7 +19,9 @@ function base64MimeType(encoded) {
 const bucket = fb.storage().bucket()
 const writeFile = async (base64Raw, fname) => {
     const fpath = path.join(os.tmpdir(), fname)
-    const base64Data = base64Raw.replace(/^data:image\/png;base64,/, "").replace(/^data:image\/jpeg;base64,/, "")
+    const base64Data = base64Raw
+        .replace(/^data:image\/png;base64,/, "")
+        .replace(/^data:image\/jpeg;base64,/, "")
     console.log(base64Data)
     await new Promise(res =>
         fs.writeFile(fpath, base64Data, "base64", err => {
@@ -29,8 +31,16 @@ const writeFile = async (base64Raw, fname) => {
     )
     console.log(fpath)
     await bucket.upload(fpath, {
-        destination: fname
+        destination: fname,
     })
+}
+const writeFiles = async (files, docname) => {
+    if(!fs.existsSync(path.join(os.tmpdir(), docname))){
+        fs.mkdirSync(path.join(os.tmpdir(), docname));
+    }
+    await Promise.all(files.map(async (file, idx) => {
+        await writeFile(file[0], path.join(docname, `${idx + 1}.${file[1]}`))
+    }))
 }
 const validatePID = pid => {
     if (pid.length !== 13) return false
@@ -74,15 +84,13 @@ module.exports = async (req, res) => {
                 .map(key => {
                     if (
                         extractedBody[key] === undefined ||
-                        extractedBody[key] === null ||
-                        !(typeof(extractedBody[key]) === 'string' || extractedBody[key] instanceof String)
+                        extractedBody[key] === null
                     ) {
-                        res
-                            .status(400)
-                            .send({ status: `key ${key} not found, val = ${extractedBody[key]}` })
+                        res.status(400).send({
+                            status: `key ${key} not found, val = ${extractedBody[key]}`,
+                        })
                         return true
-                    }
-                    else return null
+                    } else return null
                 })
                 .filter(val => val !== null).length > 0
         )
@@ -122,19 +130,26 @@ module.exports = async (req, res) => {
             return
         }
         const userGeo = new fb.firestore.GeoPoint(Number(lat), Number(lng))
-        const mimeType = base64MimeType(imageDataURL)
-        if (!mimeType) {
-            res.status(400).send({
-                status: "image mime type not found or invalid",
+
+        const parsedImages = imageDataURL
+            .map(imgd => {
+                const mimeType = base64MimeType(imgd)
+                if (!mimeType) {
+                    res.status(400).send({
+                        status: "image mime type not found or invalid",
+                    })
+                    return false
+                }
+                let extension = mime.extension(mimeType)
+                if (extension === "jpeg") extension = "jpg"
+                if (extension !== "png" && extension !== "jpg") {
+                    res.status(400).send({ status: "invalid extension" })
+                    return false
+                }
+                return [imgd, extension]
             })
-            return
-        }
-        let extension = mime.extension(mimeType)
-        if(extension === "jpeg") extension = "jpg"
-        if (extension !== "png" && extension !== "jpg") {
-            res.status(400).send({ status: "invalid extension" })
-            return
-        }
+            .filter(ret => ret !== false)
+        if (parsedImages.length !== imageDataURL.length) return
         const firestoreSnap = await geocollection.add({
             uid: user.uid,
             name,
@@ -147,11 +162,11 @@ module.exports = async (req, res) => {
             placename,
             matches: [],
         })
-        await writeFile(
-            imageDataURL,
-            firestoreSnap.id + "." + extension
-        )
-        res.send({ status: "success", firestoreId: firestoreSnap.id, extension })
+        await writeFiles(parsedImages, firestoreSnap.id)
+        res.send({
+            status: "success",
+            firestoreId: firestoreSnap.id
+        })
     } catch (err) {
         console.log(err)
         res.status(500).send("error")
