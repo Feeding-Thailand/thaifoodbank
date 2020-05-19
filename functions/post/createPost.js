@@ -160,7 +160,7 @@ module.exports = async (req, res) => {
             contact,
             coordinates: userGeo,
             placename,
-            matches: [],
+            photos: parsedImages.map((val, idx) => `${idx+1}.${val[1]}`)
         })
         await writeFiles(parsedImages, firestoreSnap.id)
         res.send({
