@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'gatsby'
-
+import axios from 'axios'
+import { apiEndpoint } from './constants'
 
 const Person = () => (
     <div className='col-md-6 mb-4'>
@@ -17,6 +18,18 @@ const Person = () => (
 )
 
 export default class HelpList extends React.Component {
+    constructor(props){
+        super(props)
+        this.state = {
+            data: 'loading'
+        }
+    }
+
+    async componentDidMount(){
+        const req = await axios.get(`${apiEndpoint}/posts/latest`)
+        console.log(req.data)
+
+    }
     render() {
         return (
             <div className='mt-4 row'>

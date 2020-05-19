@@ -47,10 +47,10 @@ export default class View extends React.Component {
                             </div>
                             <div className='row mt-3'>
                                 <div className='col-6'>
-                                    <Button className='w-100'>ติดต่อมอบความช่วบเหลือ</Button>
+                                    <Button className='w-100 h-100'>ติดต่อมอบความช่วบเหลือ</Button>
                                 </div>  
                                 <div className='col-6'>
-                                    <Button variant='light' className='w-100'>แชร์โพสต์นี้</Button>
+                                    <Button variant='light' className='w-100 h-100'>แชร์โพสต์นี้</Button>
                                 </div>  
                             </div>
 

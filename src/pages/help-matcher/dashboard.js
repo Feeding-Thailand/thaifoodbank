@@ -4,6 +4,8 @@ import NavHeader from '../../components/navHeader'
 import Gallery from 'react-grid-gallery'
 import Button from 'react-bootstrap/Button'
 import Footer from '../../components/footer'
+import axios from 'axios'
+import { apiEndpoint } from '../../components/constants'
 const IMAGES =
     [{
         src: "https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_b.jpg",
@@ -28,6 +30,15 @@ const IMAGES =
     }]
 
 export default class Dashboard extends React.Component {
+    constructor(props) {
+        this.state = {
+
+        }
+    }
+    async componentDidMount() {
+        const req = await axios.get(`${apiEndpoint}/posts/:id`)
+        console.log(req.data)
+    }
     render() {
         return (
             <div>
@@ -52,10 +63,10 @@ export default class Dashboard extends React.Component {
                             </div>
                             <div className='row mt-3'>
                                 <div className='col-6'>
-                                    <Button className='w-100'>ได้รับความช่วยเหลือแล้ว</Button>
+                                    <Button className='w-100 h-100'>ได้รับความช่วยเหลือแล้ว</Button>
                                 </div>
                                 <div className='col-6'>
-                                    <Button variant='light' className='w-100'>แก้ไขข้อมูล</Button>
+                                    <Button variant='light' className='w-100 h-100'>แก้ไขข้อมูล</Button>
                                 </div>
                             </div>
                         </div>
