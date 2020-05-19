@@ -67,6 +67,14 @@ module.exports = async (req, res) => {
             email: user.email,
             displayName: user.displayName,
         }
+        const preSnap = await db
+            .collection("posts")
+            .where("d.uid", "==", user.uid)
+            .get()
+        if (preSnap.size > 0) {
+            res.status(409).send("user already created a post")
+            return
+        }
         const extractedBody = (({
             name, // Firstname - Surname
             contact, // Any contact information (tel/addr/line)
