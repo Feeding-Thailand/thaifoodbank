@@ -34,6 +34,15 @@ module.exports = async (req, res) => {
             .update({
                 "d.donors": fb.firestore.FieldValue.arrayUnion(user),
             })
+        const statsSnap = await db.collection("stats").doc("stats").get()
+        if (statsSnap.data().donorsList.indexOf(user.uid) === -1) {
+            db.collection("stats")
+                .doc("stats")
+                .update({
+                    donors: fb.firestore.FieldValue.increment(1),
+                    donorsList: fb.firestore.FieldValue.arrayUnion(user.uid),
+                })
+        }
         res.send("OK")
     } catch (err) {
         console.log(err)

@@ -13,7 +13,13 @@ module.exports = async (req, res) => {
             return
         }
         await db.collection("posts").doc(id).delete()
-        res.send("deleted")
+        db.collection("stats")
+            .doc("stats")
+            .update({
+                currentPosts: fb.firestore.FieldValue.increment(-1),
+                deletedPosts: fb.firestore.FieldValue.increment(1),
+            })
+        res.send("OK")
     } catch (err) {
         console.log(err)
         res.status(500).send("error")
