@@ -1,31 +1,51 @@
-const fb = require('firebase-admin')
+const fb = require("firebase-admin")
 const db = fb.firestore()
-const { GeoFirestore } = require('geofirestore')
+const { GeoFirestore } = require("geofirestore")
 const geofirestore = new GeoFirestore(db)
-const geocollection = geofirestore.collection('help-harbor')
+const geocollection = geofirestore.collection("posts")
 module.exports = async (req, res) => {
     try {
-        const userGeo = new admin.firestore.GeoPoint(Number(req.params.lat), Number(req.params.lng))
-        const query = geocollection.near({ center: userGeo, radius: Number(req.params.radius) })
+        if (req.params.lng < -180 || req.params.lng > 180) {
+            res.status(400).send("longitude out of range")
+            return
+        }
+        if (req.params.lat < -90 || req.params.lat > 90) {
+            res.status(400).send("latitude out of range")
+            return
+        }
+        const userGeo = new fb.firestore.GeoPoint(
+            Number(req.params.lat),
+            Number(req.params.lng)
+        )
+        const query = geocollection
+            .near({
+                center: userGeo,
+                radius: Number(req.params.radius),
+            })
+            .limit(12)
         var snap = await query.get()
         snap = snap.docs
         var payload = []
-        snap.forEach((doc, index) => {
+        snap.forEach(doc => {
             var data = doc.data()
-            delete data.coordinates
-            data.createdAt = data.createdAt.toDate()
-            if (!data.matches.includes(req.authId)) {
-                payload.push({
-                    data: data,
-                    distance: snap[index].distance,
-                    id: doc.id
-                })
-            }
+            const { name, need, uid, photos, placename } = data
+            const createdAt = data.createdAt.toDate()
+            payload.push({
+                data: {
+                    name,
+                    need,
+                    uid,
+                    photos,
+                    createdAt,
+                    placename,
+                },
+                distance: doc.distance,
+                id: doc.id,
+            })
         })
-        return res.send(payload)
-    }
-    catch (err) {
+        res.send(payload)
+    } catch (err) {
         console.log(err)
-        return res.status(500).send('error')
+        res.status(500).send("error")
     }
 }

@@ -10,9 +10,9 @@ module.exports = async (req, res) => {
         await db.collection("posts").doc(id).update({
             "d.active": false,
         })
-        return res.send("OK")
+        res.send("OK")
     } catch (err) {
         console.log(err)
-        return res.status(500).send("error")
+        res.status(500).send("error")
     }
 }
