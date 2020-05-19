@@ -6,7 +6,7 @@ const db = fb.firestore()
 const { GeoFirestore } = require("geofirestore")
 const geofirestore = new GeoFirestore(db)
 const geocollection = geofirestore.collection("posts")
-const mapboxToken = require("../mapboxToken")
+const mapboxToken = require("../mapboxToken") || ''
 const axios = require("axios")
 const mime = require("mime-types")
 function base64MimeType(encoded) {
@@ -19,7 +19,8 @@ function base64MimeType(encoded) {
 const bucket = fb.storage().bucket()
 const writeFile = async (base64Raw, fname) => {
     const fpath = path.join(os.tmpdir(), fname)
-    const base64Data = base64Raw.replace(/^data:image\/png;base64,/, "")
+    const base64Data = base64Raw.replace(/^data:image\/png;base64,/, "").replace(/^data:image\/jpeg;base64,/, "")
+    console.log(base64Data)
     await new Promise(res =>
         fs.writeFile(fpath, base64Data, "base64", err => {
             console.log(err)
