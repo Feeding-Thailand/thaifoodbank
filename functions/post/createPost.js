@@ -121,6 +121,16 @@ module.exports = async (req, res) => {
             res.status(400).send({ status: "invalid pid" })
             return
         }
+        const preSnap2 = await db
+            .collection("posts")
+            .where("d.pid", "==", pid)
+            .get()
+        if (preSnap2.size > 0) {
+            res.status(409).send("user has same pid with someone else")
+            return
+            // remark: if there are people with fake pids, this might be a big problem to acceptors
+            // maybe need further checking process (i.e. ID card photo validation)
+        }
         const geocode = await axios.get(
             `https://api.mapbox.com/geocoding/v5/mapbox.places/${postcode}.json?access_token=${mapboxToken}&country=TH&types=postcode&language=th`
         )
