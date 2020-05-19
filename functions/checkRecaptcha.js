@@ -5,7 +5,7 @@ const recaptchaVerifyURL = "https://www.google.com/recaptcha/api/siteverify"
 
 const checkRecaptcha = async (req, res, next) => {
     try {
-        const { userResponse, userRemoteip } = req.query
+        const { response: userResponse, remoteip: userRemoteip } = req.query
         const response = await axios.post(recaptchaVerifyURL, {
             secret,
             response: userResponse,
