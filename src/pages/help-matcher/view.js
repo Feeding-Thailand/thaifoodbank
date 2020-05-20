@@ -8,21 +8,89 @@ import queryString from 'query-string'
 import axios from 'axios'
 import { apiEndpoint } from '../../components/constants'
 import Modal from 'react-bootstrap/Modal'
-import Reaptcha from 'reaptcha'
 import Spinner from 'react-bootstrap/Spinner'
+import firebase from '../../components/firebase'
+import Form from 'react-bootstrap/Form'
 
+const Donors = (props) => (
+    <div>
+        <div className='d-flex mb-3'>
+            <div className='avatar' />
+            <div className='ml-3 flex-center'>
+                <span>name lastname</span>
+                <small className='text-muted'>10 นาทีก่อน</small>
+            </div>
+        </div>
+        <div className='d-flex mb-3'>
+            <div className='avatar' />
+            <div className='ml-3 flex-center'>
+                <span>name lastname</span>
+                <small className='text-muted'>10 นาทีก่อน</small>
+            </div>
+        </div>
+        <div className='d-flex'>
+            <div className='avatar' />
+            <div className='ml-3 flex-center'>
+                <span>name lastname</span>
+                <small className='text-muted'>10 นาทีก่อน</small>
+            </div>
+        </div>
+    </div>
+)
 export default class View extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             data: 'loading',
             images: [],
-            contact: false
+            contact: 'loading'
         }
     }
+    showContact() {
+        this.setState({ showModal: true }, async () => {
+            if (firebase.auth().currentUser) {
+                await this.getContact()
+            }
+        })
+    }
     async getContact() {
-        this.setState({ showModal: true })
+        try {
+            const id = queryString.parse(this.props.location.search).id
+            const token = await firebase.auth().currentUser.getIdToken()
+            const req = await axios.get(`${apiEndpoint}/post/${id}/contact`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            this.setState({ contact: req.data.contact, isAlreadyDonated: req.data.isAlreadyDonated })
+        }
+        catch (err) {
+            console.log(err)
+        }
 
+    }
+    async donate() {
+        this.setState({ saving: true, next: true })
+        try {
+            const id = queryString.parse(this.props.location.search).id
+            const token = await firebase.auth().currentUser.getIdToken()
+            const req = await axios.put(`${apiEndpoint}/donate/${id}`, {
+                isAnonymous: this.state.isAnonymous,
+                name: this.state.name
+            }
+                , {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+            console.log(req.data)
+            this.setState({ showModal: false })
+
+        }
+        catch (err) {
+            console.log(err)
+            this.setState({ saving: false })
+        }
     }
     async componentDidMount() {
         try {
@@ -34,22 +102,43 @@ export default class View extends React.Component {
                 console.log(image)
                 this.setState({ images: [...this.state.images, image] })
             })
+            const user = await firebase.auth().currentUser
+            firebase.auth().onAuthStateChanged(async (user) => {
+                console.log(user)
+                if (user) {
+                    this.setState({ user: user.uid, displayName: user.displayName })
+
+                } else {
+                    this.setState({ user: false })
+                }
+            })
+
         } catch (err) {
             console.log(err)
             this.setState({ data: 'error' })
         }
 
     }
-    async onVerify(response) {
-        console.log(response)
-        try {
-            const id = queryString.parse(this.props.location.search).id
-            const req = await axios.get(`${apiEndpoint}/post/${id}/contact?response=${response}`)
-            this.setState({ contact: req.data.contact })
+
+    signIn(option) {
+        if (option === 'google') {
+            const provider = new firebase.auth.GoogleAuthProvider()
+            firebase.auth().signInWithRedirect(provider)
         }
-        catch (err) {
-            console.log(err)
+        else {
+            const provider = new firebase.auth.FacebookAuthProvider()
+            firebase.auth().signInWithRedirect(provider)
         }
+    }
+    formHandler(e) {
+        const id = e.target.id
+        if (id === 'isAnonymous') {
+            this.setState({ [id]: e.target.checked })
+        }
+        else {
+            this.setState({ [id]: e.target.value })
+        }
+
     }
     render() {
         return (
@@ -61,32 +150,78 @@ export default class View extends React.Component {
                 <div className='pt-5 pb-5' style={{ backgroundColor: '#f7fafc' }}>
                     <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })}>
                         <Modal.Header>
-                            <Modal.Title>ข้อมูลติดต่อ</Modal.Title>
-                            <div>
-                                <button className='btn btn-icon'>
-                                    <span className='material-icons'>close</span>
-                                </button>
-                            </div>
+                            <Modal.Title>ติดต่อมอบความช่วยเหลือ</Modal.Title>
+                            <button onClick={() => this.setState({ showModal: false })} className='btn btn-icon'><span className='material-icons'>close</span></button>
                         </Modal.Header>
+
                         <Modal.Body>
-                            {this.state.contact === false &&
-                                <>
-                                    <div className='mb-2'><b>กรุณายืนยันตัวตน</b>
+                            <>
+                                {!this.state.user &&
+                                    <div className='mt-3 mb-3'>
+                                        <div className='mb-4 text-center'>
+                                            <h4>กรุณาเข้าสู่ระบบ</h4>
+                                        </div>
+                                        <div>
+                                            <Button variant='light' className='text-dark w-100 mb-4' onClick={() => this.signIn('google')}>
+                                                <img width='18px' height='18px' src={require('../../assets/images/google.svg')} /> ดำเนินการต่อด้วยบัญชี Google
+                                            </Button>
+                                            <Button variant='light' className='text-dark w-100' onClick={() => this.signIn('facebook')}>
+                                                <img width='18px' height='18px' src={require('../../assets/images/facebook.svg')} /> ดำเนินการต่อด้วยบัญชี Facebook
+                                            </Button>
+                                        </div>
                                     </div>
+                                }
+                                {this.state.user &&
                                     <div>
-                                        <Reaptcha sitekey="6LetbPkUAAAAALLugqgdf6Lv3FP05a9XnDoED-3P" onVerify={async (response) => await this.onVerify(response)} />
+                                        {this.state.contact === 'loading' &&
+                                            <div className='text-center p-3 w-100'>
+                                                <Spinner animation='border' variant='primary' />
+                                            </div>
+                                        }
+                                        {this.state.contact !== 'loading' &&
+                                            <div>
+                                                <div className='alert mt-3 alert-primary'>
+                                                    <b>ข้อมูลติดต่อ</b> {this.state.contact}
+                                                </div>
+                                                <hr />
+                                                <h4 className='mb-3'>ข้อมูลผู้บริจาค</h4>
+                                                <Form onChange={(e) => this.formHandler(e)}>
+                                                    <Form.Group controlId='name'>
+                                                        <Form.Label>ชื่อ-นามสกุล</Form.Label>
+                                                        <Form.Control
+                                                            disabled={this.state.isAnonymous === true}
+                                                            defaultValue={this.state.displayName}
+                                                            placeholder="ชื่อ-นามสกุล"
+                                                            isInvalid={!this.state.name && this.state.next && !this.state.isAnonymous}
+                                                        />
+                                                    </Form.Group>
+                                                    <Form.Group>
+                                                        <Form.Check
+                                                            custom
+                                                            type='checkbox'
+                                                            label='ไม่ประสงค์ออกนาม'
+                                                            id='isAnonymous'
+                                                        />
+                                                    </Form.Group>
+                                                </Form>
+                                                <Button disabled={this.state.saving || this.state.isAlreadyDonated} onClick={async () => await this.donate()} className='mt-3'>ยืนยันการให้ความช่วยเหลือ</Button>
+                                            </div>
+
+                                        }
                                     </div>
-                                </>
-                            }
-                            {this.state.contact &&
-                                <div className='alert alert-primary'>
-                                    <b>ข้อมูลติดต่อ</b> {this.state.contact}
-                                </div>
-                            }
+                                }
+                            </>
+
+
 
                         </Modal.Body>
                     </Modal>
                     <div className='shadow-md container bg-white rounded p-4 d-flex' style={{ flexDirection: 'column', alignItems: 'center', maxWidth: 800 }}>
+                        {(this.state.data.uid === this.state.user) && this.state.data !== 'loading' &&
+                            <div className='w-100 mb-3'>
+                                <h4><span className='badge badge-primary'>ข้อมูลของคุณ</span></h4>
+                            </div>
+                        }
                         <div className='featured-image' style={{ backgroundImage: `url(${this.state.images[0]})` }} />
                         {this.state.data === 'loading' &&
                             <Spinner className='m-4' animation='border' variant='primary' />
@@ -101,8 +236,14 @@ export default class View extends React.Component {
                                         </div>
                                     </div>
                                     <div className='row mt-3'>
+
                                         <div className='col-6'>
-                                            <Button onClick={async () => await this.getContact()} className='w-100 h-100'>ติดต่อมอบความช่วบเหลือ</Button>
+                                            {this.state.data.uid !== this.state.user &&
+                                                <Button onClick={() => this.showContact()} className='w-100 h-100'>ติดต่อมอบความช่วยเหลือ</Button>
+                                            }
+                                            {this.state.data.uid === this.state.user &&
+                                                <Button variant='secondary' className='w-100 h-100'>ได้รับความช่วยเหลือแล้ว</Button>
+                                            }
                                         </div>
                                         <div className='col-6'>
                                             <Button variant='light' className='w-100 h-100'>แชร์โพสต์นี้</Button>
@@ -113,14 +254,18 @@ export default class View extends React.Component {
 
                                 <hr />
                                 <div className='w-100'>
-                                    <h3>รายละเอียด</h3>
+                                    <h4>รายละเอียด</h4>
                                     <p>{this.state.data.description}</p>
-                                    <h3>ความช่วยเหลือที่ต้องการ</h3>
+                                    <h4>ความช่วยเหลือที่ต้องการ</h4>
                                     <p className='mb-0'>{this.state.data.need}</p>
                                 </div>
                             </div>
                         }
-
+                        <hr />
+                        <div className='w-100 mt-3'>
+                            <h4 className='mb-4'>ผู้ร่วมช่วยเหลือ 20 คน</h4>
+                            <Donors />
+                        </div>
                         <hr />
                         <div className='w-100'>
                             <FacebookProvider appId="637224560162543">
@@ -128,7 +273,9 @@ export default class View extends React.Component {
                             </FacebookProvider>
                         </div>
                     </div>
+
                 </div>
+
                 <Footer />
             </div>
         )

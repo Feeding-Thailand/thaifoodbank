@@ -5,7 +5,15 @@ import HelpList from '../../components/helpList'
 import Footer from '../../components/footer'
 import Button from 'react-bootstrap/Button'
 import { Link } from 'gatsby'
-
+class Counter extends React.Component {
+    render(){
+        return(
+            <div>
+                
+            </div>
+        )
+    }
+}
 export default class HelpMatcher extends React.Component {
     render() {
         return (
