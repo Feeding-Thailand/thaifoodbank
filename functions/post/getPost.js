@@ -19,6 +19,7 @@ module.exports = async (req, res) => {
             uid,
             photos,
             placename,
+            donors: donorsCount
         } = snap.data().d
         const donorsSnap = await db.collection("posts").doc(id).collection("donors").orderBy("createdAt","desc").limit(10).get()
         const donors = []
@@ -37,7 +38,8 @@ module.exports = async (req, res) => {
             photos,
             placename,
             createdAt,
-            donors
+            donors,
+            donorsCount
         })
     } catch (err) {
         console.log(err)
