@@ -39,7 +39,7 @@ module.exports = async (req, res) => {
         db.collection("posts")
             .doc(id)
             .update({
-                donors: fb.firestore.FieldValue.increment(1),
+                'd.donors': fb.firestore.FieldValue.increment(1),
             })
         const statsSnap = await db
             .collection("stats")
