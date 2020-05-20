@@ -54,6 +54,12 @@ module.exports = async (req, res) => {
             db.collection("stats")
                 .doc("stats")
                 .update({ donors: fb.firestore.FieldValue.increment(1) })
+            delete user.createdAt
+            db.collection("transactions").add({
+                donor: user,
+                createdAt: new Date(),
+                post: id
+            })
         }
         res.send("OK")
     } catch (err) {
