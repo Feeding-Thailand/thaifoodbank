@@ -27,6 +27,7 @@ class RegisterForm extends React.Component {
         })
     }
     async save() {
+        firebase.auth().currentUser.getIdToken(true).then(tok => console.log(tok))
         this.setState({ next: true, saving: true })
         if (
             this.state.name &&

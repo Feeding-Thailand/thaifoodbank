@@ -12,12 +12,14 @@ module.exports = async (req, res) => {
             res.status(403).send("invalid ownership")
             return
         }
-        await db.collection("posts").doc(id).delete()
+        await db.collection("posts").doc(id).update({
+            "d.active": false,
+        })
         db.collection("stats")
             .doc("stats")
             .update({
-                currentPosts: fb.firestore.FieldValue.increment(-1),
-                deletedPosts: fb.firestore.FieldValue.increment(1),
+                activePosts: fb.firestore.FieldValue.increment(-1),
+                closedPosts: fb.firestore.FieldValue.increment(1),
             })
         res.send("OK")
     } catch (err) {

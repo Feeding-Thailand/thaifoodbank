@@ -1,1 +1,3 @@
 node_modules/
+mapboxToken.js
+recaptchaSecret.js

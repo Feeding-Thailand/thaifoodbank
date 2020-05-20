@@ -1,11 +1,13 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Gatsby Build Test
+name: Functions Test
 
 on:
   push:
-    branches: [ master, web-interface ]
+    branches:
+      - master
+      - 'functions**'
 
 jobs:
   build:
@@ -14,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
+        node-version: [8.x, 10.x, 12.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -22,9 +24,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Install yarn
-      run: npm install -g yarn
-    - name: Install dependencies
-      run: yarn
-    - name: Build App using yarn
-      run: yarn build
+    - run: npm ci
+      working-directory: functions
+    - run: npm run lint
+      working-directory: functions
