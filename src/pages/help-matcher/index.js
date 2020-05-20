@@ -5,16 +5,62 @@ import HelpList from '../../components/helpList'
 import Footer from '../../components/footer'
 import Button from 'react-bootstrap/Button'
 import { Link } from 'gatsby'
+import _ from 'lodash'
+import axios from 'axios'
+import { apiEndpoint } from '../../components/constants'
+import firebase from '../../components/firebase'
+function parseAddress(address) {
+    var x = address.split(', ')
+    x.splice(0, 1)
+    return x.join(', ')
+}
+function formatText(text) {
+    if (text.length < 100) {
+        return text
+    }
+    else {
+        return `${text.substring(0, 100)} ...`
+    }
+}
 class Counter extends React.Component {
-    render(){
-        return(
+    render() {
+        return (
             <div>
-                
+
             </div>
         )
     }
 }
 export default class HelpMatcher extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            loggedIn: 'loading'
+        }
+    }
+    componentDidMount() {
+        firebase.auth().onAuthStateChanged(async (user) => {
+            if (user) {
+                this.setState({ loggedIn: true })
+                const token = await firebase.auth().currentUser.getIdToken()
+                const req = await axios.get(`${apiEndpoint}/post/latest`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+                if (req.data != false) {
+                    this.setState({ latestPost: { ...req.data.data, id: req.data.id } }, () => console.log(this.state.latestPost))
+                }
+                else {
+
+                }
+
+            }
+            else {
+                this.setState({ user: false, loggedIn: false })
+            }
+        })
+    }
     render() {
         return (
             <div>
@@ -24,13 +70,33 @@ export default class HelpMatcher extends React.Component {
                 <div style={{ backgroundColor: '#f7fafc' }}>
                     <NavHeader></NavHeader>
                     <div className='container pt-5 pb-5' >
+                        {this.state.latestPost &&
+                            <div className='row mb-4'>
+                                <div className='col-12'>
+                                    <h2>ข้อมูลขอความช่วยเหลือของคุณ</h2>
+                                </div>
+                                <div className='col-md-6 mb-4 mt-4'>
+                                    <Link to={`/help-matcher/view?id=${this.state.latestPost.id}`}>
+                                        <div className='item pb-3 shadow-md pt-3' style={{ backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/thaifoodbank.appspot.com/o/${this.state.latestPost.id}%2f${this.state.latestPost.photos[0]}?alt=media)` }}>
+                                            <div className='text-white pl-3 text-over'>
+                                                <h4 className='mb-0 text-white'>{this.state.latestPost.name}</h4>
+                                                <span>{parseAddress(this.state.latestPost.placename)}</span>
+                                                <p className='mb-0'>{formatText(this.state.latestPost.need)}</p>
+                                            </div>
+                                            <div className='overlay'></div>
+                                        </div>
+                                    </Link>
+                                </div>
+
+                            </div>
+                        }
                         <div className='mb-4 row'>
                             <div className='col-md-6 pb-3'>
                                 <h2>ผู้ต้องการความช่วยเหลือขณะนี้</h2>
                             </div>
                             <div className='col-md-6 pb-3'>
                                 <Link to='/help-matcher/register'>
-                                <Button className='float-md-right'>ขอรับความช่วยเหลือ</Button>
+                                    <Button className='float-md-right'>ขอรับความช่วยเหลือ</Button>
                                 </Link>
                             </div>
                         </div>

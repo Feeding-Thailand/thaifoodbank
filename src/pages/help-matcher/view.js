@@ -11,30 +11,22 @@ import Modal from 'react-bootstrap/Modal'
 import Spinner from 'react-bootstrap/Spinner'
 import firebase from '../../components/firebase'
 import Form from 'react-bootstrap/Form'
+import Alert from 'react-bootstrap/Alert'
+import * as moment from 'moment'
 
 const Donors = (props) => (
     <div>
-        <div className='d-flex mb-3'>
-            <div className='avatar' />
-            <div className='ml-3 flex-center'>
-                <span>name lastname</span>
-                <small className='text-muted'>10 นาทีก่อน</small>
-            </div>
-        </div>
-        <div className='d-flex mb-3'>
-            <div className='avatar' />
-            <div className='ml-3 flex-center'>
-                <span>name lastname</span>
-                <small className='text-muted'>10 นาทีก่อน</small>
-            </div>
-        </div>
-        <div className='d-flex'>
-            <div className='avatar' />
-            <div className='ml-3 flex-center'>
-                <span>name lastname</span>
-                <small className='text-muted'>10 นาทีก่อน</small>
-            </div>
-        </div>
+        {props.donors && props.donors.map((donor, index) => {
+            return (
+                <div className='d-flex mb-3' key={index}>
+                    <div className='avatar' style={{backgroundImage: `url(${donor.photoURL})`}}/>
+                    <div className='ml-3 flex-center'>
+                        <span>{donor.displayName}</span>
+                        <small className='text-muted'>{moment(donor.createdAt).fromNow()}</small>
+                    </div>
+                </div>
+            )
+        })}
     </div>
 )
 export default class View extends React.Component {
@@ -75,7 +67,7 @@ export default class View extends React.Component {
             const id = queryString.parse(this.props.location.search).id
             const token = await firebase.auth().currentUser.getIdToken()
             const req = await axios.put(`${apiEndpoint}/donate/${id}`, {
-                isAnonymous: this.state.isAnonymous,
+                isAnonymous: this.state.isAnonymous ? this.state.isAnonymous : false,
                 name: this.state.name
             }
                 , {
@@ -102,11 +94,9 @@ export default class View extends React.Component {
                 console.log(image)
                 this.setState({ images: [...this.state.images, image] })
             })
-            const user = await firebase.auth().currentUser
             firebase.auth().onAuthStateChanged(async (user) => {
-                console.log(user)
                 if (user) {
-                    this.setState({ user: user.uid, displayName: user.displayName })
+                    this.setState({ user: user.uid, name: user.displayName })
 
                 } else {
                     this.setState({ user: false })
@@ -144,10 +134,32 @@ export default class View extends React.Component {
         return (
             <div>
                 <Header>
-                    <title>test</title>
+                    <title>Feeding Thailand | Help Matcher</title>
                 </Header>
                 <NavHeader></NavHeader>
-                <div className='pt-5 pb-5' style={{ backgroundColor: '#f7fafc' }}>
+                <div className='pt-5 pb-5 pl-3 pr-3' style={{ backgroundColor: '#f7fafc' }}>
+                    <Modal show={this.state.confirmStatus} onHide={() => this.setState({ confirmStatus: false })}>
+                        <Modal.Header>
+                            <Modal.Title>
+                                ยืนยันสถานะ
+                            </Modal.Title>
+                            <button className='btn btn-icon' onClick={() => this.setState({ confirmStatus: false })}><span className='material-icons'>close</span></button>
+                        </Modal.Header>
+                        <Modal.Body>
+                            เมื่อท่านกดปุ่ม<b>ยืนยันการได้รับความช่วยเหลือ</b>แล้ว ข้อมูลความช่วยเหลือของคุณจะถูกเปลี่ยนสถานะเป็นได้รับความช่วยเหลือแล้ว
+                            และจะถูกนำออกจากหน้าแสดงผู้ต้องการความช่วยเหลือ
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant='light' onClick={() => this.setState({ confirmStatus: false })}>
+                                ปิดหน้าต่างนี้
+                            </Button>
+                            <Button variant='secondary'>
+                                ยืนยันการได้รับความช่วยเหลือ
+                            </Button>
+
+                        </Modal.Footer>
+
+                    </Modal>
                     <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })}>
                         <Modal.Header>
                             <Modal.Title>ติดต่อมอบความช่วยเหลือ</Modal.Title>
@@ -185,35 +197,38 @@ export default class View extends React.Component {
                                                 </div>
                                                 <hr />
                                                 <h4 className='mb-3'>ข้อมูลผู้บริจาค</h4>
-                                                <Form onChange={(e) => this.formHandler(e)}>
-                                                    <Form.Group controlId='name'>
-                                                        <Form.Label>ชื่อ-นามสกุล</Form.Label>
-                                                        <Form.Control
-                                                            disabled={this.state.isAnonymous === true}
-                                                            defaultValue={this.state.displayName}
-                                                            placeholder="ชื่อ-นามสกุล"
-                                                            isInvalid={!this.state.name && this.state.next && !this.state.isAnonymous}
-                                                        />
-                                                    </Form.Group>
-                                                    <Form.Group>
-                                                        <Form.Check
-                                                            custom
-                                                            type='checkbox'
-                                                            label='ไม่ประสงค์ออกนาม'
-                                                            id='isAnonymous'
-                                                        />
-                                                    </Form.Group>
-                                                </Form>
+                                                {!this.state.isAlreadyDonated &&
+                                                    <Form onChange={(e) => this.formHandler(e)}>
+                                                        <Form.Group controlId='name'>
+                                                            <Form.Label>ชื่อ-นามสกุล</Form.Label>
+                                                            <Form.Control
+                                                                disabled={this.state.isAnonymous === true}
+                                                                defaultValue={this.state.name}
+                                                                placeholder="ชื่อ-นามสกุล"
+                                                                isInvalid={!this.state.name && this.state.next && !this.state.isAnonymous}
+                                                            />
+                                                        </Form.Group>
+                                                        <Form.Group>
+                                                            <Form.Check
+                                                                custom
+                                                                type='checkbox'
+                                                                label='ไม่ประสงค์ออกนาม'
+                                                                id='isAnonymous'
+                                                            />
+                                                        </Form.Group>
+                                                    </Form>
+                                                }
+                                                {this.state.isAlreadyDonated &&
+                                                    <Alert variant='warning'>คุณได้แสดงความประสงค์บริจาคกับบุคคลนี้ไปแล้ว</Alert>
+                                                }
                                                 <Button disabled={this.state.saving || this.state.isAlreadyDonated} onClick={async () => await this.donate()} className='mt-3'>ยืนยันการให้ความช่วยเหลือ</Button>
+
                                             </div>
 
                                         }
                                     </div>
                                 }
                             </>
-
-
-
                         </Modal.Body>
                     </Modal>
                     <div className='shadow-md container bg-white rounded p-4 d-flex' style={{ flexDirection: 'column', alignItems: 'center', maxWidth: 800 }}>
@@ -242,7 +257,7 @@ export default class View extends React.Component {
                                                 <Button onClick={() => this.showContact()} className='w-100 h-100'>ติดต่อมอบความช่วยเหลือ</Button>
                                             }
                                             {this.state.data.uid === this.state.user &&
-                                                <Button variant='secondary' className='w-100 h-100'>ได้รับความช่วยเหลือแล้ว</Button>
+                                                <Button onClick={() => this.setState({ confirmStatus: true })} variant='secondary' className='w-100 h-100'>ได้รับความช่วยเหลือแล้ว</Button>
                                             }
                                         </div>
                                         <div className='col-6'>
@@ -251,7 +266,6 @@ export default class View extends React.Component {
                                     </div>
 
                                 </div>
-
                                 <hr />
                                 <div className='w-100'>
                                     <h4>รายละเอียด</h4>
@@ -263,8 +277,8 @@ export default class View extends React.Component {
                         }
                         <hr />
                         <div className='w-100 mt-3'>
-                            <h4 className='mb-4'>ผู้ร่วมช่วยเหลือ 20 คน</h4>
-                            <Donors />
+                            <h4 className='mb-4'>ผู้ร่วมช่วยเหลือ <span className='badge badge-danger'>{this.state.data.donorsCount  } คน</span></h4>
+                            <Donors donors={this.state.data.donors} />
                         </div>
                         <hr />
                         <div className='w-100'>

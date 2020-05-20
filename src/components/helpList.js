@@ -5,15 +5,29 @@ import { apiEndpoint } from './constants'
 import _ from 'lodash'
 import Spinner from 'react-bootstrap/Spinner'
 
+function parseAddress(address) {
+    var x = address.split(', ')
+    x.splice(0, 1)
+    return x.join(', ')
+}
+function formatText(text) {
+    if (text.length < 100) {
+        return text
+    }
+    else {
+        return `${text.substring(0, 100)} ...`
+    }
+}
 const Person = (props) => (
     <div className='col-md-6 mb-4'>
         <Link to={`/help-matcher/view?id=${props.id}`}>
             <div className='item pb-3 shadow-md pt-3' style={{ backgroundImage: !_.isUndefined(props.data.photos) ? `url(https://firebasestorage.googleapis.com/v0/b/thaifoodbank.appspot.com/o/${props.id}%2f${props.data.photos[0]}?alt=media)` : 'url()' }} >
-                <div className='text-white pl-3'>
+                <div className='text-white pl-3 text-over'>
                     <h4 className='mb-0 text-white'>{props.data.name}</h4>
-                    <span>{props.data.placename}</span>
-                    <p className='mb-0'>{props.data.need}</p>
+                    <span>{parseAddress(props.data.placename)}</span>
+                    <p className='mb-0'>{formatText(props.data.need)}</p>
                 </div>
+                <div className='overlay'></div>
             </div>
         </Link>
     </div>
@@ -41,8 +55,15 @@ export default class HelpList extends React.Component {
         return (
             <div className='mt-4 row'>
                 {this.state.data === 'loading' &&
-                    <div className='flex-center pt-5 pb-5 w-100' style={{alignItems: 'center'}}>
+                    <div className='flex-center pt-5 pb-5 w-100' style={{ alignItems: 'center' }}>
                         <Spinner variant='primary' animation="border" />
+                    </div>
+                }
+                {_.isEmpty(this.state.data) &&
+                    <div className='container'>
+                        <div className='w-100 pt-5 pb-5 alert alert-dark'>
+                            <h4 className='text-center text-muted mb-0'>ไม่พบข้อมูลผู้ต้องการความช่วยเหลือ</h4>
+                        </div>
                     </div>
                 }
                 {(this.state.data !== 'loading' && this.state.data !== 'error') &&
