@@ -11,10 +11,29 @@ import Modal from 'react-bootstrap/Modal'
 import Spinner from 'react-bootstrap/Spinner'
 import firebase from '../../components/firebase'
 import Form from 'react-bootstrap/Form'
+
 const Donors = (props) => (
     <div>
+        <div className='d-flex mb-3'>
+            <div className='avatar' />
+            <div className='ml-3 flex-center'>
+                <span>name lastname</span>
+                <small className='text-muted'>10 นาทีก่อน</small>
+            </div>
+        </div>
+        <div className='d-flex mb-3'>
+            <div className='avatar' />
+            <div className='ml-3 flex-center'>
+                <span>name lastname</span>
+                <small className='text-muted'>10 นาทีก่อน</small>
+            </div>
+        </div>
         <div className='d-flex'>
-            <div className='avatar'/>
+            <div className='avatar' />
+            <div className='ml-3 flex-center'>
+                <span>name lastname</span>
+                <small className='text-muted'>10 นาทีก่อน</small>
+            </div>
         </div>
     </div>
 )
@@ -24,7 +43,7 @@ export default class View extends React.Component {
         this.state = {
             data: 'loading',
             images: [],
-            contact: '...'
+            contact: 'loading'
         }
     }
     showContact() {
@@ -43,7 +62,7 @@ export default class View extends React.Component {
                     Authorization: `Bearer ${token}`
                 }
             })
-            this.setState({ contact: req.data.contact })
+            this.setState({ contact: req.data.contact, isAlreadyDonated: req.data.isAlreadyDonated })
         }
         catch (err) {
             console.log(err)
@@ -154,31 +173,41 @@ export default class View extends React.Component {
                                 }
                                 {this.state.user &&
                                     <div>
-                                        <div className='alert mt-3 alert-primary'>
-                                            <b>ข้อมูลติดต่อ</b> {this.state.contact}
-                                        </div>
-                                        <hr />
-                                        <h4 className='mb-3'>ข้อมูลผู้บริจาค</h4>
-                                        <Form onChange={(e) => this.formHandler(e)}>
-                                            <Form.Group controlId='name'>
-                                                <Form.Label>ชื่อ-นามสกุล</Form.Label>
-                                                <Form.Control
-                                                    disabled={this.state.isAnonymous === true}
-                                                    defaultValue={this.state.displayName}
-                                                    placeholder="ชื่อ-นามสกุล"
-                                                    isInvalid={!this.state.name && this.state.next && !this.state.isAnonymous}
-                                                />
-                                            </Form.Group>
-                                            <Form.Group>
-                                                <Form.Check
-                                                    custom
-                                                    type='checkbox'
-                                                    label='ไม่ประสงค์ออกนาม'
-                                                    id='isAnonymous'
-                                                />
-                                            </Form.Group>
-                                        </Form>
-                                        <Button onClick={async () => await this.donate()} className='mt-3'>ยืนยันการให้ความช่วยเหลือ</Button>
+                                        {this.state.contact === 'loading' &&
+                                            <div className='text-center p-3 w-100'>
+                                                <Spinner animation='border' variant='primary' />
+                                            </div>
+                                        }
+                                        {this.state.contact !== 'loading' &&
+                                            <div>
+                                                <div className='alert mt-3 alert-primary'>
+                                                    <b>ข้อมูลติดต่อ</b> {this.state.contact}
+                                                </div>
+                                                <hr />
+                                                <h4 className='mb-3'>ข้อมูลผู้บริจาค</h4>
+                                                <Form onChange={(e) => this.formHandler(e)}>
+                                                    <Form.Group controlId='name'>
+                                                        <Form.Label>ชื่อ-นามสกุล</Form.Label>
+                                                        <Form.Control
+                                                            disabled={this.state.isAnonymous === true}
+                                                            defaultValue={this.state.displayName}
+                                                            placeholder="ชื่อ-นามสกุล"
+                                                            isInvalid={!this.state.name && this.state.next && !this.state.isAnonymous}
+                                                        />
+                                                    </Form.Group>
+                                                    <Form.Group>
+                                                        <Form.Check
+                                                            custom
+                                                            type='checkbox'
+                                                            label='ไม่ประสงค์ออกนาม'
+                                                            id='isAnonymous'
+                                                        />
+                                                    </Form.Group>
+                                                </Form>
+                                                <Button disabled={this.state.saving || this.state.isAlreadyDonated} onClick={async () => await this.donate()} className='mt-3'>ยืนยันการให้ความช่วยเหลือ</Button>
+                                            </div>
+
+                                        }
                                     </div>
                                 }
                             </>
@@ -234,7 +263,7 @@ export default class View extends React.Component {
                         }
                         <hr />
                         <div className='w-100 mt-3'>
-                            <h4>ผู้ร่วมช่วยเหลือ</h4>
+                            <h4 className='mb-4'>ผู้ร่วมช่วยเหลือ 20 คน</h4>
                             <Donors />
                         </div>
                         <hr />
