@@ -10,6 +10,8 @@ import { apiEndpoint } from '../../components/constants'
 import { Redirect } from '@reach/router'
 import Alert from 'react-bootstrap/Alert'
 import Modal from 'react-bootstrap/Modal'
+import Spinner from 'react-bootstrap/Spinner'
+
 class RegisterForm extends React.Component {
     constructor(props) {
         super(props)
@@ -102,7 +104,7 @@ class RegisterForm extends React.Component {
                     <Modal show={this.state.showPolicy} onHide={() => this.setState({ showPolicy: false })}>
                         <Modal.Header>
                             <Modal.Title>ข้อตกลงการใช้ข้อมูลส่วนบุคคล</Modal.Title>
-                            <button onClick={()=>this.setState({showPolicy: false})} className='btn btn-icon'>
+                            <button onClick={() => this.setState({ showPolicy: false })} className='btn btn-icon'>
                                 <span className='material-icons'>close</span>
                             </button>
                         </Modal.Header>
@@ -119,9 +121,9 @@ class RegisterForm extends React.Component {
                         <Form.Control placeholder="ข้อมูลติดต่อ" isInvalid={!this.state.contact && this.state.next} />
                     </Form.Group>
                     <Form.Group controlId="pid">
-                        <Form.Label>รหัสประจำตัวประชาชน <button type='button' onClick={()=>this.setState({showPolicy: true, section: 'pid'})} className='btn btn-icon'><span style={{fontSize: 18}} className='text-primary mb-1 material-icons'>help</span></button></Form.Label>
+                        <Form.Label>รหัสประจำตัวประชาชน <button type='button' onClick={() => this.setState({ showPolicy: true, section: 'pid' })} className='btn btn-icon'><span style={{ fontSize: 18 }} className='text-primary mb-1 material-icons'>help</span></button></Form.Label>
                         <Form.Control placeholder="รหัสประจำตัวประชาชน" isInvalid={(this.state.next && !this.state.pid) || (this.state.errStatus === 'invalid pid')} />
-                        
+
                         {this.state.errStatus === 'invalid pid' &&
                             <small className='text-danger'>รหัสประจำตัวประชาชนไม่ถูกต้อง</small>
                         }
@@ -171,7 +173,8 @@ export default class Register extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            loggedIn: 'loading'
+            loggedIn: 'loading',
+            redirect: 'loading'
         }
     }
 
@@ -184,13 +187,31 @@ export default class Register extends React.Component {
             const provider = new firebase.auth.FacebookAuthProvider()
             firebase.auth().signInWithRedirect(provider)
         }
-
-
     }
+    
     componentDidMount() {
-        firebase.auth().onAuthStateChanged((user) => {
+        firebase.auth().onAuthStateChanged(async (user) => {
+
             if (user) {
                 this.setState({ loggedIn: true })
+                try {
+                    const token = await user.getIdToken()
+                    const req = await axios.get(`${apiEndpoint}/post/latest`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    })
+                    console.log(req.data)
+                    if (req.data === false) {
+                        this.setState({ redirect: false })
+                    }
+                    else {
+                        this.setState({ redirect: req.data.id })
+                    }
+                }
+                catch (err) {
+                    console.log(err)
+                }
             } else {
                 this.setState({ loggedIn: false })
             }
@@ -198,45 +219,55 @@ export default class Register extends React.Component {
     }
 
     render() {
-        return (
-            <div>
-                <NavHeader />
-                <div className='bg-light-grey pt-5 pb-5'>
-                    <Header>
-                        <title>ลงทะเบียนขอรับความช่วยเหลือ</title>
-                    </Header>
+        if (this.state.redirect !== 'loading' && this.state.redirect !== false) {
+            return <Redirect noThrow to={`/help-matcher/view?id=${this.state.redirect}`} />
+        }
+        else {
+            return (
+                <div>
+                    <NavHeader />
+                    <div className='bg-light-grey pt-5 pb-5'>
+                        <Header>
+                            <title>ลงทะเบียนขอรับความช่วยเหลือ</title>
+                        </Header>
 
-                    <div className='bg-white rounded shadow-md container p-4' style={{ maxWidth: 720 }}>
+                        <div className='bg-white rounded shadow-md container p-4' style={{ maxWidth: 720 }}>
 
-                        <div>
-                            <h1 className='mb-0'>ลงทะเบียน</h1>
-                            <h3 style={{ fontWeight: 400 }}>ขอรับความช่วยเหลือ</h3>
-                            <p className='bigger-p'>เมื่อท่านลงทะเบียนประสงค์ขอรับความช่วยเหลือทางเว็บไซต์ ระบบจะบันทึกข้อมูลเพื่อนำไปแสดงผลให้ผู้ประสงค์
-                            มอบความช่วยเหลือให้ติดต่อหาท่านโดยตรงเพื่อมอบความช่วยเหลือแก่ท่านในลำดับถัดไป
+                            <div>
+                                <h1 className='mb-0'>ลงทะเบียน</h1>
+                                <h3 style={{ fontWeight: 400 }}>ขอรับความช่วยเหลือ</h3>
+                                <p className='bigger-p'>เมื่อท่านลงทะเบียนประสงค์ขอรับความช่วยเหลือทางเว็บไซต์ ระบบจะบันทึกข้อมูลเพื่อนำไปแสดงผลให้ผู้ประสงค์
+                                มอบความช่วยเหลือให้ติดต่อหาท่านโดยตรงเพื่อมอบความช่วยเหลือแก่ท่านในลำดับถัดไป
                             </p>
-                        </div>
-                        <div>
-                            {this.state.loggedIn === true &&
-                                <RegisterForm />
-                            }
-                            {this.state.loggedIn === false &&
-                                <div className='mt-4'>
-                                    <Button variant='light' className='text-dark w-100 mb-4' onClick={() => this.signIn('google')}>
-                                        <img width='18px' height='18px' src={require('../../assets/images/google.svg')} /> ดำเนินการต่อด้วยบัญชี Google
-                                    </Button>
-                                    <Button variant='light' className='text-dark w-100' onClick={() => this.signIn('facebook')}>
-                                        <img width='18px' height='18px' src={require('../../assets/images/facebook.svg')} /> ดำเนินการต่อด้วยบัญชี Facebook
-                                    </Button>
-                                </div>
-                            }
-                        </div>
+                            </div>
+                            <div>
+                                {this.state.loggedIn === 'loading' || this.state.redirect === 'loading' &&
+                                    <div className='flex-center w-100' style={{alignItems:'center'}}>
+                                        <Spinner variant='primary' animation='border' />
+                                    </div>
+                                }
+                                {this.state.loggedIn === true && this.state.redirect !== 'loading' &&
+                                    <RegisterForm />
+                                }
+                                {this.state.loggedIn === false &&
+                                    <div className='mt-4'>
+                                        <Button variant='light' className='text-dark w-100 mb-4' onClick={() => this.signIn('google')}>
+                                            <img width='18px' height='18px' src={require('../../assets/images/google.svg')} /> ดำเนินการต่อด้วยบัญชี Google
+                                        </Button>
+                                        <Button variant='light' className='text-dark w-100' onClick={() => this.signIn('facebook')}>
+                                            <img width='18px' height='18px' src={require('../../assets/images/facebook.svg')} /> ดำเนินการต่อด้วยบัญชี Facebook
+                                        </Button>
+                                    </div>
+                                }
+                            </div>
 
 
+                        </div>
                     </div>
-                </div>
-                <Footer />
+                    <Footer />
 
-            </div>
-        )
+                </div>
+            )
+        }
     }
 }
