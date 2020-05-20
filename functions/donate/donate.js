@@ -39,7 +39,7 @@ module.exports = async (req, res) => {
         db.collection("posts")
             .doc(id)
             .update({
-                'd.donors': fb.firestore.FieldValue.increment(1),
+                "d.donors": fb.firestore.FieldValue.increment(1),
             })
         const statsSnap = await db
             .collection("stats")
@@ -55,10 +55,22 @@ module.exports = async (req, res) => {
                 .doc("stats")
                 .update({ donors: fb.firestore.FieldValue.increment(1) })
             delete user.createdAt
+            const transactionsSnap = await db
+                .collection("transactions")
+                .orderBy("id", "desc")
+                .limit(1)
+                .get()
+            let currentTransactionId = 1
+            if (!transactionsSnap.empty)
+                transactionsSnap.forEach(
+                    transaction =>
+                        (currentTransactionId = transaction.data().id + 1)
+                )
             db.collection("transactions").add({
+                id: currentTransactionId,
                 donor: user,
                 createdAt: new Date(),
-                post: id
+                post: id,
             })
         }
         res.send("OK")
