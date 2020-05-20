@@ -23,6 +23,7 @@ module.exports = async (req, res) => {
             uid: user.uid,
             photoURL: user.photoURL,
             displayName: isAnonymous ? null : name,
+            createdAt: new Date(),
         }
         const snap = await db
             .collection("posts")
