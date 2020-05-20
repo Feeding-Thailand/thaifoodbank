@@ -13,7 +13,7 @@ $mainYellow: #ffda3d;
 $mainDark: #2e0569;
 
 /*Color Pallete*/
-$mainBlue: #1e96fc;
+$mainBlue: #667eea;
 $mainBlue-dark: #072ac8;
 $mainBlue-light: #072ac8;
 $mainGreen: #3ecf8e;
@@ -31,6 +31,21 @@ $theme-colors: (
 );
 
 $border-radius: 4px;
+
+
+$text-muted: #718096;
+
+.bg {
+    background-size: cover;
+    background-position: center;
+    min-height: 230px;
+}
+
+.post {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    min-height: 300px;
+}
 
 .btn {
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);

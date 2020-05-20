@@ -35,18 +35,17 @@ class Profile extends React.Component {
     render() {
         return (
             <div>
-                <div onClick={() => this.setState({ showModal: true })} className='avatar' style={{ backgroundImage: `url(${this.state.user.photoURL})` }}>
+                <div onClick={() => this.setState({ showModal: true })} className='avatar' style={{ backgroundImage: this.state.user.photoURL ? `url(${this.state.user.photoURL})` : `url(${require('../assets/images/login-placeholder.svg')})` }}>
 
                 </div>
                 <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })}>
                     <Modal.Header>
                         <Modal.Title>
                             บัญชีของคุณ
-                        </Modal.Title>
+                        </Modal.Title>                        
                         <button className='btn btn-icon' onClick={() => this.setState({ showModal: false }, () => console.log('close'))}><span className='material-icons'>close</span></button>
                     </Modal.Header>
-                    <Modal.Body>
-
+                    <Modal.Body>                        
                         {this.state.user === false &&
                             <div className='mt-3 mb-3'>
                                 <div className='mb-4 text-center'>
@@ -64,6 +63,7 @@ class Profile extends React.Component {
                         }
                         {this.state.user &&
                             <div>
+                                <div className='mb-3'>{this.state.user.displayName}</div>
                                 <Button onClick={async () => await firebase.auth().signOut()} variant='warning'>ออกจากระบบ</Button>
                             </div>
                         }
