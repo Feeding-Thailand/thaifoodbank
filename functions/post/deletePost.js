@@ -1,4 +1,6 @@
 const fb = require("firebase-admin")
+const firebase_tools = require("firebase-tools")
+const firebaseToken = require("../firebaseToken")
 const db = fb.firestore()
 module.exports = async (req, res) => {
     try {
@@ -8,11 +10,20 @@ module.exports = async (req, res) => {
             return
         }
         const snap = await db.collection("posts").doc(id).get()
+        if (!snap.exists) {
+            res.status(404).send("document not found, maybe already deleted")
+            return
+        }
         if (snap.data().d.uid !== req.authId) {
             res.status(403).send("invalid ownership")
             return
         }
-        await db.collection("posts").doc(id).delete()
+        await firebase_tools.firestore.delete(`posts/${id}`, {
+            project: process.env.GCLOUD_PROJECT,
+            recursive: true,
+            yes: true,
+            token: firebaseToken,
+        })
         db.collection("stats")
             .doc("stats")
             .update({

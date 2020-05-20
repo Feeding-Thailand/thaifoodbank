@@ -8,8 +8,9 @@ module.exports = async (req, res) => {
             return
         }
         var snap = await db.collection("posts").doc(id).get()
-        const { contact, donors } = snap.data().d
-        const isAlreadyDonated = donors.findIndex(donor => donor.uid === req.authId) !== -1
+        const { contact } = snap.data().d
+        const donorsSnap = await db.collection("posts").doc(id).collection("donors").where("uid","==",req.authId).get()
+        const isAlreadyDonated = !donorsSnap.empty
         res.send({ contact, isAlreadyDonated })
     } catch (err) {
         console.log(err)

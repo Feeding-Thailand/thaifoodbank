@@ -23,25 +23,37 @@ module.exports = async (req, res) => {
             uid: user.uid,
             photoURL: user.photoURL,
             displayName: isAnonymous ? null : name,
+            createdAt: new Date(),
         }
-        var snap = await db.collection("posts").doc(id).get()
-        if (snap.data().d.donors.findIndex(el => el.uid === user.uid) !== -1) {
+        const snap = await db
+            .collection("posts")
+            .doc(id)
+            .collection("donors")
+            .where("uid", "==", user.uid)
+            .get()
+        if (!snap.empty) {
             res.status(409).send("user already donated")
             return
         }
+        db.collection("posts").doc(id).collection("donors").add(user)
         db.collection("posts")
             .doc(id)
             .update({
-                "d.donors": fb.firestore.FieldValue.arrayUnion(user),
+                donors: fb.firestore.FieldValue.increment(1),
             })
-        const statsSnap = await db.collection("stats").doc("stats").get()
-        if (statsSnap.data().donorsList.indexOf(user.uid) === -1) {
+        const statsSnap = await db
+            .collection("stats")
+            .doc("stats")
+            .collection("donors")
+            .where("uid", "==", user.uid)
+            .get()
+        if (statsSnap.empty) {
+            db.collection("stats").doc("stats").collection("donors").add({
+                uid: user.uid,
+            })
             db.collection("stats")
                 .doc("stats")
-                .update({
-                    donors: fb.firestore.FieldValue.increment(1),
-                    donorsList: fb.firestore.FieldValue.arrayUnion(user.uid),
-                })
+                .update({ donors: fb.firestore.FieldValue.increment(1) })
         }
         res.send("OK")
     } catch (err) {
