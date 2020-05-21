@@ -2,13 +2,13 @@ const fb = require("firebase-admin")
 const db = fb.firestore()
 module.exports = async (req, res) => {
     try {
-        var query = await db
+        const lastdocId = req.query.latestVisible
+        let fpart = await db
             .collection("posts")
-            .where("d.active", "==", true)
             .orderBy("d.createdAt", "asc")
-            .orderBy("d.donorsCount", "asc")
-            .limit(12)
-            .get()
+            .where("d.active", "==", true)
+        if (lastdocId) fpart = fpart.startAfter(lastdocId)
+        const query = fpart.limit(12).get()
         var data = []
         query.forEach(doc => {
             var temp = doc.data().d
