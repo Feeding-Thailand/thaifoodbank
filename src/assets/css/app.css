@@ -77,6 +77,12 @@ a {
   z-index: 1;
   position: absolute; }
 
+.fb_iframe_widget_fluid_desktop,
+.fb_iframe_widget_fluid_desktop span,
+.fb_iframe_widget_fluid_desktop iframe {
+  max-width: 100% !important;
+  width: 100% !important; }
+
 .overlay {
   border-radius: 16px;
   background: -moz-linear-gradient(45deg, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0) 100%);
@@ -181,12 +187,23 @@ hr {
   vertical-align: middle !important; }
 
 p {
-  font-size: 18px;
-  line-height: 26px; }
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 1.8em;
+  font-family: "Sarabun", sans-serif; }
+  p a {
+    font-size: inherit;
+    font-weight: inherit; }
+
+.sarabun {
+  font-family: "Sarabun", sans-serif; }
 
 .topo-pattern {
-  background-color: #000a7b;
+  background-color: #0015ce;
   background-image: url("../images/cool-background.svg"); }
 
 .fig-link:hover {
   text-decoration: none; }
+
+.fig-link {
+  font-weight: inherit !important; }

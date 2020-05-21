@@ -43,7 +43,7 @@ export default class HelpList extends React.Component {
 
     async componentDidMount() {
         try {
-            const req = await axios.get(`${apiEndpoint}/posts/latest`)
+            const req = await axios.get(`${apiEndpoint}/posts/oldest`)
             this.setState({ data: req.data })
         } catch (err) {
             console.log(err)
@@ -68,7 +68,6 @@ export default class HelpList extends React.Component {
                 }
                 {(this.state.data !== 'loading' && this.state.data !== 'error') &&
                     this.state.data.map((item, index) => {
-                        console.log(item.data)
                         return (
                             <Person id={item.id} key={index} data={item.data} />
                         )

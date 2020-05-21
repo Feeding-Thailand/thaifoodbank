@@ -101,16 +101,52 @@ class RegisterForm extends React.Component {
         else {
             return (
                 <Form onChange={(e) => this.formHandler(e)}>
-                    <Modal show={this.state.showPolicy} onHide={() => this.setState({ showPolicy: false })}>
+                    <Modal scrollable size='lg' show={this.state.showPolicy} onHide={() => this.setState({ showPolicy: false })}>
                         <Modal.Header>
                             <Modal.Title>ข้อตกลงการใช้ข้อมูลส่วนบุคคล</Modal.Title>
                             <button onClick={() => this.setState({ showPolicy: false })} className='btn btn-icon'>
                                 <span className='material-icons'>close</span>
                             </button>
                         </Modal.Header>
-                        <Modal.Body>
-                            ข้อตกลงการใช้ข้อมูลส่วนบุคคล
+                        <Modal.Body className='p-4'>
+                            <p>
+                                ข้อมูลที่คุณกรอกในหน้าลงทะเบียนขอรับความช่วยเหลือนี้จะถูกนำไปประมวลผลและแสดงผลตาม
+                                ข้อความที่ระบุไว้ ดังต่อไปนี้
+                            </p>
+                            <h5>ข้อมูลที่จะถูกเข้าถึงได้อย่างเป็นสาธารณะ</h5>
+                            <p>ข้อมูลที่ระบุในส่วนนี้จะสามารถถูกเข้าถึงได้จากบุคคลภายนอกโดยไม่ต้องมีการยืนยันตัวตน มีจุดประสงค์
+                            เพื่อนำไปแสดงผลในส่วน Help Matcher ของเว็บไซต์ Feeding Thailand เพื่อให้บุคคลภายนอกเห็นข้อมูล
+                            ของบุคคลที่ต้องการให้ความช่วยเหลือ ข้อมูลในส่วนนี้ได้แก่
+                                <ol>
+                                    <li>ชื่อ-นามสกุล ที่ท่านระบุ</li>
+                                    <li>ที่อยู่อย่างคร่าวของท่าน ได้มาจากรหัสไปรษณีย์ที่ท่านระบุ</li>
+                                    <li>ข้อความรายละเอียดความเป็นอยู่</li>
+                                    <li>ข้อความรายละเอียดความช่วยเหลือที่ท่านต้องการ</li>
+                                    <li>รูปภาพที่ท่านอัพโหลด</li>
+                                </ol>
+                            </p>
+                            <h5>ข้อมูลที่ต้องผ่านการยืนยันตนก่อนการเข้าถึง</h5>
+                            <p>
+                                ข้อมูลที่ระบุในส่วนนี้จะสามารถถูกเข้าถึงได้จากบุคคลภายนอกภายหลังการยืนยันตัวตนเพื่อป้องกันการรั่วไหลของข้อมูล
+                                ข้อมูลในส่วนนี้ได้แก่
+                                <ol>
+                                    <li>ข้อมูลติดต่อที่ท่านระบุไว้ เพื่อให้ผู้ที่ต้องการให้ความช่วยเหลือสามารถติดต่อกับท่านเพื่อให้ความช่วยเหลือได้โดยตรง</li>
+                                </ol>
+                            </p>
+                            <h5>ข้อมูลที่ไม่สามารถเข้าถึงได้โดยบุคคลภายนอก</h5>
+                            <p>ข้อมูลที่ระบุในส่วนนี้จะไม่สามารถเข้าถึงได้จากบุคคลภายนอก และจะถูกรักษาไว้ตามมาตรฐานการเก็บข้อมูลด้วยการเข้ารหัส ข้อมูลในส่วนนี้ได้แก่
+                            <ol>
+                                    <li>
+                                        รหัสประจำตัวประชาชนที่ท่านระบุ ใช้สำหรับการยืนยันตัวตนก่อนการบันทึกข้อมูลขอรับความช่วยเหลือเพื่อไม่ให้ผู้ที่มีรหัสบัตรประจำตัวประชาชนซ้ำกันลงทะเบียนในเวลาเดียวกัน
+                                        รหัสประจำตัวประชาชนของท่านจะถูกเข้ารหัสไว้ ไม่สามารถเข้าถึงได้จากบุคคลภายนอก
+                                </li>
+                                </ol>
+                            </p>
                         </Modal.Body>
+                        <Modal.Footer>
+                            <Button onClick={() => this.setState({ showPolicy: false })}>ปิดหน้าต่างนี้</Button>
+                        </Modal.Footer>
+
                     </Modal>
                     <Form.Group controlId="name">
                         <Form.Label>ชื่อ-นามสกุล</Form.Label>
@@ -188,7 +224,7 @@ export default class Register extends React.Component {
             firebase.auth().signInWithRedirect(provider)
         }
     }
-    
+
     componentDidMount() {
         firebase.auth().onAuthStateChanged(async (user) => {
 
@@ -213,7 +249,7 @@ export default class Register extends React.Component {
                     console.log(err)
                 }
             } else {
-                this.setState({ loggedIn: false })
+                this.setState({ loggedIn: false, redirect: false })
             }
         })
     }
@@ -226,11 +262,11 @@ export default class Register extends React.Component {
             return (
                 <div>
                     <NavHeader />
-                    <div className='bg-light-grey pt-5 pb-5'>
+                    <div className='bg-light-grey pt-5 pb-5 pl-3 pr-3'>
                         <Header>
                             <title>ลงทะเบียนขอรับความช่วยเหลือ</title>
                         </Header>
-
+                        
                         <div className='bg-white rounded shadow-md container p-4' style={{ maxWidth: 720 }}>
 
                             <div>
@@ -242,7 +278,7 @@ export default class Register extends React.Component {
                             </div>
                             <div>
                                 {this.state.loggedIn === 'loading' || this.state.redirect === 'loading' &&
-                                    <div className='flex-center w-100' style={{alignItems:'center'}}>
+                                    <div className='flex-center w-100 mt-3 mb-3' style={{ alignItems: 'center' }}>
                                         <Spinner variant='primary' animation='border' />
                                     </div>
                                 }

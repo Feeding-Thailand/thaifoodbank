@@ -3,8 +3,10 @@ import Header from '../components/header'
 import Button from 'react-bootstrap/Button'
 import Footer from '../components/footer'
 import { Link } from 'gatsby'
+import PostHero from '../components/post-hero-md'
+import JoinUs from '../components/joinUs'
 const Counter = () => (
-	<div className='gradient-purple'>
+	<div className='gradient-purple mt-1'>
 		<div className='container pt-5 pb-5 flex-center text-white' style={{ minHeight: 250 }}>
 			<div className='row'>
 				<div className='col-md-6 p-3'>
@@ -26,34 +28,15 @@ const Counter = () => (
 const Posts = () => (
 	<div>
 		<div className='container pt-5 pb-5'>
-
 			<h2 className='text-center mb-0'>ข่าวสารล่าสุดจากเรา</h2>
 			<div className='row'>
-
-				<div className='col-md-4 p-5'>
-					<div className='aspect-1-1' style={{ backgroundImage: `url(https://images.unsplash.com/photo-1588615419957-bf66d53c6b49?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=967&q=80)` }}>
-					</div>
-					<div>
-						<h5>Can coffee make you a better developer?</h5>
-						<span className='text-muted'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.</span>
-					</div>
-				</div>
-
-				<div className='col-md-4 p-5'>
-					<div className='aspect-1-1' style={{ backgroundImage: `url(https://images.unsplash.com/photo-1588615419957-bf66d53c6b49?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=967&q=80)` }}>
-					</div>
-					<div>
-						<h5>Can coffee make you a better developer?</h5>
-						<span className='text-muted'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.</span>
-					</div>
-				</div>
-				<div className='col-md-4 p-5'>
-					<div className='aspect-1-1' style={{ backgroundImage: `url(https://images.unsplash.com/photo-1588615419957-bf66d53c6b49?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=967&q=80)` }}>
-					</div>
-					<div>
-						<h5>Can coffee make you a better developer?</h5>
-						<span className='text-muted'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.</span>
-					</div>
+				<PostHero link='/post' title='กาแฟทำให้คุณเป็นนักพัฒนาที่ดีขึ้นจริงหรอ?' excerpt='ข้อตกลง: ต่อไปผมจะเรียก 1x หรือ 100% ว่าเป็นอัตราการทำงานปกติของผม (อาจจะไม่เท่าคนอื่น ถือว่าเป็นอัตราที่ผมใช้ความรู้สึก โดยนำข้อมูลจากในอดีต: ต.ค. 2017 - มี.ค 2020 มาคิด) ในที่นี้จะพูดถึงอัตราการทำงานด้าน software development นับ ...' />
+				<PostHero link='/post' title='กาแฟทำให้คุณเป็นนักพัฒนาที่ดีขึ้นจริงหรอ?' excerpt='ข้อตกลง: ต่อไปผมจะเรียก 1x หรือ 100% ว่าเป็นอัตราการทำงานปกติของผม (อาจจะไม่เท่าคนอื่น ถือว่าเป็นอัตราที่ผมใช้ความรู้สึก โดยนำข้อมูลจากในอดีต: ต.ค. 2017 - มี.ค 2020 มาคิด) ในที่นี้จะพูดถึงอัตราการทำงานด้าน software development นับ ...' />
+				<PostHero link='/post' title='กาแฟทำให้คุณเป็นนักพัฒนาที่ดีขึ้นจริงหรอ?' excerpt='ข้อตกลง: ต่อไปผมจะเรียก 1x หรือ 100% ว่าเป็นอัตราการทำงานปกติของผม (อาจจะไม่เท่าคนอื่น ถือว่าเป็นอัตราที่ผมใช้ความรู้สึก โดยนำข้อมูลจากในอดีต: ต.ค. 2017 - มี.ค 2020 มาคิด) ในที่นี้จะพูดถึงอัตราการทำงานด้าน software development นับ ...' />
+			</div>
+			<div className='row'>
+				<div className='col-12 text-center'>
+					<Link to='/blog'>อ่านข่าวทั้งหมด<span className='material-icons'>chevron_right</span></Link>
 				</div>
 			</div>
 		</div>
@@ -86,18 +69,7 @@ const AboutUs = () => (
 		</div>
 	</div>
 )
-const JoinUs = () => (
-	<div className='mt-1 topo-pattern hero light-border' style={{ borderBottom: '1px solid', borderTop: '1px solid', height: '80vh' }}>
 
-		<div className='container text-center'>
-			<h2 className='text-white'>ร่วมเป็นส่วนหนึ่งกับพวกเรา</h2>
-			<div className='mt-3'>
-				<button style={{ width: 100 }} className="btn mr-4 btn-light">ร่วมบริจาค</button>
-				<button style={{ width: 100 }} className="btn btn-outline-light">ติดต่อเรา</button>
-			</div>
-		</div>
-	</div>
-)
 const IndexPage = () => (
 	<div>
 		<Header>
@@ -116,9 +88,10 @@ const IndexPage = () => (
 		</div>
 		<div className='bg-light-grey'>
 			<AboutUs />
-			<Posts />
+
 		</div>
 		<Counter />
+		<Posts />
 		<JoinUs />
 		<Footer />
 

@@ -35,7 +35,8 @@ export default class HelpMatcher extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            loggedIn: 'loading'
+            loggedIn: 'loading',
+            latestPost: 'loading'
         }
     }
     componentDidMount() {
@@ -48,16 +49,16 @@ export default class HelpMatcher extends React.Component {
                         Authorization: `Bearer ${token}`
                     }
                 })
+
                 if (req.data != false) {
-                    this.setState({ latestPost: { ...req.data.data, id: req.data.id } }, () => console.log(this.state.latestPost))
+                    this.setState({ latestPost: { ...req.data.data, id: req.data.id } })
                 }
                 else {
-
+                    this.setState({ latestPost: 'n/a'})
                 }
-
             }
             else {
-                this.setState({ user: false, loggedIn: false })
+                this.setState({ user: false, loggedIn: false, latestPost: 'n/a' })
             }
         })
     }
@@ -70,7 +71,7 @@ export default class HelpMatcher extends React.Component {
                 <div style={{ backgroundColor: '#f7fafc' }}>
                     <NavHeader></NavHeader>
                     <div className='container pt-5 pb-5' >
-                        {this.state.latestPost &&
+                        {this.state.latestPost !== 'loading' && this.state.latestPost !== 'n/a' &&
                             <div className='row mb-4'>
                                 <div className='col-12'>
                                     <h2>ข้อมูลขอความช่วยเหลือของคุณ</h2>
@@ -87,17 +88,20 @@ export default class HelpMatcher extends React.Component {
                                         </div>
                                     </Link>
                                 </div>
-
+                            </div>
+                        }
+                        {this.state.latestPost === 'n/a' &&
+                            <div className='row mb-5'>
+                                <div className='col-12'>
+                                    <Link to='/help-matcher/register' className='fig-link p-3 item flex-center text-center shadow-md' style={{ backgroundImage: `url(${require('../../assets/images/register-help.jpg')})`, alignItems: 'center' }}>
+                                        <h4 className='mb-0 text-white'>ลงทะเบียนขอรับความช่วยเหลือ</h4>
+                                    </Link>
+                                </div>
                             </div>
                         }
                         <div className='mb-4 row'>
                             <div className='col-md-6 pb-3'>
                                 <h2>ผู้ต้องการความช่วยเหลือขณะนี้</h2>
-                            </div>
-                            <div className='col-md-6 pb-3'>
-                                <Link to='/help-matcher/register'>
-                                    <Button className='float-md-right'>ขอรับความช่วยเหลือ</Button>
-                                </Link>
                             </div>
                         </div>
                         <HelpList />

@@ -8,7 +8,7 @@ import '../assets/css/app.css'
 const Header = (props) => (
   <Helmet>
     {props.children}
-    <link href="https://fonts.googleapis.com/css?family=Prompt:400,600,700|Material+Icons&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Prompt:400,600,700|Sarabun:500|Material+Icons&display=swap" rel="stylesheet" />
   </Helmet>
 )
 
