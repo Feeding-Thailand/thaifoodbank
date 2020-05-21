@@ -43,8 +43,7 @@ export default class HelpList extends React.Component {
     async loadMore() {
         try {
             const req = await axios.get(`${apiEndpoint}/posts/oldest?lastVisible=${this.lastVisible}`)
-            var data = this.state.data
-            this.setState({ data: data.concat(req.data) }, () => {
+            this.setState({ data: [...this.state.data, ...req.data] }, () => {
                 this.lastVisible = this.state.data[this.state.data.length - 1].id
             })
         }
