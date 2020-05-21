@@ -4,7 +4,7 @@ import axios from 'axios'
 import { apiEndpoint } from './constants'
 import _ from 'lodash'
 import Spinner from 'react-bootstrap/Spinner'
-
+import Button from 'react-bootstrap/Button'
 function parseAddress(address) {
     var x = address.split(', ')
     x.splice(0, 1)
@@ -40,11 +40,25 @@ export default class HelpList extends React.Component {
             data: 'loading'
         }
     }
-
+    async loadMore() {
+        try {
+            const req = await axios.get(`${apiEndpoint}/posts/oldest?lastVisible=${this.lastVisible}`)
+            var data = this.state.data
+            this.setState({ data: data.concat(req.data) }, () => {
+                this.lastVisible = this.state.data[this.state.data.length - 1].id
+            })
+        }
+        catch (err) {
+            console.log(err)
+        }
+    }
     async componentDidMount() {
         try {
             const req = await axios.get(`${apiEndpoint}/posts/oldest`)
             this.setState({ data: req.data })
+            if (req.data.length % 12 === 0) {
+                this.lastVisible = req.data[req.data.length - 1].id
+            }
         } catch (err) {
             console.log(err)
             this.setState({ data: 'error' })
@@ -71,7 +85,13 @@ export default class HelpList extends React.Component {
                         return (
                             <Person id={item.id} key={index} data={item.data} />
                         )
-                    })}
+                    }
+                    )}
+                {(this.state.data.length % 12) === 0 &&
+                    <div className='w-100 text-center mt-3'>
+                        <Button onClick={async () => await this.loadMore()} style={{ fontWeight: 600 }} variant='link'>ดูเพิ่มเติม</Button>
+                    </div>
+                }
             </div>
         )
     }
