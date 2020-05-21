@@ -3,12 +3,12 @@ const db = fb.firestore()
 module.exports = async (req, res) => {
     try {
         const lastdocId = req.query.latestVisible
-        let fpart = await db
+        let fpart = db
             .collection("posts")
             .orderBy("d.createdAt", "asc")
             .where("d.active", "==", true)
         if (lastdocId) fpart = fpart.startAfter(lastdocId)
-        const query = fpart.limit(12).get()
+        const query = await fpart.limit(12).get()
         var data = []
         query.forEach(doc => {
             var temp = doc.data().d
