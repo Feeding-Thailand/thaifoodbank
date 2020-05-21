@@ -213,7 +213,7 @@ export default class Register extends React.Component {
                     console.log(err)
                 }
             } else {
-                this.setState({ loggedIn: false })
+                this.setState({ loggedIn: false, redirect: false })
             }
         })
     }
@@ -242,7 +242,7 @@ export default class Register extends React.Component {
                             </div>
                             <div>
                                 {this.state.loggedIn === 'loading' || this.state.redirect === 'loading' &&
-                                    <div className='flex-center w-100' style={{alignItems:'center'}}>
+                                    <div className='flex-center w-100 mt-3 mb-3' style={{alignItems:'center'}}>
                                         <Spinner variant='primary' animation='border' />
                                     </div>
                                 }

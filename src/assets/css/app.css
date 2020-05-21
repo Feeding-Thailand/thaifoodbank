@@ -181,8 +181,12 @@ hr {
   vertical-align: middle !important; }
 
 p {
-  font-size: 18px;
-  line-height: 26px; }
+  font-weight: 500;
+  font-size: 17px;
+  font-family: 'Sarabun', sans-serif; }
+
+.sarabun {
+  font-family: 'Sarabun', sans-serif; }
 
 .topo-pattern {
   background-color: #000a7b;
@@ -190,3 +194,6 @@ p {
 
 .fig-link:hover {
   text-decoration: none; }
+
+.fig-link {
+  font-weight: inherit !important; }

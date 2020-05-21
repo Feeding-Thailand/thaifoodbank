@@ -19,7 +19,7 @@ const Donors = (props) => (
         {props.donors && props.donors.map((donor, index) => {
             return (
                 <div className='d-flex mb-3' key={index}>
-                    <div className='avatar' style={{backgroundImage: `url(${donor.photoURL})`}}/>
+                    <div className='avatar' style={{ backgroundImage: `url(${donor.photoURL})` }} />
                     <div className='ml-3 flex-center'>
                         <span>{donor.displayName}</span>
                         <small className='text-muted'>{moment(donor.createdAt).fromNow()}</small>
@@ -109,7 +109,17 @@ export default class View extends React.Component {
         }
 
     }
-
+    async confirm() {
+        this.setState({ waiting: true })
+        const id = queryString.parse(this.props.location.search).id
+        const token = await firebase.auth().currentUser.getIdToken()
+        const req = await axios.delete(`${apiEndpoint}/post/${id}/close`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        console.log(req.data)
+    }
     signIn(option) {
         if (option === 'google') {
             const provider = new firebase.auth.GoogleAuthProvider()
@@ -150,10 +160,7 @@ export default class View extends React.Component {
                             และจะถูกนำออกจากหน้าแสดงผู้ต้องการความช่วยเหลือ
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button variant='light' onClick={() => this.setState({ confirmStatus: false })}>
-                                ปิดหน้าต่างนี้
-                            </Button>
-                            <Button variant='secondary'>
+                            <Button disabled={this.state.waiting} variant='secondary' onClick={async () => await this.confirm()}>
                                 ยืนยันการได้รับความช่วยเหลือ
                             </Button>
 
@@ -232,7 +239,7 @@ export default class View extends React.Component {
                         </Modal.Body>
                     </Modal>
                     <div className='shadow-md container bg-white rounded p-4 d-flex' style={{ flexDirection: 'column', alignItems: 'center', maxWidth: 800 }}>
-                        {(this.state.data.uid === this.state.user) && this.state.data !== 'loading' &&
+                        {(this.state.data.uid === this.state.user) && this.state.user && this.state.data !== 'loading' &&
                             <div className='w-100 mb-3'>
                                 <h4><span className='badge badge-primary'>ข้อมูลของคุณ</span></h4>
                             </div>
@@ -240,6 +247,9 @@ export default class View extends React.Component {
                         <div className='featured-image' style={{ backgroundImage: `url(${this.state.images[0]})` }} />
                         {this.state.data === 'loading' &&
                             <Spinner className='m-4' animation='border' variant='primary' />
+                        }
+                        {this.state.data === 'error' &&
+                            <h3 className='text-muted'>ไม่พบข้อมูล</h3>
                         }
                         {this.state.data !== 'loading' && this.state.data !== 'error' &&
                             <div className='w-100'>
@@ -273,13 +283,14 @@ export default class View extends React.Component {
                                     <h4>ความช่วยเหลือที่ต้องการ</h4>
                                     <p className='mb-0'>{this.state.data.need}</p>
                                 </div>
+                                <hr />
+                                <div className='w-100 mt-3'>
+                                    <h4 className='mb-4'>ผู้ร่วมช่วยเหลือ <span className='badge badge-danger'>{this.state.data.donorsCount} คน</span></h4>
+                                    <Donors donors={this.state.data.donors} />
+                                </div>
                             </div>
                         }
-                        <hr />
-                        <div className='w-100 mt-3'>
-                            <h4 className='mb-4'>ผู้ร่วมช่วยเหลือ <span className='badge badge-danger'>{this.state.data.donorsCount  } คน</span></h4>
-                            <Donors donors={this.state.data.donors} />
-                        </div>
+
                         <hr />
                         <div className='w-100'>
                             <FacebookProvider appId="637224560162543">

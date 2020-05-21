@@ -214,8 +214,13 @@ hr {
 }
 
 p {
-    font-size: 18px;
-    line-height: 26px;
+    font-weight: 500;
+    font-size: 17px;
+    font-family: 'Sarabun', sans-serif;
+}
+
+.sarabun { 
+    font-family: 'Sarabun', sans-serif;
 }
 
 .topo-pattern {
@@ -225,4 +230,8 @@ p {
 
 .fig-link:hover {
     text-decoration: none;
+}
+
+.fig-link {
+    font-weight: inherit !important;
 }

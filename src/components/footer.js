@@ -16,9 +16,10 @@ const Footer = () => (
                 </button>
             </div>
             <div className='mb-2'>
-                <a href='#' className='mr-3'>เกี่ยวกับเรา</a>
-                <a href='#' className='mr-3'>สื่อมวลชน</a>
-                <a href='#'>ติดต่อเรา</a>
+                <a href='/about-us' className='mr-3'>เกี่ยวกับเรา</a>
+                <a href='/press' className='mr-3'>สื่อมวลชน</a>
+                <a href='/privacy-policy' className='mr-3'>นโยบายข้อมูลส่วนบุคคล</a>
+                <a href='/contact'>ติดต่อเรา</a>
             </div>
             <div>
                 <span>© Feeding Thailand 2020</span>

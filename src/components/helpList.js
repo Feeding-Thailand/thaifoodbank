@@ -68,7 +68,6 @@ export default class HelpList extends React.Component {
                 }
                 {(this.state.data !== 'loading' && this.state.data !== 'error') &&
                     this.state.data.map((item, index) => {
-                        console.log(item.data)
                         return (
                             <Person id={item.id} key={index} data={item.data} />
                         )
