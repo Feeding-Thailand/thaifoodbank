@@ -7,7 +7,10 @@ module.exports = async (req, res) => {
             .collection("posts")
             .orderBy("d.createdAt", "asc")
             .where("d.active", "==", true)
-        if (lastdocId) fpart = fpart.startAfter(lastdocId)
+        if (lastdocId) {
+            const docSnap = await db.collection("posts").doc(lastdocId)
+            fpart = fpart.startAfter(docSnap)
+        }
         const query = await fpart.limit(12).get()
         var data = []
         query.forEach(doc => {
@@ -21,7 +24,7 @@ module.exports = async (req, res) => {
                     uid,
                     photos,
                     createdAt,
-                    placename
+                    placename,
                 },
                 id: doc.id,
             })
