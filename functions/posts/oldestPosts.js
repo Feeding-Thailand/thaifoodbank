@@ -2,7 +2,7 @@ const fb = require("firebase-admin")
 const db = fb.firestore()
 module.exports = async (req, res) => {
     try {
-        const lastdocId = req.query.latestVisible
+        const lastdocId = req.query.lastVisible
         let fpart = db
             .collection("posts")
             .orderBy("d.createdAt", "asc")
