@@ -13,6 +13,7 @@ import firebase from '../../components/firebase'
 import Form from 'react-bootstrap/Form'
 import Alert from 'react-bootstrap/Alert'
 import * as moment from 'moment'
+import Reaptcha from 'reaptcha'
 
 const Donors = (props) => (
     <div>
@@ -38,23 +39,22 @@ export default class View extends React.Component {
             contact: 'loading'
         }
     }
+
     showContact() {
-        this.setState({ showModal: true }, async () => {
-            if (firebase.auth().currentUser) {
-                await this.getContact()
-            }
-        })
+        this.setState({ showModal: true })
     }
-    async getContact() {
+
+    async getContact(response) {
         try {
             const id = queryString.parse(this.props.location.search).id
             const token = await firebase.auth().currentUser.getIdToken()
-            const req = await axios.get(`${apiEndpoint}/post/${id}/contact`, {
+            const req = await axios.get(`${apiEndpoint}/post/${id}/contact?response=${response}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             })
-            this.setState({ contact: req.data.contact, isAlreadyDonated: req.data.isAlreadyDonated })
+            console.log(req.data)
+            this.setState({ contact: req.data.contact, confirmed: true, isAlreadyDonated: req.data.isAlreadyDonated })
         }
         catch (err) {
             console.log(err)
@@ -89,11 +89,13 @@ export default class View extends React.Component {
             const id = queryString.parse(this.props.location.search).id
             const req = await axios.get(`${apiEndpoint}/post/${id}`)
             this.setState({ data: req.data })
+
             req.data.photos.map((item, index) => {
                 const image = `https://firebasestorage.googleapis.com/v0/b/thaifoodbank.appspot.com/o/${id}%2f${item}?alt=media`
                 console.log(image)
                 this.setState({ images: [...this.state.images, image] })
             })
+
             firebase.auth().onAuthStateChanged(async (user) => {
                 if (user) {
                     this.setState({ user: user.uid, name: user.displayName })
@@ -231,47 +233,50 @@ export default class View extends React.Component {
                                 }
                                 {this.state.user &&
                                     <div>
-                                        {this.state.contact === 'loading' &&
-                                            <div className='text-center p-3 w-100'>
-                                                <Spinner animation='border' variant='primary' />
-                                            </div>
-                                        }
-                                        {this.state.contact !== 'loading' &&
-                                            <div>
+
+
+
+                                        <div>
+                                            <h4 className='mb-3'>ข้อมูลติดต่อผู้ต้องการความช่วยเหลือ</h4>
+                                            {!this.state.confirmed &&
+                                                <Reaptcha sitekey='6LetbPkUAAAAALLugqgdf6Lv3FP05a9XnDoED-3P' onVerify={async (response) => await this.getContact(response)} />
+                                            }
+                                            {this.state.confirmed &&
                                                 <div className='alert mt-3 alert-primary'>
                                                     <b>ข้อมูลติดต่อ</b> {this.state.contact}
                                                 </div>
-                                                <hr />
-                                                <h4 className='mb-3'>ข้อมูลผู้บริจาค</h4>
-                                                {!this.state.isAlreadyDonated &&
-                                                    <Form onChange={(e) => this.formHandler(e)}>
-                                                        <Form.Group controlId='name'>
-                                                            <Form.Label>ชื่อ-นามสกุล</Form.Label>
-                                                            <Form.Control
-                                                                disabled={this.state.isAnonymous === true}
-                                                                defaultValue={this.state.name}
-                                                                placeholder="ชื่อ-นามสกุล"
-                                                                isInvalid={!this.state.name && this.state.next && !this.state.isAnonymous}
-                                                            />
-                                                        </Form.Group>
-                                                        <Form.Group>
-                                                            <Form.Check
-                                                                custom
-                                                                type='checkbox'
-                                                                label='ไม่ประสงค์ออกนาม'
-                                                                id='isAnonymous'
-                                                            />
-                                                        </Form.Group>
-                                                    </Form>
-                                                }
-                                                {this.state.isAlreadyDonated &&
-                                                    <Alert variant='warning'>คุณได้แสดงความประสงค์บริจาคกับบุคคลนี้ไปแล้ว</Alert>
-                                                }
-                                                <Button disabled={this.state.saving || this.state.isAlreadyDonated} onClick={async () => await this.donate()} className='mt-3'>ยืนยันการให้ความช่วยเหลือ</Button>
+                                            }
+                                            <hr />
+                                            <h4 className='mb-3'>ข้อมูลผู้บริจาค</h4>
+                                            {!this.state.isAlreadyDonated &&
+                                                <Form onChange={(e) => this.formHandler(e)}>
+                                                    <Form.Group controlId='name'>
+                                                        <Form.Label>ชื่อ-นามสกุล</Form.Label>
+                                                        <Form.Control
+                                                            disabled={this.state.isAnonymous === true}
+                                                            defaultValue={this.state.name}
+                                                            placeholder="ชื่อ-นามสกุล"
+                                                            isInvalid={!this.state.name && this.state.next && !this.state.isAnonymous}
+                                                        />
+                                                    </Form.Group>
+                                                    <Form.Group>
+                                                        <Form.Check
+                                                            custom
+                                                            type='checkbox'
+                                                            label='ไม่ประสงค์ออกนาม'
+                                                            id='isAnonymous'
+                                                        />
+                                                    </Form.Group>
+                                                </Form>
+                                            }
+                                            {this.state.isAlreadyDonated &&
+                                                <Alert variant='warning'>คุณได้แสดงความประสงค์บริจาคกับบุคคลนี้ไปแล้ว</Alert>
+                                            }
+                                            <Button disabled={this.state.saving || this.state.isAlreadyDonated} onClick={async () => await this.donate()} className='mt-3'>ยืนยันการให้ความช่วยเหลือ</Button>
 
-                                            </div>
+                                        </div>
 
-                                        }
+
                                     </div>
                                 }
                             </>
