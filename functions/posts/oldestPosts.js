@@ -5,10 +5,10 @@ module.exports = async (req, res) => {
         const lastdocId = req.query.lastVisible
         let fpart = db
             .collection("posts")
-            .orderBy("d.createdAt", "asc")
             .where("d.active", "==", true)
+            .orderBy("d.createdAt", "asc")
         if (lastdocId) {
-            const docSnap = await db.collection("posts").doc(lastdocId).get()
+            const docSnap = await db.collection("posts").doc(lastdocId)
             fpart = fpart.startAfter(docSnap)
         }
         const query = await fpart.limit(12).get()
