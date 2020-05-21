@@ -19,9 +19,9 @@ const Donors = (props) => (
         {props.donors && props.donors.map((donor, index) => {
             return (
                 <div className='d-flex mb-3' key={index}>
-                    <div className='avatar' style={{ backgroundImage: `url(${donor.photoURL})` }} />
+                    <div className='avatar' style={{ backgroundImage: `url(${donor.displayName ? donor.photoURL : ''})` }} />
                     <div className='ml-3 flex-center'>
-                        <span>{donor.displayName}</span>
+                        <b>{donor.displayName ? donor.displayName : 'บุคคลนิรนาม'}</b>
                         <small className='text-muted'>{moment(donor.createdAt).fromNow()}</small>
                     </div>
                 </div>

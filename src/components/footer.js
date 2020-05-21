@@ -5,15 +5,15 @@ const Footer = () => (
         <div className='container text-center'>
         <img className='mb-2' src={require('../assets/images/feeding-thailand-logo-center.svg')} height='80px'/>
             <div className='m-3'>
-                <button className='btn shadow-none btn-icon p-2'>
+                <a href='https://facebook.com/feedingthailand' className='btn shadow-none btn-icon p-2'>
                     <img height='25px' src={require('../assets/images/facebook-black.svg')} />
-                </button>
+                </a>
                 <button className='btn shadow-none btn-icon p-2'>
                     <img height='25px' src={require('../assets/images/instagram-black.svg')} />
                 </button>
-                <button className='btn shadow-none btn-icon p-2'>
+                <a href='https://www.youtube.com/channel/UC5S8Wj_AzdFp1WYtJHA4u5A' className='btn shadow-none btn-icon p-2'>
                     <img height='25px' src={require('../assets/images/youtube-black.svg')} />
-                </button>
+                </a>
             </div>
             <div className='mb-2'>
                 <a href='/about-us' className='mr-3'>เกี่ยวกับเรา</a>

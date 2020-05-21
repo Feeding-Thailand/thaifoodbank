@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button'
 import Footer from '../components/footer'
 import { Link } from 'gatsby'
 import PostHero from '../components/post-hero-md'
+import JoinUs from '../components/joinUs'
 const Counter = () => (
 	<div className='gradient-purple mt-1'>
 		<div className='container pt-5 pb-5 flex-center text-white' style={{ minHeight: 250 }}>
@@ -68,18 +69,7 @@ const AboutUs = () => (
 		</div>
 	</div>
 )
-const JoinUs = () => (
-	<div className='mt-1 topo-pattern hero' style={{ height: '80vh' }}>
 
-		<div className='container text-center'>
-			<h2 className='text-white'>ร่วมเป็นส่วนหนึ่งกับพวกเรา</h2>
-			<div className='mt-3'>
-				<button style={{ width: 100 }} className="btn mr-4 btn-light">ร่วมบริจาค</button>
-				<button style={{ width: 100 }} className="btn btn-outline-light">ติดต่อเรา</button>
-			</div>
-		</div>
-	</div>
-)
 const IndexPage = () => (
 	<div>
 		<Header>

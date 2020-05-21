@@ -44,14 +44,14 @@ export default class HelpMatcher extends React.Component {
             if (user) {
                 this.setState({ loggedIn: true })
                 const token = await firebase.auth().currentUser.getIdToken()
-                const req = await axios.get(`${apiEndpoint}/posts/oldest`, {
+                const req = await axios.get(`${apiEndpoint}/post/latest`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 })
 
                 if (req.data != false) {
-                    this.setState({ latestPost: { ...req.data[0].data, id: req.data[0].id } })
+                    this.setState({ latestPost: { ...req.data.data, id: req.data.id } })
                 }
                 else {
                     this.setState({ latestPost: 'n/a'})
