@@ -4,8 +4,9 @@ module.exports = async (req, res) => {
     try {
         var query = await db
             .collection("posts")
-            .orderBy("d.createdAt", "asc")
             .where("d.active", "==", true)
+            .orderBy("d.createdAt", "asc")
+            .orderBy("d.donorsCount", "asc")
             .limit(12)
             .get()
         var data = []
