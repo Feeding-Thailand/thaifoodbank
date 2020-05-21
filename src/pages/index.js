@@ -1,30 +1,46 @@
 import React from "react"
 import Header from '../components/header'
-import Button from 'react-bootstrap/Button'
 import Footer from '../components/footer'
 import { Link } from 'gatsby'
 import PostHero from '../components/post-hero-md'
 import JoinUs from '../components/joinUs'
-const Counter = () => (
-	<div className='gradient-purple mt-1'>
-		<div className='container pt-5 pb-5 flex-center text-white' style={{ minHeight: 250 }}>
-			<div className='row'>
-				<div className='col-md-6 p-3'>
-					<div className='counter text-center'>
-						<h2 className='text-white'>20 คน</h2>
-						<span>กำลังรอการช่วยเหลือ</span>
-					</div>
-				</div>
-				<div className='col-md-6 p-3'>
-					<div className='counter text-center'>
-						<h2 className='text-white'>60 คน</h2>
-						<span>ได้รับความช่วยเหลือไปแล้ว</span>
+import firebase from '../components/firebase'
+
+class Counter extends React.Component {
+	constructor(props) {
+		super(props)
+		this.state = {
+
+		}
+	}
+	async componentDidMount() {
+		const db = firebase.firestore()
+		const snap = await db.collection('stats').doc('stats').get()
+		this.setState(snap.data(), () => console.log(this.state))
+	}
+	render() {
+		return (
+			<div className='mt-1'>
+				<div className='container pt-5 pb-5 flex-center' style={{ minHeight: 250 }}>
+					<div className='row'>
+						<div className='col-md-6 p-3'>
+							<div className='counter text-center'>
+								<h2 className=''>{this.state?.currentPosts} คน</h2>
+								<span>กำลังรอการช่วยเหลือ</span>
+							</div>
+						</div>
+						<div className='col-md-6 p-3'>
+							<div className='counter text-center'>
+								<h2 className=''>{this.state?.donors} คน</h2>
+								<span>จำนวนผู้บริจาค</span>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	</div>
-)
+		)
+	}
+}
 const Posts = () => (
 	<div>
 		<div className='container pt-5 pb-5'>
@@ -54,18 +70,22 @@ const AboutUs = () => (
 				<div className='col-md-6'></div>
 			</div>
 			<hr />
-			<h2 className='text-center'>โครงการของเรา</h2>
-		</div>
-		<div className='row m-0 mt-3'>
-			<Link to='/help-matcher' className='fig-link col-md-6 bg-cover hero-home flex-center' style={{ backgroundImage: `url(${require('../assets/images/feeding.jpg')})` }}>
-				<h3 className='text-white'>Help Matcher</h3>
-				<p className='text-white mb-0'>พื้นที่ที่ผู้ให้พบกับผู้รับ ผู้ที่ต้องการความช่วยเหลือสามารถใช้พื้นที่นี้ให้คนที่ต้องการให้ มอบความช่วยเหลือได้</p>
-			</Link>
-			<Link to='/help-matcher' className='fig-link col-md-6 bg-cover hero-home flex-center' style={{ backgroundImage: `url(${require('../assets/images/food.jpg')})` }}>
-				<h3 className='text-white'>Food Bank</h3>
-				<p className='text-white mb-0'>ธนาคารอาหาร ร่วมส่งอาหารเข้ามายังศูนย์ Feeding Thailand เราจะจัดส่งให้แก่คนที่ต้องการ</p>
-			</Link>
+			<h2 className='text-center mb-0'>โครงการของเรา</h2>
+			<div className='row'>
+				<PostHero
+					image={require('../assets/images/feeding.jpg')}
+					link='/help-matcher'
+					title='Help Matcher'
+					excerpt='นที่ที่ผู้ให้พบกับผู้รับ ผู้ที่ต้องการความช่วยเหลือสามารถใช้พื้นที่นี้ให้คนที่ต้องการให้ มอบความช่วยเหลือได้'
+				/>
+				<PostHero
+					image={require('../assets/images/food.jpg')}
+					link='/help-matcher'
+					title='Food Bank'
+					excerpt='ธนาคารอาหาร ร่วมส่งอาหารเข้ามายังศูนย์ Feeding Thailand เราจะจัดส่งให้แก่คนที่ต้องการ'
+				/>
 
+			</div>
 		</div>
 	</div>
 )
@@ -91,7 +111,6 @@ const IndexPage = () => (
 
 		</div>
 		<Counter />
-		<Posts />
 		<JoinUs />
 		<Footer />
 

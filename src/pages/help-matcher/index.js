@@ -22,15 +22,7 @@ function formatText(text) {
         return `${text.substring(0, 100)} ...`
     }
 }
-class Counter extends React.Component {
-    render() {
-        return (
-            <div>
 
-            </div>
-        )
-    }
-}
 export default class HelpMatcher extends React.Component {
     constructor(props) {
         super(props)
