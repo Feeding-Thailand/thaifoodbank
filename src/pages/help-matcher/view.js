@@ -110,15 +110,23 @@ export default class View extends React.Component {
 
     }
     async confirm() {
-        this.setState({ waiting: true })
-        const id = queryString.parse(this.props.location.search).id
-        const token = await firebase.auth().currentUser.getIdToken()
-        const req = await axios.delete(`${apiEndpoint}/post/${id}/close`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        console.log(req.data)
+        try {
+            this.setState({ waiting: true })
+            const id = queryString.parse(this.props.location.search).id
+            const token = await firebase.auth().currentUser.getIdToken()
+            const req = await axios.delete(`${apiEndpoint}/post/${id}/close`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            console.log(req.data)
+            this.setState({ confirmStatus: false })
+        }
+        catch (err) {
+            console.log(err)
+            this.setState({ waiting: false })
+
+        }
     }
     signIn(option) {
         if (option === 'google') {
@@ -139,6 +147,24 @@ export default class View extends React.Component {
             this.setState({ [id]: e.target.value })
         }
 
+    }
+    async delete() {
+        const id = queryString.parse(this.props.location.search).id
+        this.setState({ deleting: true })
+        try {
+            const token = await firebase.auth().currentUser.getIdToken()
+            const req = await axios.delete(`${apiEndpoint}/post/${id}/delete`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            console.log(req.data)
+            window.location.replace("/help-matcher")
+
+        }
+        catch (err) {
+            console.log(err)
+        }
     }
     render() {
         return (
@@ -166,6 +192,19 @@ export default class View extends React.Component {
 
                         </Modal.Footer>
 
+                    </Modal>
+                    <Modal show={this.state.showDelete} onHide={() => this.setState({ showDelete: false })} >
+                        <Modal.Header className='bg-danger'>
+                            <Modal.Title className='text-white'>ยืนยันการลบข้อมูล</Modal.Title>
+                            <button onClick={() => this.setState({ showDelete: false })} className='text-white btn btn-icon'><span className='material-icons'>close</span></button>
+                        </Modal.Header>
+                        <Modal.Body>
+                            เมื่อท่านกดปุ่ม<b>ยืนยันการลบข้อมูลแล้ว</b> ข้อมูลของท่านจะถูกลบอย่างถาวรและไม่สามารถเรียกคืนได้
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant='light' onClick={() => this.setState({ showDelete: false })}>ปิดหน้าต่างนี้</Button>
+                            <Button disabled={this.state.deleting} variant='danger' onClick={async () => await this.delete()}>ยืนยันการลบข้อมูล</Button>
+                        </Modal.Footer>
                     </Modal>
                     <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })}>
                         <Modal.Header>
@@ -271,7 +310,12 @@ export default class View extends React.Component {
                                             }
                                         </div>
                                         <div className='col-6'>
-                                            <Button variant='light' className='w-100 h-100'>แชร์โพสต์นี้</Button>
+                                            {this.state.data.uid === this.state.user &&
+                                                <Button onClick={() => this.setState({ showDelete: true })} variant='danger' className='w-100 h-100'>ลบข้อมูลของคุณ</Button>
+                                            }
+                                            {this.state.data.uid !== this.state.user &&
+                                                <Button target='_blank' href={`https://www.facebook.com/sharer.php?u=${this.props.location.href}`} variant='light' className='w-100 h-100'>แชร์โพสต์นี้</Button>
+                                            }
                                         </div>
                                     </div>
 
@@ -294,7 +338,7 @@ export default class View extends React.Component {
                         <hr />
                         <div className='w-100'>
                             <FacebookProvider appId="637224560162543">
-                                <Comments href="https://thaifoodbank.web.app/help-matcher/view" width='100%' />
+                                <Comments href={`https://thaifoodbank.web.app/help-matcher/view?id=${queryString.parse(this.props.location.search).id}`} width='100%' />
                             </FacebookProvider>
                         </div>
                     </div>

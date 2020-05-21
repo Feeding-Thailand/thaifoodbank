@@ -16,7 +16,7 @@ class Counter extends React.Component {
 	async componentDidMount() {
 		const db = firebase.firestore()
 		const snap = await db.collection('stats').doc('stats').get()
-		this.setState(snap.data(), () => console.log(this.state))
+		this.setState(snap.data())
 	}
 	render() {
 		return (
@@ -76,7 +76,7 @@ const AboutUs = () => (
 					image={require('../assets/images/feeding.jpg')}
 					link='/help-matcher'
 					title='Help Matcher'
-					excerpt='นที่ที่ผู้ให้พบกับผู้รับ ผู้ที่ต้องการความช่วยเหลือสามารถใช้พื้นที่นี้ให้คนที่ต้องการให้ มอบความช่วยเหลือได้'
+					excerpt='พื้นที่ที่ผู้ให้พบกับผู้รับ ผู้ที่ต้องการความช่วยเหลือสามารถใช้พื้นที่นี้ให้คนที่ต้องการให้ มอบความช่วยเหลือได้'
 				/>
 				<PostHero
 					image={require('../assets/images/food.jpg')}
