@@ -95,6 +95,9 @@ export default class HelpMatcher extends React.Component {
                             <div className='col-md-6 pb-3'>
                                 <h2>ผู้ต้องการความช่วยเหลือขณะนี้</h2>
                             </div>
+                            <div className='col-md-6 pb-3 d-flex justify-content-md-end align-items-md-start'>
+                                <Link to='/help-matcher/map' className='btn btn-primary'>ดูผู้ต้องการความช่วยเหลือใกล้ตัวคุณ</Link>
+                            </div>
                         </div>
                         <HelpList />
                     </div>

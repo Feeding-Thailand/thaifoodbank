@@ -45,6 +45,7 @@ export default class View extends React.Component {
     }
 
     async getContact(response) {
+        this.setState({ confirmed: true })
         try {
             const id = queryString.parse(this.props.location.search).id
             const token = await firebase.auth().currentUser.getIdToken()
@@ -54,7 +55,7 @@ export default class View extends React.Component {
                 }
             })
             console.log(req.data)
-            this.setState({ contact: req.data.contact, confirmed: true, isAlreadyDonated: req.data.isAlreadyDonated })
+            this.setState({ contact: req.data.contact, isAlreadyDonated: req.data.isAlreadyDonated })
         }
         catch (err) {
             console.log(err)
@@ -76,7 +77,7 @@ export default class View extends React.Component {
                     }
                 })
             console.log(req.data)
-            this.setState({ showModal: false })
+            this.setState({ showModal: false, isDonated: { isDonated: true } })
 
         }
         catch (err) {
@@ -98,8 +99,14 @@ export default class View extends React.Component {
 
             firebase.auth().onAuthStateChanged(async (user) => {
                 if (user) {
+                    const token = await user.getIdToken()
                     this.setState({ user: user.uid, name: user.displayName })
-
+                    const donationReq = await axios.get(`${apiEndpoint}/post/${id}/isDonated`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    })
+                    this.setState({ isDonated: donationReq.data })
                 } else {
                     this.setState({ user: false })
                 }
@@ -122,7 +129,9 @@ export default class View extends React.Component {
                 }
             })
             console.log(req.data)
-            this.setState({ confirmStatus: false })
+            var temp = this.state.data
+            temp.active = false
+            this.setState({ confirmStatus: false, data: temp })
         }
         catch (err) {
             console.log(err)
@@ -248,7 +257,7 @@ export default class View extends React.Component {
                                             }
                                             <hr />
                                             <h4 className='mb-3'>ข้อมูลผู้บริจาค</h4>
-                                            {!this.state.isAlreadyDonated &&
+                                            {this.state.isDonated?.isDonated === false &&
                                                 <Form onChange={(e) => this.formHandler(e)}>
                                                     <Form.Group controlId='name'>
                                                         <Form.Label>ชื่อ-นามสกุล</Form.Label>
@@ -269,10 +278,10 @@ export default class View extends React.Component {
                                                     </Form.Group>
                                                 </Form>
                                             }
-                                            {this.state.isAlreadyDonated &&
+                                            {this.state.isDonated?.isDonated === true &&
                                                 <Alert variant='warning'>คุณได้แสดงความประสงค์บริจาคกับบุคคลนี้ไปแล้ว</Alert>
                                             }
-                                            <Button disabled={this.state.saving || this.state.isAlreadyDonated} onClick={async () => await this.donate()} className='mt-3'>ยืนยันการให้ความช่วยเหลือ</Button>
+                                            <Button disabled={this.state.saving || this.state.isDonated?.isDonated} onClick={async () => await this.donate()} className='mt-3'>ยืนยันการให้ความช่วยเหลือ</Button>
 
                                         </div>
 
@@ -304,39 +313,56 @@ export default class View extends React.Component {
                                             <span className='text-primary'><span className='material-icons'>place</span> {this.state.data.placename}</span>
                                         </div>
                                     </div>
-                                    <div className='row mt-3'>
+                                    {this.state.data.active === true &&
+                                        <div className='row mt-3'>
+                                            <div className='col-6'>
+                                                {this.state.data.uid !== this.state.user &&
+                                                    <Button onClick={() => this.showContact()} className='w-100 h-100'>ติดต่อมอบความช่วยเหลือ</Button>
+                                                }
+                                                {this.state.data.uid === this.state.user &&
+                                                    <Button onClick={() => this.setState({ confirmStatus: true })} variant='secondary' className='w-100 h-100'>ได้รับความช่วยเหลือแล้ว</Button>
+                                                }
+                                            </div>
 
-                                        <div className='col-6'>
-                                            {this.state.data.uid !== this.state.user &&
-                                                <Button onClick={() => this.showContact()} className='w-100 h-100'>ติดต่อมอบความช่วยเหลือ</Button>
-                                            }
-                                            {this.state.data.uid === this.state.user &&
-                                                <Button onClick={() => this.setState({ confirmStatus: true })} variant='secondary' className='w-100 h-100'>ได้รับความช่วยเหลือแล้ว</Button>
-                                            }
+                                            <div className='col-6'>
+                                                {this.state.data.uid === this.state.user &&
+                                                    <Button onClick={() => this.setState({ showDelete: true })} variant='danger' className='w-100 h-100'>ลบข้อมูลของคุณ</Button>
+                                                }
+                                                {this.state.data.uid !== this.state.user &&
+                                                    <Button target='_blank' href={`https://www.facebook.com/sharer.php?u=${this.props.location.href}`} variant='light' className='w-100 h-100'>แชร์โพสต์นี้</Button>
+                                                }
+                                            </div>
                                         </div>
-                                        <div className='col-6'>
-                                            {this.state.data.uid === this.state.user &&
-                                                <Button onClick={() => this.setState({ showDelete: true })} variant='danger' className='w-100 h-100'>ลบข้อมูลของคุณ</Button>
-                                            }
-                                            {this.state.data.uid !== this.state.user &&
-                                                <Button target='_blank' href={`https://www.facebook.com/sharer.php?u=${this.props.location.href}`} variant='light' className='w-100 h-100'>แชร์โพสต์นี้</Button>
-                                            }
+                                    }
+                                    {this.state.data.active === false &&
+                                        <div className='row mt-3'>
+                                            <div className='col-12'>
+                                                <Alert className='text-center' variant='secondary'>ผู้รับบริจาคได้ระบุว่าได้รับความช่วยเหลือแล้ว</Alert>
+                                            </div>
                                         </div>
-                                    </div>
+                                    }
 
                                 </div>
                                 <hr />
                                 <div className='w-100'>
+                                    {this.state.isDonated && this.state.isDonated.isDonated === true &&
+                                        <Alert variant='secondary' className='text-center'>
+                                            คุณได้แสดงความประสงค์บริจาคกับบุคคลนี้ไปแล้ว
+                                        </Alert>
+                                    }
                                     <h4>รายละเอียด</h4>
                                     <p>{this.state.data.description}</p>
                                     <h4>ความช่วยเหลือที่ต้องการ</h4>
                                     <p className='mb-0'>{this.state.data.need}</p>
                                 </div>
-                                <hr />
-                                <div className='w-100 mt-3'>
-                                    <h4 className='mb-4'>ผู้ร่วมช่วยเหลือ <span className='badge badge-danger'>{this.state.data.donorsCount} คน</span></h4>
-                                    <Donors donors={this.state.data.donors} />
-                                </div>
+
+                                {(this.state.data.uid === this.state.user) && this.state.user && this.state.data !== 'loading' &&
+                                    <div className='w-100 mt-3'>
+                                        <hr />
+                                        <h4 className='mb-4'>ผู้ร่วมช่วยเหลือ <span className='badge badge-danger'>{this.state.data.donorsCount} คน</span></h4>
+                                        <Donors donors={this.state.data.donors} />
+                                    </div>
+                                }
                             </div>
                         }
 
@@ -351,7 +377,7 @@ export default class View extends React.Component {
                 </div>
 
                 <Footer />
-            </div>
+            </div >
         )
     }
 }

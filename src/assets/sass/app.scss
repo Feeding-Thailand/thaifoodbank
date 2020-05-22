@@ -12,6 +12,18 @@
     background-size: cover;
 }
 
+.mapboxContainer {
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    .mapbox {
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+}
+
 .btn-icon {
     background: transparent;
     box-shadow: none;
@@ -141,17 +153,6 @@ a {
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
 }
 
-.mapboxContainer {
-    width: 100%;
-    height: 300px;
-    position: relative;
-
-    .mapbox {
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-    }
-}
 
 .bigger-p {
     font-size: 18px;
@@ -246,4 +247,12 @@ p {
 
 .fig-link {
     font-weight: inherit !important;
+}
+
+.date-badge{
+    position: absolute;
+    z-index: 1;
+    top: 1rem;
+    left: 1rem;
+
 }
