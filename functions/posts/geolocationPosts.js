@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
             Number(req.params.lng)
         )
         const query = geocollection
-            .where("d.active", "==", true)
+            .where("active", "==", true)
             .near({
                 center: userGeo,
                 radius: Number(req.params.radius),
