@@ -84,10 +84,16 @@ class RegisterForm extends React.Component {
     formHandler(e) {
         if (e.target.id === 'photo') {
             const file = e.target.files[0]
-            this.setState({ fileName: file.name })
-            this.getBase64(file).then((base64) => {
-                this.setState({ 'imageDataURL': base64 })
-            })
+            const ext = file.name.split('.').pop()
+            if (file.size < 2 * 1024 * 1024 && (ext === 'jpg' || ext === 'jpeg' || ext === 'png')) {
+                this.setState({ fileName: file.name.substring(0,20), uploadForbidden: false })
+                this.getBase64(file).then((base64) => {
+                    this.setState({ 'imageDataURL': base64 })
+                })
+            }
+            else {
+                this.setState({ uploadForbidden: true })
+            }
         }
         else {
             this.setState({ [e.target.id]: e.target.value })
@@ -158,16 +164,16 @@ class RegisterForm extends React.Component {
                     </Form.Group>
                     <Form.Group controlId="pid">
                         <Form.Label>รหัสประจำตัวประชาชน <button type='button' onClick={() => this.setState({ showPolicy: true, section: 'pid' })} className='btn btn-icon'><span style={{ fontSize: 18 }} className='text-primary mb-1 material-icons'>help</span></button></Form.Label>
-                        <Form.Control placeholder="รหัสประจำตัวประชาชน" isInvalid={(this.state.next && !this.state.pid) || (this.state.errStatus === 'invalid pid')} />
+                        <Form.Control placeholder="รหัสประจำตัวประชาชน" isInvalid={(this.state.next && !this.state.pid) || (this.state.errStatus === 700)} />
 
-                        {this.state.errStatus === 'invalid pid' &&
+                        {this.state.errStatus === 700 &&
                             <small className='text-danger'>รหัสประจำตัวประชาชนไม่ถูกต้อง</small>
                         }
                     </Form.Group>
                     <Form.Group controlId="postcode">
                         <Form.Label>รหัสไปรษณีย์</Form.Label>
-                        <Form.Control placeholder="รหัสไปรษณีย์" isInvalid={this.state.errStatus === 'postcode not found' || (this.state.next && !this.state.postcode)} />
-                        {this.state.errStatus === 'postcode not found' &&
+                        <Form.Control placeholder="รหัสไปรษณีย์" isInvalid={this.state.errStatus === 701 || (this.state.next && !this.state.postcode)} />
+                        {this.state.errStatus === 701 &&
                             <small className='text-danger'>รหัสไปรษณีย์ไม่ถูกต้อง</small>
                         }
                     </Form.Group>
@@ -178,11 +184,14 @@ class RegisterForm extends React.Component {
                     <Form.Group>
                         <Form.Label>อัพโหลดรูปภาพเพิ่มเติม</Form.Label>
                         <Form.File
-                            isInvalid={this.state.next && !this.state.imageDataURL}
+                            isInvalid={this.state.next && !this.state.imageDataURL || this.state.uploadForbidden === true}
                             label={this.state.fileName ? this.state.fileName : 'อัพโหลดรูปภาพ'}
                             custom
                             id='photo'
                         />
+                        {this.state.uploadForbidden === true &&
+                        <small className='text-danger'>อัพโหลดได้เฉพาะรูปภาพที่มีขนาดน้อยกว่า 2 Mb</small>
+                        }
                     </Form.Group>
                     <Form.Group controlId="need">
                         <Form.Label>สิ่งของที่ต้องการให้ช่วยเหลือ</Form.Label>
@@ -266,7 +275,7 @@ export default class Register extends React.Component {
                         <Header>
                             <title>ลงทะเบียนขอรับความช่วยเหลือ</title>
                         </Header>
-                        
+
                         <div className='bg-white rounded shadow-md container p-4' style={{ maxWidth: 720 }}>
 
                             <div>
