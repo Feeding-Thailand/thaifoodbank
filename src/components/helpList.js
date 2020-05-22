@@ -15,10 +15,11 @@ export default class HelpList extends React.Component {
         }
     }
     async loadMore() {
+        this.setState({ loading: true })
         try {
             const req = await axios.get(`${apiEndpoint}/posts/oldest?lastVisible=${this.lastVisible}`)
             var data = this.state.data
-            this.setState({ data: data.concat(req.data) }, () => {
+            this.setState({ data: data.concat(req.data), loading: false }, () => {
                 this.lastVisible = this.state.data[this.state.data.length - 1].id
             })
         }
@@ -63,7 +64,12 @@ export default class HelpList extends React.Component {
                     )}
                 {(this.state.data.length % 12) === 0 &&
                     <div className='w-100 text-center mt-3'>
-                        <Button onClick={async () => await this.loadMore()} style={{ fontWeight: 600 }} variant='link'>ดูเพิ่มเติม</Button>
+                        {!this.state.loading &&
+                            <Button onClick={async () => await this.loadMore()} style={{ fontWeight: 600 }} variant='link'>ดูเพิ่มเติม</Button>
+                        }
+                        {this.state.loading &&
+                            <Spinner className='m-3' variant='primary' animation='border' />
+                        }
                     </div>
                 }
             </div>

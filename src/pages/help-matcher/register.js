@@ -27,7 +27,6 @@ class RegisterForm extends React.Component {
         })
     }
     async save() {
-        firebase.auth().currentUser.getIdToken(true).then(tok => console.log(tok))
         this.setState({ next: true, saving: true })
         if (
             this.state.name &&
@@ -246,7 +245,6 @@ export default class Register extends React.Component {
                             Authorization: `Bearer ${token}`
                         }
                     })
-                    console.log(req.data)
                     if (req.data === false) {
                         this.setState({ redirect: false })
                     }

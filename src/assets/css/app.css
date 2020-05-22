@@ -11,6 +11,9 @@
   min-height: 80vh;
   background-size: cover; }
 
+.btn-link {
+  font-weight: 600; }
+
 .mapboxContainer {
   width: 100%;
   height: 100%;
