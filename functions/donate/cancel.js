@@ -12,7 +12,7 @@ module.exports = async (req, res) => {
             .collection("posts")
             .doc(id)
             .collection("donors")
-            .where("uid", "==", user.uid)
+            .where("uid", "==", req.authId)
             .get()
         if (snap.empty) {
             res.status(409).send("no donation record found")
@@ -32,7 +32,7 @@ module.exports = async (req, res) => {
             .collection("stats")
             .doc("stats")
             .collection("donors")
-            .where("uid", "==", user.uid)
+            .where("uid", "==", req.authId)
             .get()
         if (statsSnap.empty) {
             res.status(500).send("stats not found")
@@ -42,24 +42,24 @@ module.exports = async (req, res) => {
             return
         } else {
             if (statsSnap.donationCount === 0) {
-                statsSnap.forEach(user =>
+                statsSnap.forEach(donor =>
                     db
                         .collection("stats")
                         .doc("stats")
                         .collection("donors")
-                        .doc(user.id)
+                        .doc(donor.id)
                         .delete()
                 )
                 db.collection("stats")
                     .doc("stats")
                     .update({ donors: fb.firestore.FieldValue.increment(-1) })
             } else {
-                statsSnap.forEach(user =>
+                statsSnap.forEach(donor =>
                     db
                         .collection("stats")
                         .doc("stats")
                         .collection("donors")
-                        .doc(user.id)
+                        .doc(donor.id)
                         .update({
                             donationCount: fb.firestore.FieldValue.increment(
                                 -1
