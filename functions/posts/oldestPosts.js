@@ -8,7 +8,7 @@ module.exports = async (req, res) => {
             .where("d.active", "==", true)
             .orderBy("d.createdAt", "asc")
         if (lastdocId) {
-            const docSnap = await db.collection("posts").doc(lastdocId)
+            const docSnap = await db.collection("posts").doc(lastdocId).get()
             fpart = fpart.startAfter(docSnap)
         }
         const query = await fpart.limit(12).get()
