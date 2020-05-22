@@ -164,7 +164,7 @@ module.exports = async (req, res) => {
                 if (extension !== "png" && extension !== "jpg") {
                     res.status(400).send({
                         status: 702,
-                        status: "invalid extension"
+                        error: "invalid extension"
                     })
                     return false
                 }
