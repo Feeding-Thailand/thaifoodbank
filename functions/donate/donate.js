@@ -50,29 +50,42 @@ module.exports = async (req, res) => {
         if (statsSnap.empty) {
             db.collection("stats").doc("stats").collection("donors").add({
                 uid: user.uid,
+                donationCount: 1,
             })
             db.collection("stats")
                 .doc("stats")
                 .update({ donors: fb.firestore.FieldValue.increment(1) })
-            delete user.createdAt
-            const transactionsSnap = await db
-                .collection("transactions")
-                .orderBy("id", "desc")
-                .limit(1)
-                .get()
-            let currentTransactionId = 1
-            if (!transactionsSnap.empty)
-                transactionsSnap.forEach(
-                    transaction =>
-                        (currentTransactionId = transaction.data().id + 1)
-                )
-            db.collection("transactions").add({
-                id: currentTransactionId,
-                donor: user,
-                createdAt: new Date(),
-                post: id,
+        } else if (statsSnap.size > 1) {
+            res.status(500).send("duplicate uid found in database")
+        } else {
+            statsSnap.forEach(doc => {
+                db.collection("stats")
+                    .doc("stats")
+                    .collection("donors")
+                    .doc(doc.id)
+                    .update({
+                        donationCount: fb.firestore.FieldValue.increment(1),
+                    })
             })
         }
+        delete user.createdAt
+        const transactionsSnap = await db
+            .collection("transactions")
+            .orderBy("id", "desc")
+            .limit(1)
+            .get()
+        let currentTransactionId = 1
+        if (!transactionsSnap.empty)
+            transactionsSnap.forEach(
+                transaction =>
+                    (currentTransactionId = transaction.data().id + 1)
+            )
+        db.collection("transactions").add({
+            id: currentTransactionId,
+            donor: user,
+            createdAt: new Date(),
+            post: id,
+        })
         res.send("OK")
     } catch (err) {
         console.log(err)
