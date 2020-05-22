@@ -59,17 +59,9 @@ const validatePID = pid => {
 }
 module.exports = async (req, res) => {
     try {
-        var user = await fb.auth().getUser(req.authId)
-        user = user.toJSON()
-        user = {
-            uid: user.uid,
-            photoURL: user.photoURL,
-            email: user.email,
-            displayName: user.displayName,
-        }
         const preSnap = await db
             .collection("posts")
-            .where("d.uid", "==", user.uid)
+            .where("d.uid", "==", req.authId)
             .get()
         if (preSnap.size > 0) {
             res.status(409).send("user already created a post")
@@ -174,7 +166,7 @@ module.exports = async (req, res) => {
             .filter(ret => ret !== false)
         if (parsedImages.length !== imageDataURL.length) return
         const firestoreSnap = await geocollection.add({
-            uid: user.uid,
+            uid: req.authId,
             name,
             pid,
             need,
@@ -184,7 +176,7 @@ module.exports = async (req, res) => {
             coordinates: userGeo,
             placename,
             active: true,
-            donors: [],
+            donors: 0,
             photos: parsedImages.map((val, idx) => `${idx + 1}.${val[1]}`),
         })
         await writeFiles(parsedImages, firestoreSnap.id)

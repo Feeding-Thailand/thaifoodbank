@@ -8,7 +8,7 @@
     flex-direction: column;
     padding-top: 40px;
     padding-bottom: 40px;
-    min-height: 90vh;
+    min-height: 80vh;
     background-size: cover;
 }
 
@@ -90,6 +90,13 @@ a {
 .text-over {
     z-index: 1;
     position: absolute;
+}
+
+.fb_iframe_widget_fluid_desktop,
+.fb_iframe_widget_fluid_desktop span,
+.fb_iframe_widget_fluid_desktop iframe {
+    max-width: 100% !important;
+    width: 100% !important;
 }
 
 .overlay {
@@ -204,7 +211,7 @@ hr {
     background-repeat: no-repeat;
     background-size: cover;
     margin-bottom: 40px;
-    padding-bottom: 80%;
+    padding-bottom: 60%;
     position: relative;
     width: 100%;
 }
@@ -216,15 +223,20 @@ hr {
 p {
     font-weight: 500;
     font-size: 17px;
-    font-family: 'Sarabun', sans-serif;
+    line-height: 1.8em;
+    font-family: "Sarabun", sans-serif;
+    a{
+        font-size: inherit;
+        font-weight: inherit;
+    }
 }
 
-.sarabun { 
-    font-family: 'Sarabun', sans-serif;
+.sarabun {
+    font-family: "Sarabun", sans-serif;
 }
 
 .topo-pattern {
-    background-color: rgb(0, 10, 123);
+    background-color: rgb(0, 21, 206);
     background-image: url("../images/cool-background.svg");
 }
 

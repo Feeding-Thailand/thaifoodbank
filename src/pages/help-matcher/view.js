@@ -13,15 +13,16 @@ import firebase from '../../components/firebase'
 import Form from 'react-bootstrap/Form'
 import Alert from 'react-bootstrap/Alert'
 import * as moment from 'moment'
+import Reaptcha from 'reaptcha'
 
 const Donors = (props) => (
     <div>
         {props.donors && props.donors.map((donor, index) => {
             return (
                 <div className='d-flex mb-3' key={index}>
-                    <div className='avatar' style={{ backgroundImage: `url(${donor.photoURL})` }} />
+                    <div className='avatar' style={{ backgroundImage: `url(${donor.displayName ? donor.photoURL : ''})` }} />
                     <div className='ml-3 flex-center'>
-                        <span>{donor.displayName}</span>
+                        <b>{donor.displayName ? donor.displayName : 'บุคคลนิรนาม'}</b>
                         <small className='text-muted'>{moment(donor.createdAt).fromNow()}</small>
                     </div>
                 </div>
@@ -38,23 +39,22 @@ export default class View extends React.Component {
             contact: 'loading'
         }
     }
+
     showContact() {
-        this.setState({ showModal: true }, async () => {
-            if (firebase.auth().currentUser) {
-                await this.getContact()
-            }
-        })
+        this.setState({ showModal: true })
     }
-    async getContact() {
+
+    async getContact(response) {
         try {
             const id = queryString.parse(this.props.location.search).id
             const token = await firebase.auth().currentUser.getIdToken()
-            const req = await axios.get(`${apiEndpoint}/post/${id}/contact`, {
+            const req = await axios.get(`${apiEndpoint}/post/${id}/contact?response=${response}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             })
-            this.setState({ contact: req.data.contact, isAlreadyDonated: req.data.isAlreadyDonated })
+            console.log(req.data)
+            this.setState({ contact: req.data.contact, confirmed: true, isAlreadyDonated: req.data.isAlreadyDonated })
         }
         catch (err) {
             console.log(err)
@@ -89,11 +89,13 @@ export default class View extends React.Component {
             const id = queryString.parse(this.props.location.search).id
             const req = await axios.get(`${apiEndpoint}/post/${id}`)
             this.setState({ data: req.data })
+
             req.data.photos.map((item, index) => {
                 const image = `https://firebasestorage.googleapis.com/v0/b/thaifoodbank.appspot.com/o/${id}%2f${item}?alt=media`
                 console.log(image)
                 this.setState({ images: [...this.state.images, image] })
             })
+
             firebase.auth().onAuthStateChanged(async (user) => {
                 if (user) {
                     this.setState({ user: user.uid, name: user.displayName })
@@ -110,15 +112,23 @@ export default class View extends React.Component {
 
     }
     async confirm() {
-        this.setState({ waiting: true })
-        const id = queryString.parse(this.props.location.search).id
-        const token = await firebase.auth().currentUser.getIdToken()
-        const req = await axios.delete(`${apiEndpoint}/post/${id}/close`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        console.log(req.data)
+        try {
+            this.setState({ waiting: true })
+            const id = queryString.parse(this.props.location.search).id
+            const token = await firebase.auth().currentUser.getIdToken()
+            const req = await axios.delete(`${apiEndpoint}/post/${id}/close`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            console.log(req.data)
+            this.setState({ confirmStatus: false })
+        }
+        catch (err) {
+            console.log(err)
+            this.setState({ waiting: false })
+
+        }
     }
     signIn(option) {
         if (option === 'google') {
@@ -139,6 +149,24 @@ export default class View extends React.Component {
             this.setState({ [id]: e.target.value })
         }
 
+    }
+    async delete() {
+        const id = queryString.parse(this.props.location.search).id
+        this.setState({ deleting: true })
+        try {
+            const token = await firebase.auth().currentUser.getIdToken()
+            const req = await axios.delete(`${apiEndpoint}/post/${id}/delete`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            console.log(req.data)
+            window.location.replace("/help-matcher")
+
+        }
+        catch (err) {
+            console.log(err)
+        }
     }
     render() {
         return (
@@ -167,6 +195,19 @@ export default class View extends React.Component {
                         </Modal.Footer>
 
                     </Modal>
+                    <Modal show={this.state.showDelete} onHide={() => this.setState({ showDelete: false })} >
+                        <Modal.Header className='bg-danger'>
+                            <Modal.Title className='text-white'>ยืนยันการลบข้อมูล</Modal.Title>
+                            <button onClick={() => this.setState({ showDelete: false })} className='text-white btn btn-icon'><span className='material-icons'>close</span></button>
+                        </Modal.Header>
+                        <Modal.Body>
+                            เมื่อท่านกดปุ่ม<b>ยืนยันการลบข้อมูลแล้ว</b> ข้อมูลของท่านจะถูกลบอย่างถาวรและไม่สามารถเรียกคืนได้
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant='light' onClick={() => this.setState({ showDelete: false })}>ปิดหน้าต่างนี้</Button>
+                            <Button disabled={this.state.deleting} variant='danger' onClick={async () => await this.delete()}>ยืนยันการลบข้อมูล</Button>
+                        </Modal.Footer>
+                    </Modal>
                     <Modal show={this.state.showModal} onHide={() => this.setState({ showModal: false })}>
                         <Modal.Header>
                             <Modal.Title>ติดต่อมอบความช่วยเหลือ</Modal.Title>
@@ -192,47 +233,50 @@ export default class View extends React.Component {
                                 }
                                 {this.state.user &&
                                     <div>
-                                        {this.state.contact === 'loading' &&
-                                            <div className='text-center p-3 w-100'>
-                                                <Spinner animation='border' variant='primary' />
-                                            </div>
-                                        }
-                                        {this.state.contact !== 'loading' &&
-                                            <div>
+
+
+
+                                        <div>
+                                            <h4 className='mb-3'>ข้อมูลติดต่อผู้ต้องการความช่วยเหลือ</h4>
+                                            {!this.state.confirmed &&
+                                                <Reaptcha sitekey='6LetbPkUAAAAALLugqgdf6Lv3FP05a9XnDoED-3P' onVerify={async (response) => await this.getContact(response)} />
+                                            }
+                                            {this.state.confirmed &&
                                                 <div className='alert mt-3 alert-primary'>
                                                     <b>ข้อมูลติดต่อ</b> {this.state.contact}
                                                 </div>
-                                                <hr />
-                                                <h4 className='mb-3'>ข้อมูลผู้บริจาค</h4>
-                                                {!this.state.isAlreadyDonated &&
-                                                    <Form onChange={(e) => this.formHandler(e)}>
-                                                        <Form.Group controlId='name'>
-                                                            <Form.Label>ชื่อ-นามสกุล</Form.Label>
-                                                            <Form.Control
-                                                                disabled={this.state.isAnonymous === true}
-                                                                defaultValue={this.state.name}
-                                                                placeholder="ชื่อ-นามสกุล"
-                                                                isInvalid={!this.state.name && this.state.next && !this.state.isAnonymous}
-                                                            />
-                                                        </Form.Group>
-                                                        <Form.Group>
-                                                            <Form.Check
-                                                                custom
-                                                                type='checkbox'
-                                                                label='ไม่ประสงค์ออกนาม'
-                                                                id='isAnonymous'
-                                                            />
-                                                        </Form.Group>
-                                                    </Form>
-                                                }
-                                                {this.state.isAlreadyDonated &&
-                                                    <Alert variant='warning'>คุณได้แสดงความประสงค์บริจาคกับบุคคลนี้ไปแล้ว</Alert>
-                                                }
-                                                <Button disabled={this.state.saving || this.state.isAlreadyDonated} onClick={async () => await this.donate()} className='mt-3'>ยืนยันการให้ความช่วยเหลือ</Button>
+                                            }
+                                            <hr />
+                                            <h4 className='mb-3'>ข้อมูลผู้บริจาค</h4>
+                                            {!this.state.isAlreadyDonated &&
+                                                <Form onChange={(e) => this.formHandler(e)}>
+                                                    <Form.Group controlId='name'>
+                                                        <Form.Label>ชื่อ-นามสกุล</Form.Label>
+                                                        <Form.Control
+                                                            disabled={this.state.isAnonymous === true}
+                                                            defaultValue={this.state.name}
+                                                            placeholder="ชื่อ-นามสกุล"
+                                                            isInvalid={!this.state.name && this.state.next && !this.state.isAnonymous}
+                                                        />
+                                                    </Form.Group>
+                                                    <Form.Group>
+                                                        <Form.Check
+                                                            custom
+                                                            type='checkbox'
+                                                            label='ไม่ประสงค์ออกนาม'
+                                                            id='isAnonymous'
+                                                        />
+                                                    </Form.Group>
+                                                </Form>
+                                            }
+                                            {this.state.isAlreadyDonated &&
+                                                <Alert variant='warning'>คุณได้แสดงความประสงค์บริจาคกับบุคคลนี้ไปแล้ว</Alert>
+                                            }
+                                            <Button disabled={this.state.saving || this.state.isAlreadyDonated} onClick={async () => await this.donate()} className='mt-3'>ยืนยันการให้ความช่วยเหลือ</Button>
 
-                                            </div>
+                                        </div>
 
-                                        }
+
                                     </div>
                                 }
                             </>
@@ -271,7 +315,12 @@ export default class View extends React.Component {
                                             }
                                         </div>
                                         <div className='col-6'>
-                                            <Button variant='light' className='w-100 h-100'>แชร์โพสต์นี้</Button>
+                                            {this.state.data.uid === this.state.user &&
+                                                <Button onClick={() => this.setState({ showDelete: true })} variant='danger' className='w-100 h-100'>ลบข้อมูลของคุณ</Button>
+                                            }
+                                            {this.state.data.uid !== this.state.user &&
+                                                <Button target='_blank' href={`https://www.facebook.com/sharer.php?u=${this.props.location.href}`} variant='light' className='w-100 h-100'>แชร์โพสต์นี้</Button>
+                                            }
                                         </div>
                                     </div>
 
@@ -294,7 +343,7 @@ export default class View extends React.Component {
                         <hr />
                         <div className='w-100'>
                             <FacebookProvider appId="637224560162543">
-                                <Comments href="https://thaifoodbank.web.app/help-matcher/view" width='100%' />
+                                <Comments href={`https://thaifoodbank.web.app/help-matcher/view?id=${queryString.parse(this.props.location.search).id}`} width='100%' />
                             </FacebookProvider>
                         </div>
                     </div>
