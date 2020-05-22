@@ -19,14 +19,10 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-
-    # Install yarn
-    - name: Install Yarn
-      run: npm install -g yarn
     
     # Install node_modules
     - name: Install Dependencies
-      run: yarn
+      run: npx yarn
       
     # Build gatsby sites
     - name: Github Action for Gatsby CLI
