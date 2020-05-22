@@ -1,5 +1,6 @@
 const fb = require("firebase-admin")
 const db = fb.firestore()
+const deleteDoc = require("../doDelete")
 module.exports = async (req, res) => {
     try {
         const id = req.params.id
@@ -8,17 +9,15 @@ module.exports = async (req, res) => {
             return
         }
         const snap = await db.collection("posts").doc(id).get()
+        if (!snap.exists) {
+            res.status(404).send("document not found, maybe already deleted")
+            return
+        }
         if (snap.data().d.uid !== req.authId) {
             res.status(403).send("invalid ownership")
             return
         }
-        await db.collection("posts").doc(id).delete()
-        db.collection("stats")
-            .doc("stats")
-            .update({
-                currentPosts: fb.firestore.FieldValue.increment(-1),
-                deletedPosts: fb.firestore.FieldValue.increment(1),
-            })
+        await deleteDoc(id)
         res.send("OK")
     } catch (err) {
         console.log(err)

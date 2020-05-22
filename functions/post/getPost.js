@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
         }
         var snap = await db.collection("posts").doc(id).get()
         if (!snap.exists) {
-            req.status(404).send("post not found")
+            res.status(404).send("post not found")
             return
         }
         const {
@@ -19,7 +19,17 @@ module.exports = async (req, res) => {
             uid,
             photos,
             placename,
+            active,
+            donors: donorsCount
         } = snap.data().d
+        const donorsSnap = await db.collection("posts").doc(id).collection("donors").orderBy("createdAt","desc").limit(10).get()
+        const donors = []
+        donorsSnap.forEach(donor => {
+            const data = donor.data()
+            const createdAt = data.createdAt.toDate()
+            data.createdAt = createdAt
+            donors.push(data)
+        })
         const createdAt = snap.data().d.createdAt.toDate()
         res.send({
             name,
@@ -29,6 +39,9 @@ module.exports = async (req, res) => {
             photos,
             placename,
             createdAt,
+            donors,
+            donorsCount,
+            active
         })
     } catch (err) {
         console.log(err)
