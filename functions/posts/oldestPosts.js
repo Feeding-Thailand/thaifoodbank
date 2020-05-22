@@ -2,12 +2,15 @@ const fb = require("firebase-admin")
 const db = fb.firestore()
 module.exports = async (req, res) => {
     try {
-        const lastdocId = req.query.latestVisible
+        const lastdocId = req.query.lastVisible
         let fpart = db
             .collection("posts")
-            .orderBy("d.createdAt", "asc")
             .where("d.active", "==", true)
-        if (lastdocId) fpart = fpart.startAfter(lastdocId)
+            .orderBy("d.createdAt", "asc")
+        if (lastdocId) {
+            const docSnap = await db.collection("posts").doc(lastdocId)
+            fpart = fpart.startAfter(docSnap)
+        }
         const query = await fpart.limit(12).get()
         var data = []
         query.forEach(doc => {
@@ -21,7 +24,7 @@ module.exports = async (req, res) => {
                     uid,
                     photos,
                     createdAt,
-                    placename
+                    placename,
                 },
                 id: doc.id,
             })
