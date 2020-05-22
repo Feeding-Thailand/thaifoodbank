@@ -1,5 +1,7 @@
 const firebase_tools = require("firebase-tools")
 const firebaseToken = require("./firebaseToken")
+const fb = require("firebase-admin")
+const db = fb.firestore()
 module.exports = async (id) => {
     await firebase_tools.firestore.delete(`posts/${id}`, {
         project: process.env.GCLOUD_PROJECT,
