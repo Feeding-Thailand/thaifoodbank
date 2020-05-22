@@ -9,6 +9,7 @@ const geocollection = geofirestore.collection("posts")
 const mapboxToken = require("../mapboxToken")
 const axios = require("axios")
 const mime = require("mime-types")
+const formatImage = require("../helpers/formatImage")
 function base64MimeType(encoded) {
     var result = null
     if (typeof encoded !== "string") return result
@@ -29,6 +30,7 @@ const writeFile = async (base64Raw, fname) => {
             res()
         })
     )
+    await formatImage(fpath)
     console.log(fpath)
     await bucket.upload(fpath, {
         destination: fname,
