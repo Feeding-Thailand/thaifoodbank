@@ -337,7 +337,7 @@ export default class View extends React.Component {
                                     {this.state.data.active === false &&
                                         <div className='row mt-3'>
                                             <div className='col-12'>
-                                                <Alert className='text-center' variant='secondary'>คุณได้ระบุว่าได้รับความช่วยเหลือแล้ว</Alert>
+                                                <Alert className='text-center' variant='secondary'>ผู้รับบริจาคได้ระบุว่าได้รับความช่วยเหลือแล้ว</Alert>
                                             </div>
                                         </div>
                                     }
