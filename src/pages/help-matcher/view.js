@@ -336,7 +336,6 @@ export default class View extends React.Component {
                                 {(this.state.data.uid === this.state.user) && this.state.user && this.state.data !== 'loading' &&
                                     <div className='w-100 mt-3'>
                                         <hr />
-
                                         <h4 className='mb-4'>ผู้ร่วมช่วยเหลือ <span className='badge badge-danger'>{this.state.data.donorsCount} คน</span></h4>
                                         <Donors donors={this.state.data.donors} />
                                     </div>
