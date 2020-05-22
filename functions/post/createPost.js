@@ -18,8 +18,9 @@ function base64MimeType(encoded) {
     return result
 }
 const bucket = fb.storage().bucket()
-const writeFile = async (base64Raw, fname) => {
+const writeFile = async (base64Raw, fname, tname) => {
     const fpath = path.join(os.tmpdir(), fname)
+    const tpath = path.join(os.tmpdir(), tname)
     const base64Data = base64Raw
         .replace(/^data:image\/png;base64,/, "")
         .replace(/^data:image\/jpeg;base64,/, "")
@@ -30,9 +31,9 @@ const writeFile = async (base64Raw, fname) => {
             res()
         })
     )
-    await formatImage(fpath)
-    console.log(fpath)
-    await bucket.upload(fpath, {
+    await formatImage(fpath, tpath)
+    console.log(fpath, tpath)
+    await bucket.upload(tpath, {
         destination: fname,
     })
 }
@@ -44,7 +45,8 @@ const writeFiles = async (files, docname) => {
         files.map(async (file, idx) => {
             await writeFile(
                 file[0],
-                path.join(docname, `${idx + 1}.${file[1]}`)
+                path.join(docname, `${idx + 1}.${file[1]}`),
+                path.join(docname, `${idx + 1}.jpg`)
             )
         })
     )
