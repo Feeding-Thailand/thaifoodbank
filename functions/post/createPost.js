@@ -64,7 +64,10 @@ module.exports = async (req, res) => {
             .where("d.uid", "==", req.authId)
             .get()
         if (preSnap.size > 0) {
-            res.status(409).send("user already created a post")
+            res.status(409).send({
+                error: "user already created a post",
+                status: 703
+            })
             return
         }
         const extractedBody = (({
@@ -92,7 +95,7 @@ module.exports = async (req, res) => {
                         extractedBody[key] === null
                     ) {
                         res.status(400).send({
-                            status: `key ${key} not found, val = ${extractedBody[key]}`,
+                            error: `key ${key} not found, val = ${extractedBody[key]}`,
                         })
                         return true
                     } else return null
@@ -110,7 +113,7 @@ module.exports = async (req, res) => {
             need, // What do you need?
         } = extractedBody
         if (!validatePID(pid)) {
-            res.status(400).send({ status: "invalid pid" })
+            res.status(400).send({ error: "invalid pid", status: 700 })
             return
         }
         const preSnap2 = await db
@@ -118,7 +121,7 @@ module.exports = async (req, res) => {
             .where("d.pid", "==", pid)
             .get()
         if (preSnap2.size > 0) {
-            res.status(409).send("user has same pid with someone else")
+            res.status(409).send({ error: "user has same pid with someone else", status: 700 })
             return
             // remark: if there are people with fake pids, this might be a big problem to acceptors
             // maybe need further checking process (i.e. ID card photo validation)
@@ -130,18 +133,18 @@ module.exports = async (req, res) => {
             feature => feature.text_th === postcode
         )
         if (!features || features.length === 0) {
-            res.status(400).send({ status: "postcode not found" })
+            res.status(400).send({ error: "postcode not found", status: 701 })
             return
         }
         const placename = features[0].place_name_th
         if (!placename) {
-            res.status(400).send({ status: "geocode failure" })
+            res.status(400).send({ error: "geocode failure", status: 701 })
             return
         }
         const lat = features[0].center[1]
         const lng = features[0].center[0]
         if (!lat || !lng) {
-            res.status(400).send({ status: "coordinate failure" })
+            res.status(400).send({ error: "coordinate failure", status: 701 })
             return
         }
         const userGeo = new fb.firestore.GeoPoint(Number(lat), Number(lng))
@@ -151,14 +154,18 @@ module.exports = async (req, res) => {
                 const mimeType = base64MimeType(imgd)
                 if (!mimeType) {
                     res.status(400).send({
-                        status: "image mime type not found or invalid",
+                        status: 702,
+                        error: "image mime type not found or invalid",
                     })
                     return false
                 }
                 let extension = mime.extension(mimeType)
                 if (extension === "jpeg") extension = "jpg"
                 if (extension !== "png" && extension !== "jpg") {
-                    res.status(400).send({ status: "invalid extension" })
+                    res.status(400).send({
+                        status: 702,
+                        status: "invalid extension"
+                    })
                     return false
                 }
                 return [imgd, extension]
