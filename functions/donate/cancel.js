@@ -12,8 +12,8 @@ module.exports = async (req, res) => {
             .collection('donors')
             .where('uid', '==', req.authId)
             .get()
-        
-        querySnap.forEach((doc) => {
+
+        querySnap.forEach(async (doc) => {
             await doc.ref.delete()
         })
         db.collection("posts")
