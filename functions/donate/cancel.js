@@ -7,8 +7,12 @@ module.exports = async (req, res) => {
             res.status(400).send("document id not found")
             return
         }
-        const ref = db.collection('posts').doc(id).collection('donors').where('uid', '==', req.authId)
-        const querySnap = await ref.get()
+        const querySnap = await db.collection('posts')
+            .doc(id)
+            .collection('donors')
+            .where('uid', '==', req.authId)
+            .get()
+        
         querySnap.forEach((doc) => {
             await doc.ref.delete()
         })
