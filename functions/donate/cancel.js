@@ -13,11 +13,11 @@ module.exports = async (req, res) => {
             .collection("donors")
             .where("uid", "==", req.authId)
             .get()
-        if (snap.empty) {
+        if (querySnap.empty) {
             res.status(409).send("no donation record found")
             return
         }
-        if (snap.size > 1) {
+        if (querySnap.size > 1) {
             res.status(500).send("duplicate donation record found")
             return
         }
