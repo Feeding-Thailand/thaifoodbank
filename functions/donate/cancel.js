@@ -7,15 +7,24 @@ module.exports = async (req, res) => {
             res.status(400).send("document id not found")
             return
         }
-        const querySnap = await db.collection('posts')
+        const querySnap = await db
+            .collection("posts")
             .doc(id)
-            .collection('donors')
-            .where('uid', '==', req.authId)
+            .collection("donors")
+            .where("uid", "==", req.authId)
             .get()
-
-        querySnap.forEach(async (doc) => {
-            await doc.ref.delete()
+        if (snap.empty) {
+            res.status(409).send("no donation record found")
+            return
+        }
+        if (snap.size > 1) {
+            res.status(500).send("duplicate donation record found")
+        }
+        let did = undefined
+        querySnap.forEach(doc => {
+            did = doc.id
         })
+        db.collection("posts").doc(id).collection("donors").doc(did).delete()
         db.collection("posts")
             .doc(id)
             .update({
