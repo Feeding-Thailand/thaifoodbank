@@ -39,7 +39,7 @@ const Privacy = () => (
                 </div>
                 <div className='row mt-5 mb-5'>
                     <div className='col-md-3 col-4'>
-                        <div className='profile-pic' style={{ backgroundImage: `url(${require('../assets/images/porames.jpg')})` }} />
+                        <div className='profile-pic' style={{ backgroundImage: `url(${require('../assets/images/porames-2.jpg')})` }} />
                     </div>
                     <div className='col-md-9 col-8 flex-center'>
                         <h5>ปรเมศวร์ วัฒนประสาน</h5>
