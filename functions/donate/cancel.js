@@ -19,6 +19,7 @@ module.exports = async (req, res) => {
         }
         if (snap.size > 1) {
             res.status(500).send("duplicate donation record found")
+            return
         }
         let did = undefined
         querySnap.forEach(doc => {
