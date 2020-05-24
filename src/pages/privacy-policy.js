@@ -10,7 +10,7 @@ const Privacy = () => (
         </Header>
         <div>
             <div style={{ maxWidth: 720 }} className='container pt-5 pb-5'>
-                <Link to='/'><img className='mb-1' height='40px' src={require('../assets/images/logo-single-line.svg')}/></Link>
+                <Link to='/'><img className='mb-2' height='40px' src={require('../assets/images/logo-single-line.svg')}/></Link>
                 <h1>นโยบายข้อมูลส่วนบุคคล</h1>
                 <h5 className='text-muted mb-4'>นโยบายข้อมูลส่วนบุคคลนี้ถูกแก้ไขล่าสุดเมื่อวันที่ 21 พฤษภาคม 2563</h5>
                 <p>

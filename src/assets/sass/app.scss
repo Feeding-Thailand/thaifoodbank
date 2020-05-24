@@ -260,3 +260,12 @@ p {
     left: 1rem;
 
 }
+
+.profile-pic{
+    width: 100%;
+    padding-top: 100%;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+}
