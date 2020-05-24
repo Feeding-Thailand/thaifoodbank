@@ -19,14 +19,14 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-
+    
     # Install node_modules
     - name: Install Dependencies
-      run: npm install
-    
+      run: npx yarn
+      
     # Build gatsby sites
-    - name: Github Action for Gatsby CLI
-      uses: plumsirawit/gatsby-cli-github-action@master
+    - name: Build Gatsby
+      run: npx yarn build
     
     # Deploy to firebase
     - name: Deploy Firebase Hosting

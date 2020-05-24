@@ -18,11 +18,11 @@ module.exports = async (req, res) => {
             Number(req.params.lng)
         )
         const query = geocollection
+            .where("active", "==", true)
             .near({
                 center: userGeo,
                 radius: Number(req.params.radius),
             })
-            .where("active", "==", true)
             .limit(12)
         var snap = await query.get()
         snap = snap.docs
