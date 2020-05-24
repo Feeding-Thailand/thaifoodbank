@@ -2,27 +2,16 @@ const fb = require("firebase-admin")
 const db = fb.firestore()
 module.exports = async (req, res) => {
     try {
-        console.log(req)
         const id = req.params.id
         if (!id) {
             res.status(400).send("document id not found")
             return
         }
-        const snap = await db
-            .collection("posts")
-            .doc(id)
-            .collection("donors")
-            .where("uid", "==", req.authId)
-            .get()
-        if (snap.empty) {
-            res.status(409).send("no donation record found")
-            return
-        }
-        db.collection("posts")
-            .doc(id)
-            .collection("donors")
-            .doc(snap.id)
-            .delete()
+        const ref = db.collection('posts').doc(id).collection('donors').where('uid', '==', req.authId)
+        const querySnap = await ref.get()
+        querySnap.forEach((doc) => {
+            await doc.ref.delete()
+        })
         db.collection("posts")
             .doc(id)
             .update({
