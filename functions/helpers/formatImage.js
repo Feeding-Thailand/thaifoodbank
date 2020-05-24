@@ -1,14 +1,20 @@
 const sharp = require("sharp")
-module.exports = async (inpath, outpath) => {
+module.exports = (inpath, outpath) => {
     const image = sharp(inpath)
-    const { width, height } = await image.metadata()
-    const args = [null, null]
-    args[height > width ? 1 : 0] = 500
-    await image
-        .resize(...args)
-        .jpeg({
-            quality: 60,
-            chromaSubsampling: "4:4:4",
+    return image
+        .metadata()
+        .then(({ width, height }) => {
+            const args = [null, null]
+            args[height > width ? 1 : 0] = 500
+            return image
+                .resize(...args)
+                .jpeg({
+                    quality: 60,
+                    chromaSubsampling: "4:4:4",
+                })
+                .toFile(outpath)
         })
-        .toFile(outpath)
+        .catch(err => {
+            console.log("[ERROR]", "formatImage", err)
+        })
 }
