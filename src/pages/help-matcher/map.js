@@ -26,7 +26,7 @@ export default class Mapping extends React.Component {
                 const geo = { lat: pos.coords.latitude, lng: pos.coords.longitude }
                 console.log(geo)
                 this.setState({ position: geo, requestGeo: false })
-                const req = await axios.get(`${apiEndpoint}/posts/${geo.lat}/${geo.lng}/1000`)
+                const req = await axios.get(`${apiEndpoint}/posts/${geo.lat}/${geo.lng}/100`)
                 this.setState({ data: req.data }, () => console.log(this.state.data))
             })
         }
@@ -75,7 +75,7 @@ export default class Mapping extends React.Component {
                             {this.state.data !== 'loading' && !_.isEmpty(this.state.data) &&
                                 this.state.data.map((item, index) => {
                                     return (
-                                        <Person data={{ ...item.data, id: item.id }} key={index} />
+                                        <Person data={{ ...item.data }} key={index} id={item.id} />
                                     )
                                 })
                             }
@@ -88,7 +88,7 @@ export default class Mapping extends React.Component {
                             }
                             {this.state.data === 'loading' &&
                                 <div className='flex-center pt-5 pb-5 w-100' style={{ alignItems: 'center' }}>
-                                    <Spinner variant='primary' animation="border" />
+                                    <Spinner variant='primary' animation="grow" />
                                 </div>
                             }
                         </div>

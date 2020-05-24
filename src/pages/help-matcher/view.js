@@ -177,6 +177,23 @@ export default class View extends React.Component {
             console.log(err)
         }
     }
+
+    async removeDonation() {
+        const id = queryString.parse(this.props.location.search).id
+        try {
+            const token = await firebase.auth().currentUser.getIdToken()
+            const req = await axios.delete(`${apiEndpoint}/donate/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            console.log(req.data)
+            this.setState({ isDonated: { isDonated: false } })
+        }
+        catch (err) {
+            console.log(err)
+        }
+    }
     render() {
         return (
             <div>
@@ -346,8 +363,8 @@ export default class View extends React.Component {
                                 <hr />
                                 <div className='w-100'>
                                     {this.state.isDonated && this.state.isDonated.isDonated === true &&
-                                        <Alert variant='secondary' className='text-center'>
-                                            คุณได้แสดงความประสงค์บริจาคกับบุคคลนี้ไปแล้ว
+                                        <Alert variant='secondary' className='d-flex' style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                                            คุณได้แสดงความประสงค์บริจาคกับบุคคลนี้ไปแล้ว <Button variant='link' onClick={async () => await this.removeDonation()} className='ml-2 text-danger p-0'>ยกเลิก</Button>
                                         </Alert>
                                     }
                                     <h4>รายละเอียด</h4>

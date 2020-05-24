@@ -23,16 +23,22 @@ class Counter extends React.Component {
 			<div className='mt-1'>
 				<div className='container pt-5 pb-5 flex-center' style={{ minHeight: 250 }}>
 					<div className='row'>
-						<div className='col-md-6 p-3'>
+						<div className='col-md-4 p-3'>
 							<div className='counter text-center'>
 								<h2 className=''>{this.state?.currentPosts} คน</h2>
 								<span>กำลังรอการช่วยเหลือ</span>
 							</div>
 						</div>
-						<div className='col-md-6 p-3'>
+						<div className='col-md-4 p-3'>
 							<div className='counter text-center'>
 								<h2 className=''>{this.state?.donors} คน</h2>
 								<span>จำนวนผู้บริจาค</span>
+							</div>
+						</div>
+						<div className='col-md-4 p-3'>
+							<div className='counter text-center'>
+								<h2 className=''>{this.state?.closedPosts} คน</h2>
+								<span>ได้รับความช่วยเหลือไปแล้ว</span>
 							</div>
 						</div>
 					</div>
