@@ -1,5 +1,5 @@
 const firebase_tools = require("firebase-tools")
-const firebaseToken = require("./firebaseToken")
+const firebaseToken = require("../secrets/firebaseToken")
 const fb = require("firebase-admin")
 const db = fb.firestore()
 module.exports = async (id) => {
