@@ -10,8 +10,8 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
+  # This workflow contains a single job called "deploy"
+  deploy:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -34,20 +34,24 @@ jobs:
     - run: npm ci
       working-directory: functions
     
+    # Add secrets directory
+    - run: mkdir secrets
+      working-directory: functions
+
     # Write down secret mapbox token
-    - run: echo "module.exports = \"$MAPBOX_TOKEN\"" > ./mapboxToken.js
+    - run: echo "module.exports = \"$MAPBOX_TOKEN\"" > ./secrets/mapboxToken.js
       working-directory: functions
       env:
         MAPBOX_TOKEN: ${{ secrets.MAPBOX_TOKEN }}
   
     # Write down reCAPTCHA secret
-    - run: echo "module.exports = \"$RECAPTCHA_SECRET\"" > ./recaptchaSecret.js
+    - run: echo "module.exports = \"$RECAPTCHA_SECRET\"" > ./secrets/recaptchaSecret.js
       working-directory: functions
       env:
         RECAPTCHA_SECRET: ${{ secrets.RECAPTCHA_SECRET }}
     
     # Write down firebase token
-    - run: echo "module.exports = \"$FIREBASE_TOKEN\"" > ./firebaseToken.js
+    - run: echo "module.exports = \"$FIREBASE_TOKEN\"" > ./secrets/firebaseToken.js
       working-directory: functions
       env:
         RECAPTCHA_SECRET: ${{ secrets.FIREBASE_TOKEN }}
