@@ -5,6 +5,8 @@ import { Link } from 'gatsby'
 import PostHero from '../components/post-hero-md'
 import JoinUs from '../components/joinUs'
 import firebase from '../components/firebase'
+import { withTranslation } from 'react-i18next'
+import '../components/i18n'
 
 class Counter extends React.Component {
 	constructor(props) {
@@ -96,10 +98,10 @@ const AboutUs = () => (
 	</div>
 )
 
-const IndexPage = () => (
+const IndexPage = ({t, i18n}) => (
 	<div>
 		<Header>
-			<title>Feeding Thailand</title>
+			<title>{t('appName')}</title>
 		</Header>
 		<div className='hero d-flex' style={{ backgroundImage: `url(${require('../assets/images/cover.jpg')})` }}>
 			<div className='container'>
@@ -123,4 +125,4 @@ const IndexPage = () => (
 	</div>
 )
 
-export default IndexPage
+export default withTranslation()(IndexPage)
