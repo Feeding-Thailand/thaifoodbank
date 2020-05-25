@@ -70,7 +70,7 @@ export default class HelpMatcher extends React.Component {
                                 </div>
                                 <div className='col-md-6 mb-4 mt-4'>
                                     <Link to={`/help-matcher/view?id=${this.state.latestPost.id}`}>
-                                        <div className='item pb-3 shadow-md pt-3' style={{ backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/thaifoodbank.appspot.com/o/${this.state.latestPost.id}%2f${this.state.latestPost.photos[0]}?alt=media)` }}>
+                                        <div className='item pb-3 shadow-md pt-3' style={{ backgroundImage: `url(https://firebasestorage.googleapis.com/v0/b/thaifoodbank.appspot.com/o/${this.state.latestPost.id}%2f1.jpg?alt=media)` }}>
                                             <div className='text-white pl-3 text-over'>
                                                 <h4 className='mb-0 text-white'>{this.state.latestPost.name}</h4>
                                                 <span>{parseAddress(this.state.latestPost.placename)}</span>
