@@ -90,12 +90,9 @@ export default class View extends React.Component {
             const id = queryString.parse(this.props.location.search).id
             const req = await axios.get(`${apiEndpoint}/post/${id}`)
             this.setState({ data: req.data })
+            const image = `https://firebasestorage.googleapis.com/v0/b/thaifoodbank.appspot.com/o/${id}%2f1.jpg?alt=media`
+            this.setState({ images: [...this.state.images, image] })
 
-            req.data.photos.map((item, index) => {
-                const image = `https://firebasestorage.googleapis.com/v0/b/thaifoodbank.appspot.com/o/${id}%2f${item}?alt=media`
-                console.log(image)
-                this.setState({ images: [...this.state.images, image] })
-            })
 
             firebase.auth().onAuthStateChanged(async (user) => {
                 if (user) {
@@ -363,7 +360,7 @@ export default class View extends React.Component {
                                 <hr />
                                 <div className='w-100'>
                                     {this.state.isDonated && this.state.isDonated.isDonated === true &&
-                                        <Alert variant='secondary' className='d-flex' style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                                        <Alert variant='secondary' className='d-flex' style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                                             คุณได้แสดงความประสงค์บริจาคกับบุคคลนี้ไปแล้ว <Button variant='link' onClick={async () => await this.removeDonation()} className='ml-2 text-danger p-0'>ยกเลิก</Button>
                                         </Alert>
                                     }
