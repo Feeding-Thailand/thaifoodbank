@@ -32,17 +32,18 @@ const writeFile = async (base64Raw, fname, iname, tname) => {
         })
     )
     await formatImage(fpath, ipath)
+    console.log(fpath, ipath)
     await bucket.upload(ipath, {
         destination: tname,
     })
 }
-const writeFiles = (files, docname) => {
+const writeFiles = async (files, docname) => {
     if (!fs.existsSync(path.join(os.tmpdir(), docname))) {
         fs.mkdirSync(path.join(os.tmpdir(), docname))
     }
-    return Promise.all(
-        files.map((file, idx) => {
-            return writeFile(
+    await Promise.all(
+        files.map(async (file, idx) => {
+            await writeFile(
                 file[0],
                 path.join(docname, `${idx + 1}.${file[1]}`),
                 path.join(docname, `${idx + 1}-out.jpg`),
