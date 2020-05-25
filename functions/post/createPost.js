@@ -42,8 +42,8 @@ const writeFiles = async (files, docname) => {
         fs.mkdirSync(path.join(os.tmpdir(), docname))
     }
     await Promise.all(
-        files.map(async (file, idx) => {
-            await writeFile(
+        files.map((file, idx) => {
+            return writeFile(
                 file[0],
                 path.join(docname, `${idx + 1}.${file[1]}`),
                 path.join(docname, `${idx + 1}-out.jpg`),
@@ -191,7 +191,7 @@ module.exports = async (req, res) => {
             donors: 0,
             photos: parsedImages.map((val, idx) => `${idx + 1}.${val[1]}`),
         })
-        await Promise.all(
+        await Promise.all([
             writeFiles(parsedImages, firestoreSnap.id),
             db.collection("stats")
             .doc("stats")
@@ -200,7 +200,7 @@ module.exports = async (req, res) => {
                 activePosts: fb.firestore.FieldValue.increment(1),
                 currentPosts: fb.firestore.FieldValue.increment(1),
             })
-        )
+        ])
         res.send({
             status: "success",
             firestoreId: firestoreSnap.id,
