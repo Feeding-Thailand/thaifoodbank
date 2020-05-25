@@ -191,14 +191,16 @@ module.exports = async (req, res) => {
             donors: 0,
             photos: parsedImages.map((val, idx) => `${idx + 1}.${val[1]}`),
         })
-        await writeFiles(parsedImages, firestoreSnap.id)
-        db.collection("stats")
+        await Promise.all(
+            writeFiles(parsedImages, firestoreSnap.id),
+            db.collection("stats")
             .doc("stats")
             .update({
                 allPosts: fb.firestore.FieldValue.increment(1),
                 activePosts: fb.firestore.FieldValue.increment(1),
                 currentPosts: fb.firestore.FieldValue.increment(1),
             })
+        )
         res.send({
             status: "success",
             firestoreId: firestoreSnap.id,
