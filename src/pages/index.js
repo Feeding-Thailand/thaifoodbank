@@ -28,19 +28,19 @@ class Counter extends React.Component {
 					<div className='row'>
 						<div className='col-md-4 p-3'>
 							<div className='counter text-center'>
-								<h2 className=''>{this.state?.currentPosts} คน</h2>
+								<h2 className=''>{this.state?.currentPosts} {t('people')}</h2>
 								<span>{t('waitingForHelp')}</span>
 							</div>
 						</div>
 						<div className='col-md-4 p-3'>
 							<div className='counter text-center'>
-								<h2 className=''>{this.state?.donors} คน</h2>
+								<h2 className=''>{this.state?.donors} {t('people')}</h2>
 								<span>{t('donorsCount')}</span>
 							</div>
 						</div>
 						<div className='col-md-4 p-3'>
 							<div className='counter text-center'>
-								<h2 className=''>{this.state?.closedPosts} คน</h2>
+								<h2 className=''>{this.state?.closedPosts} {t('people')}</h2>
 								<span>{t('successCount')}</span>
 							</div>
 						</div>
