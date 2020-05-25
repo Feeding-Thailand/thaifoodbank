@@ -30,5 +30,8 @@
     "contactMethods": "ช่องทางการติดต่อ",
     "facebook": "Facebook",
     "website": "เว็บไซต์",
-    "email": "Email"
+    "email": "Email",
+    "notFound": "ไม่พบข้อมุลที่คุณร้องขอ",
+    "returnToMain": "กลับไปหน้าหลัก"
+
 }
