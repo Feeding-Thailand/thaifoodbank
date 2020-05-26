@@ -9,6 +9,8 @@ import _ from 'lodash'
 import axios from 'axios'
 import { apiEndpoint } from '../../components/constants'
 import firebase from '../../components/firebase'
+import { withTranslation } from 'react-i18next'
+
 function parseAddress(address) {
     var x = address.split(', ')
     x.splice(0, 1)
@@ -23,7 +25,7 @@ function formatText(text) {
     }
 }
 
-export default class HelpMatcher extends React.Component {
+class HelpMatcher extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -55,6 +57,7 @@ export default class HelpMatcher extends React.Component {
         })
     }
     render() {
+        const {t, i18n} = this.props
         return (
             <div>
                 <Header>
@@ -66,7 +69,7 @@ export default class HelpMatcher extends React.Component {
                         {this.state.latestPost !== 'loading' && this.state.latestPost !== 'n/a' &&
                             <div className='row mb-4'>
                                 <div className='col-12'>
-                                    <h2>ข้อมูลขอความช่วยเหลือของคุณ</h2>
+                                    <h2>{t('yourHelpData')}</h2>
                                 </div>
                                 <div className='col-md-6 mb-4 mt-4'>
                                     <Link to={`/help-matcher/view?id=${this.state.latestPost.id}`}>
@@ -86,17 +89,17 @@ export default class HelpMatcher extends React.Component {
                             <div className='row mb-5'>
                                 <div className='col-12'>
                                     <Link to='/help-matcher/register' className='fig-link p-3 item flex-center text-center shadow-md' style={{ backgroundImage: `url(${require('../../assets/images/register-help.jpg')})`, alignItems: 'center' }}>
-                                        <h4 className='mb-0 text-white'>ลงทะเบียนขอรับความช่วยเหลือ</h4>
+                                        <h4 className='mb-0 text-white'>{t('registerDonation')}</h4>
                                     </Link>
                                 </div>
                             </div>
                         }
                         <div className='mb-4 row'>
                             <div className='col-md-6 pb-3'>
-                                <h2>ผู้ต้องการความช่วยเหลือขณะนี้</h2>
+                                <h2>{t('currentReceivers')}</h2>
                             </div>
                             <div className='col-md-6 pb-3 d-flex justify-content-md-end align-items-md-start'>
-                                <Link to='/help-matcher/map' className='btn btn-primary'>ดูผู้ต้องการความช่วยเหลือใกล้ตัวคุณ</Link>
+                                <Link to='/help-matcher/map' className='btn btn-primary'>{t('viewNearReceivers')}</Link>
                             </div>
                         </div>
                         <HelpList />
@@ -107,3 +110,5 @@ export default class HelpMatcher extends React.Component {
         )
     }
 }
+
+export default withTranslation()(HelpMatcher)
