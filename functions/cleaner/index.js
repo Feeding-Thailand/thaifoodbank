@@ -1,6 +1,6 @@
 const fb = require("firebase-admin")
 const db = fb.firestore()
-const deleteDoc = require("../doDelete")
+const deleteDoc = require("../helpers/doDelete")
 module.exports = async context => {
     const now = new Date()
     now.setMonth(now.getMonth() - 1)

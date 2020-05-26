@@ -1,6 +1,6 @@
 const fb = require("firebase-admin")
 const db = fb.firestore()
-const deleteDoc = require("../doDelete")
+const deleteDoc = require("../helpers/doDelete")
 module.exports = async (req, res) => {
     try {
         const id = req.params.id
