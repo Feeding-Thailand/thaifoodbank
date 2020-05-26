@@ -189,7 +189,7 @@ module.exports = async (req, res) => {
             placename,
             active: true,
             donors: 0,
-            photos: parsedImages.map((val, idx) => `${idx + 1}.${val[1]}`),
+            photos: parsedImages.length
         })
         await Promise.all([
             writeFiles(parsedImages, firestoreSnap.id),
