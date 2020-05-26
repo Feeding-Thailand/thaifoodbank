@@ -91,7 +91,7 @@ export default class View extends React.Component {
             const req = await axios.get(`${apiEndpoint}/post/${id}`)
             this.setState({ data: req.data })
             const image = `https://firebasestorage.googleapis.com/v0/b/thaifoodbank.appspot.com/o/${id}%2f1.jpg?alt=media`
-            this.setState({ images: [...this.state.images, image] })
+            this.setState({ images: [image] })
 
 
             firebase.auth().onAuthStateChanged(async (user) => {

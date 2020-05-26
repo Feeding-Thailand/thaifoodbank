@@ -101,10 +101,10 @@ const IndexPage = () => (
 		<Header>
 			<title>Feeding Thailand</title>
 		</Header>
-		<div className='hero d-flex' style={{ backgroundImage: `url(${require('../assets/images/cover.jpg')})` }}>
+		<div className='hero d-flex' style={{backgroundImage: `url(${require('../assets/images/hero-home.jpg')})`}}>
 			<div className='container'>
 				<div className='row'>
-					<div className='col-md-6 mb-5 mb-md-0 d-flex' style={{ justifyContent: 'center', flexDirection: 'column', alignItems: 'flex-start' }}>
+					<div className='col-12 mb-5 mb-md-0 d-flex' style={{ justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
 						<img className='mb-3' src={require('../assets/images/feeding-thailand-logo.svg')} height='120px' />
 						<h3 className='text-white'>ช่วยเหลือคนไทยในภาวะวิกฤต</h3>
 						<Link to='/help-matcher' className='btn btn-lg btn-primary shadow-md mt-3'>ลงทะเบียนขอรับความช่วยเหลือ</Link>

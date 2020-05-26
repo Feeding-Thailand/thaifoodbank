@@ -31,8 +31,10 @@ export default class HelpList extends React.Component {
         try {
             const req = await axios.get(`${apiEndpoint}/posts/oldest`)
             this.setState({ data: req.data })
-            if (req.data.length % 12 === 0) {
-                this.lastVisible = req.data[req.data.length - 1].id
+            if (!_.isEmpty(req.data)) {
+                if (req.data.length % 12 === 0) {
+                    this.lastVisible = req.data[req.data.length - 1].id
+                }
             }
         } catch (err) {
             console.log(err)
@@ -62,7 +64,7 @@ export default class HelpList extends React.Component {
                         )
                     }
                     )}
-                {(this.state.data.length % 12) === 0 &&
+                {!_.isEmpty(this.state.data) && (this.state.data.length % 12) === 0 &&
                     <div className='w-100 text-center mt-3'>
                         {!this.state.loading &&
                             <Button onClick={async () => await this.loadMore()} style={{ fontWeight: 600 }} variant='link'>ดูเพิ่มเติม</Button>
