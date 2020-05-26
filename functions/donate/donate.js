@@ -1,6 +1,7 @@
 const fb = require("firebase-admin")
 const db = fb.firestore()
 module.exports = async (req, res) => {
+    const backgroundPromises = []
     try {
         console.log(req)
         const id = req.params.id
@@ -35,12 +36,17 @@ module.exports = async (req, res) => {
             res.status(409).send("user already donated")
             return
         }
-        db.collection("posts").doc(id).collection("donors").add(user)
-        db.collection("posts")
-            .doc(id)
-            .update({
-                "d.donors": fb.firestore.FieldValue.increment(1),
-            })
+        backgroundPromises.push(
+            db.collection("posts").doc(id).collection("donors").add(user)
+        )
+        backgroundPromises.push(
+            db
+                .collection("posts")
+                .doc(id)
+                .update({
+                    "d.donors": fb.firestore.FieldValue.increment(1),
+                })
+        )
         const statsSnap = await db
             .collection("stats")
             .doc("stats")
@@ -48,24 +54,32 @@ module.exports = async (req, res) => {
             .where("uid", "==", user.uid)
             .get()
         if (statsSnap.empty) {
-            db.collection("stats").doc("stats").collection("donors").add({
-                uid: user.uid,
-                donationCount: 1,
-            })
-            db.collection("stats")
-                .doc("stats")
-                .update({ donors: fb.firestore.FieldValue.increment(1) })
+            backgroundPromises.push(
+                db.collection("stats").doc("stats").collection("donors").add({
+                    uid: user.uid,
+                    donationCount: 1,
+                })
+            )
+            backgroundPromises.push(
+                db
+                    .collection("stats")
+                    .doc("stats")
+                    .update({ donors: fb.firestore.FieldValue.increment(1) })
+            )
         } else if (statsSnap.size > 1) {
             res.status(500).send("duplicate uid found in database")
         } else {
             statsSnap.forEach(doc => {
-                db.collection("stats")
-                    .doc("stats")
-                    .collection("donors")
-                    .doc(doc.id)
-                    .update({
-                        donationCount: fb.firestore.FieldValue.increment(1),
-                    })
+                backgroundPromises.push(
+                    db
+                        .collection("stats")
+                        .doc("stats")
+                        .collection("donors")
+                        .doc(doc.id)
+                        .update({
+                            donationCount: fb.firestore.FieldValue.increment(1),
+                        })
+                )
             })
         }
         delete user.createdAt
@@ -80,12 +94,15 @@ module.exports = async (req, res) => {
                 transaction =>
                     (currentTransactionId = transaction.data().id + 1)
             )
-        db.collection("transactions").add({
-            id: currentTransactionId,
-            donor: user,
-            createdAt: new Date(),
-            post: id,
-        })
+        backgroundPromises.push(
+            db.collection("transactions").add({
+                id: currentTransactionId,
+                donor: user,
+                createdAt: new Date(),
+                post: id,
+            })
+        )
+        await Promise.all(backgroundPromises)
         res.send("OK")
     } catch (err) {
         console.log(err)

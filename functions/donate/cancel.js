@@ -1,6 +1,7 @@
 const fb = require("firebase-admin")
 const db = fb.firestore()
 module.exports = async (req, res) => {
+    const backgroundPromises = []
     try {
         const id = req.params.id
         if (!id) {
@@ -25,12 +26,22 @@ module.exports = async (req, res) => {
         querySnap.forEach(doc => {
             did = doc.id
         })
-        db.collection("posts").doc(id).collection("donors").doc(did).delete()
-        db.collection("posts")
-            .doc(id)
-            .update({
-                "d.donors": fb.firestore.FieldValue.increment(-1),
-            })
+        backgroundPromises.push(
+            db
+                .collection("posts")
+                .doc(id)
+                .collection("donors")
+                .doc(did)
+                .delete()
+        )
+        backgroundPromises.push(
+            db
+                .collection("posts")
+                .doc(id)
+                .update({
+                    "d.donors": fb.firestore.FieldValue.increment(-1),
+                })
+        )
         const statsSnap = await db
             .collection("stats")
             .doc("stats")
@@ -46,31 +57,41 @@ module.exports = async (req, res) => {
         } else {
             if (statsSnap.donationCount === 0) {
                 statsSnap.forEach(donor =>
+                    backgroundPromises.push(
+                        db
+                            .collection("stats")
+                            .doc("stats")
+                            .collection("donors")
+                            .doc(donor.id)
+                            .delete()
+                    )
+                )
+                backgroundPromises.push(
                     db
                         .collection("stats")
                         .doc("stats")
-                        .collection("donors")
-                        .doc(donor.id)
-                        .delete()
+                        .update({
+                            donors: fb.firestore.FieldValue.increment(-1),
+                        })
                 )
-                db.collection("stats")
-                    .doc("stats")
-                    .update({ donors: fb.firestore.FieldValue.increment(-1) })
             } else {
                 statsSnap.forEach(donor =>
-                    db
-                        .collection("stats")
-                        .doc("stats")
-                        .collection("donors")
-                        .doc(donor.id)
-                        .update({
-                            donationCount: fb.firestore.FieldValue.increment(
-                                -1
-                            ),
-                        })
+                    backgroundPromises.push(
+                        db
+                            .collection("stats")
+                            .doc("stats")
+                            .collection("donors")
+                            .doc(donor.id)
+                            .update({
+                                donationCount: fb.firestore.FieldValue.increment(
+                                    -1
+                                ),
+                            })
+                    )
                 )
             }
         }
+        await Promise.all(backgroundPromises)
         res.send("OK")
     } catch (err) {
         console.log(err)

@@ -6,7 +6,7 @@ const db = fb.firestore()
 const { GeoFirestore } = require("geofirestore")
 const geofirestore = new GeoFirestore(db)
 const geocollection = geofirestore.collection("posts")
-const mapboxToken = require("../mapboxToken")
+const mapboxToken = require("../secrets/mapboxToken")
 const axios = require("axios")
 const mime = require("mime-types")
 const formatImage = require("../helpers/formatImage")
@@ -42,8 +42,8 @@ const writeFiles = async (files, docname) => {
         fs.mkdirSync(path.join(os.tmpdir(), docname))
     }
     await Promise.all(
-        files.map(async (file, idx) => {
-            await writeFile(
+        files.map((file, idx) => {
+            return writeFile(
                 file[0],
                 path.join(docname, `${idx + 1}.${file[1]}`),
                 path.join(docname, `${idx + 1}-out.jpg`),
@@ -189,16 +189,18 @@ module.exports = async (req, res) => {
             placename,
             active: true,
             donors: 0,
-            photos: parsedImages.map((val, idx) => `${idx + 1}.${val[1]}`),
+            photos: parsedImages.length
         })
-        await writeFiles(parsedImages, firestoreSnap.id)
-        db.collection("stats")
+        await Promise.all([
+            writeFiles(parsedImages, firestoreSnap.id),
+            db.collection("stats")
             .doc("stats")
             .update({
                 allPosts: fb.firestore.FieldValue.increment(1),
                 activePosts: fb.firestore.FieldValue.increment(1),
                 currentPosts: fb.firestore.FieldValue.increment(1),
             })
+        ])
         res.send({
             status: "success",
             firestoreId: firestoreSnap.id,

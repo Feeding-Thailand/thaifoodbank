@@ -1,4 +1,2 @@
 node_modules/
-mapboxToken.js
-recaptchaSecret.js
-firebaseToken.js
+secrets/

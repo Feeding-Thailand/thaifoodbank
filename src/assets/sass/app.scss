@@ -49,6 +49,7 @@
     border-radius: 100%;
     background-size: cover;
     background-position: center;
+    cursor: pointer;
 }
 .bg-light-grey {
     background-color: #f7fafc;
@@ -268,4 +269,12 @@ p {
     background-size: cover;
     background-position: center;
     border-radius: 50%;
+}
+
+.text-alt{
+    opacity: 0.8;
+    position: absolute;
+    bottom: 1em;
+    left: 1em;
+
 }

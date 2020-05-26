@@ -45,7 +45,7 @@ const Privacy = ({t, i18n}) => (
                 <h3>{t('contactMethods')}</h3>
                 <p>
                     {t('facebook')} <a href='https://facebook.com/feedingthailand'>Feeding Thailand</a><br/>
-                    {t('website')} <a href='https://feedingthai.org'>feedingthai.org</a><br/>
+                    {t('website')} <a href='https://feedingthai.co'>feedingthai.co</a><br/>
                     {t('email')} <a href='mailto:feedingthailand@gmail.com'>feedingthailand@gmail.com</a>
                 </p>
             </div>

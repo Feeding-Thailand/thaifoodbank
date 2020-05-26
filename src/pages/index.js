@@ -104,10 +104,10 @@ const IndexPage = ({t, i18n}) => (
 		<Header>
 			<title>{t('appName')}</title>
 		</Header>
-		<div className='hero d-flex' style={{ backgroundImage: `url(${require('../assets/images/cover.jpg')})` }}>
+		<div className='hero d-flex' style={{backgroundImage: `url(${require('../assets/images/hero-home.jpg')})`}}>
 			<div className='container'>
 				<div className='row'>
-					<div className='col-md-6 mb-5 mb-md-0 d-flex' style={{ justifyContent: 'center', flexDirection: 'column', alignItems: 'flex-start' }}>
+					<div className='col-12 mb-5 mb-md-0 d-flex' style={{ justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
 						<img className='mb-3' src={require('../assets/images/feeding-thailand-logo.svg')} height='120px' />
 						<h3 className='text-white'>{t('helpThaiInCrisis')}</h3>
 						<Link to='/help-matcher' className='btn btn-lg btn-primary shadow-md mt-3'>{t('registerAcceptor')}</Link>
