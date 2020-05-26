@@ -79,9 +79,25 @@ const Privacy = () => (
                     }
                 />
                 <Person
+                    imgName='891286.jpg'
+                    name='อาจารย์ ดร.อุทุมพร สุระยศ'
+                    description={
+                        <>
+                            <span>Ph.D. Applied Marine Biotechnology and Engineering, Gangneung-Wonju National University,Republic of Korea</span><br />
+                            <span>MS. Food Science and Technology,Chiang Mai University, Thailand</span><br />
+                            <span>B.Sc. Biotechnology, Chiang Mai University, Thailand</span>
+                        </>
+                    }
+                />
+                <Person
                     imgName='TU_EW00_RJ.jpg'
                     name='ณรงค์พร เหล่าศรีสิน'
                     description='วิทยากรอิสระ และนักเขียน'
+                />
+                <Person
+                    imgName='tatar.jpg'
+                    name='จารุวรรณ เชื้อดี'
+                    description='คณะศึกษาศาสตร์ ภาพนิ่ง ภาพยนต์ มหาวิทลาลัย บูรพา ปัจจุบัน Winchill Dessert &amp; Bistro (Founder) ศิลปินนักร้องอิสระ'
                 />
                 <Person
                     imgName='sirawit.jpg'
