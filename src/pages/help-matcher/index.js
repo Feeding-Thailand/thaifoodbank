@@ -58,7 +58,7 @@ export default class HelpMatcher extends React.Component {
         return (
             <div>
                 <Header>
-
+                    <title>Feeding Thailand | Help Matcher</title>
                 </Header>
                 <div style={{ backgroundColor: '#f7fafc' }}>
                     <NavHeader></NavHeader>
