@@ -18,6 +18,12 @@ const Privacy = () => (
                 <p>
                     ด้วยแนวคิดจากองค์กร Feeding America เราจึงมุ่งมั่นที่จะเสนอก่อตั้งก่อตั้งโครงการภายใต้ชื่อ Feeding Thailand เพื่อบรรเทาภัยพิบัติแห่งประเทศไทย เพื่อให้วัตถุประสงค์ในการเป็นศูนย์กลางธนาคารอาหาร Thai Food Bank ของเรามีความมั่นคงอย่างยั่งยืนเพื่อมีอาหารเพียงพอในการจัดส่งให้ทุกท่านที่เดือดร้อนให้ทั่วถึงมากที่สุดไม่เพียงแค่ในสถานการณ์ COVID-19 แต่จะต้องดำเนินการสืบต่อไป
                 </p>
+                <h3>ช่องทางการติดต่อ</h3>
+                <p>
+                    Facebook <a href='https://facebook.com/feedingthailand'>Feeding Thailand</a><br/>
+                    เว็บไซต์ <a href='https://feedingthailand.co'>feedingthailand.co</a><br/>
+                    Email <a href='mailto:feedingthailand@gmail.com'>feedingthailand@gmail.com</a>
+                </p>
                 <hr />
                 <h1>ทีมงาน Feeding Thailand</h1>
 
