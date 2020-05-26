@@ -1,5 +1,5 @@
 const express = require("express")
-const checkAuth = require("../checkAuth")
+const checkAuth = require("../helpers/checkAuth")
 const router = express.Router()
 const donate = require("./donate")
 const cancel = require("./cancel")

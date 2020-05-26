@@ -22,11 +22,7 @@ module.exports = async (req,res) => {
                 data: data[0]
             })
         }
-        else{
-            res.send({
-                isDonated: false
-            })
-        }
+        res.send({ isDonated: false })
     }
     catch(err){
         console.log(err)

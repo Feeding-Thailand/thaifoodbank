@@ -25,9 +25,9 @@ module.exports = async (req, res) => {
                 id: doc.id,
             })
         })
-        return res.send(data)
+        res.send(data)
     } catch (err) {
         console.log(err)
-        return res.status(500).send("error")
+        res.status(500).send("error")
     }
 }

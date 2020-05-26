@@ -10,7 +10,7 @@ on:
       - 'functions**'
 
 jobs:
-  build:
+  lint:
 
     runs-on: ubuntu-latest
 

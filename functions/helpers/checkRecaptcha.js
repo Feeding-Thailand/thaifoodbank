@@ -1,5 +1,5 @@
 const axios = require("axios")
-const secret = require("./recaptchaSecret.js")
+const secret = require("../secrets/recaptchaSecret")
 
 const recaptchaVerifyURL = "https://www.google.com/recaptcha/api/siteverify"
 
