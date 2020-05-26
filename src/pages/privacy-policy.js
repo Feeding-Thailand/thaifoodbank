@@ -49,7 +49,7 @@ const Privacy = () => (
                 <h3>ช่องทางการติดต่อ</h3>
                 <p>
                     Facebook <a href='https://facebook.com/feedingthailand'>Feeding Thailand</a><br/>
-                    เว็บไซต์ <a href='https://feedingthai.org'>feedingthai.org</a><br/>
+                    เว็บไซต์ <a href='https://feedingthailand.co'>feedingthailand.co</a><br/>
                     Email <a href='mailto:feedingthailand@gmail.com'>feedingthailand@gmail.com</a>
                 </p>
             </div>
