@@ -14,6 +14,7 @@ import Form from 'react-bootstrap/Form'
 import Alert from 'react-bootstrap/Alert'
 import * as moment from 'moment'
 import Reaptcha from 'reaptcha'
+import { withTranslation } from 'react-i18next'
 
 import DonateModal from '../../components/view/donateModal'
 
@@ -32,7 +33,7 @@ const Donors = (props) => (
         })}
     </div>
 )
-export default class View extends React.Component {
+class View extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -140,6 +141,7 @@ export default class View extends React.Component {
         }
     }
     render() {
+        const {t, i18n} = this.props
         return (
             <div>
                 <Header>
@@ -150,17 +152,16 @@ export default class View extends React.Component {
                     <Modal show={this.state.confirmStatus} onHide={() => this.setState({ confirmStatus: false })}>
                         <Modal.Header>
                             <Modal.Title>
-                                ยืนยันสถานะ
+                                {t('confirmStatus')}
                             </Modal.Title>
                             <button className='btn btn-icon' onClick={() => this.setState({ confirmStatus: false })}><span className='material-icons'>close</span></button>
                         </Modal.Header>
                         <Modal.Body>
-                            เมื่อท่านกดปุ่ม<b>ยืนยันการได้รับความช่วยเหลือ</b>แล้ว ข้อมูลความช่วยเหลือของคุณจะถูกเปลี่ยนสถานะเป็นได้รับความช่วยเหลือแล้ว
-                            และจะถูกนำออกจากหน้าแสดงผู้ต้องการความช่วยเหลือ
+                            {t('uponPressing')}<b>{t('confirmHelped')}</b>{t('afterPressingConfirmHelpedDescription')}
                         </Modal.Body>
                         <Modal.Footer>
                             <Button disabled={this.state.waiting} variant='secondary' onClick={async () => await this.confirm()}>
-                                ยืนยันการได้รับความช่วยเหลือ
+                                {t('confirmHelped')}
                             </Button>
 
                         </Modal.Footer>
@@ -168,15 +169,15 @@ export default class View extends React.Component {
                     </Modal>
                     <Modal show={this.state.showDelete} onHide={() => this.setState({ showDelete: false })} >
                         <Modal.Header className='bg-danger'>
-                            <Modal.Title className='text-white'>ยืนยันการลบข้อมูล</Modal.Title>
+                            <Modal.Title className='text-white'>{t('confirmDeletion')}</Modal.Title>
                             <button onClick={() => this.setState({ showDelete: false })} className='text-white btn btn-icon'><span className='material-icons'>close</span></button>
                         </Modal.Header>
                         <Modal.Body>
-                            เมื่อท่านกดปุ่ม<b>ยืนยันการลบข้อมูลแล้ว</b> ข้อมูลของท่านจะถูกลบอย่างถาวรและไม่สามารถเรียกคืนได้
+                            {t('uponPressing')}<b>{t('confirmDeletion')}</b>{t('afterPressingConfirmDeletionDescription')}
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button variant='light' onClick={() => this.setState({ showDelete: false })}>ปิดหน้าต่างนี้</Button>
-                            <Button disabled={this.state.deleting} variant='danger' onClick={async () => await this.delete()}>ยืนยันการลบข้อมูล</Button>
+                            <Button variant='light' onClick={() => this.setState({ showDelete: false })}>{t('closeThisWindow')}</Button>
+                            <Button disabled={this.state.deleting} variant='danger' onClick={async () => await this.delete()}>{t('confirmDeletion')}</Button>
                         </Modal.Footer>
                     </Modal>
                     {this.state.showModal &&
@@ -192,7 +193,7 @@ export default class View extends React.Component {
                     <div className='shadow-md container bg-white rounded p-4 d-flex' style={{ flexDirection: 'column', alignItems: 'center', maxWidth: 800 }}>
                         {(this.state.data?.uid === this.state.user?.uid) && this.state.user && this.state.data !== 'loading' &&
                             <div className='w-100 mb-3'>
-                                <h4><span className='badge badge-primary'>ข้อมูลของคุณ</span></h4>
+                                <h4><span className='badge badge-primary'>{t('yourData')}</span></h4>
                             </div>
                         }
                         <div className='featured-image' style={{ backgroundImage: `url(${this.state.images[0]})` }} />
@@ -200,7 +201,7 @@ export default class View extends React.Component {
                             <Spinner className='m-4' animation='border' variant='primary' />
                         }
                         {this.state.data === 'error' &&
-                            <h3 className='text-muted'>ไม่พบข้อมูล</h3>
+                            <h3 className='text-muted'>{t('dataNotFound')}</h3>
                         }
                         {this.state.data !== 'loading' && this.state.data !== 'error' &&
                             <div className='w-100'>
@@ -215,19 +216,19 @@ export default class View extends React.Component {
                                         <div className='row mt-3'>
                                             <div className='col-6'>
                                                 {this.state.data.uid !== this.state.user?.uid &&
-                                                    <Button onClick={() => this.setState({ showModal: true })} className='w-100 h-100'>ติดต่อมอบความช่วยเหลือ</Button>
+                                                    <Button onClick={() => this.setState({ showModal: true })} className='w-100 h-100'>{t('contactDonate')}</Button>
                                                 }
                                                 {this.state.data.uid === this.state.user?.uid &&
-                                                    <Button onClick={() => this.setState({ confirmStatus: true })} variant='secondary' className='w-100 h-100'>ได้รับความช่วยเหลือแล้ว</Button>
+                                                    <Button onClick={() => this.setState({ confirmStatus: true })} variant='secondary' className='w-100 h-100'>{t('donationSuccess')}</Button>
                                                 }
                                             </div>
 
                                             <div className='col-6'>
                                                 {this.state.data.uid === this.state.user?.uid &&
-                                                    <Button onClick={() => this.setState({ showDelete: true })} variant='danger' className='w-100 h-100'>ลบข้อมูลของคุณ</Button>
+                                                    <Button onClick={() => this.setState({ showDelete: true })} variant='danger' className='w-100 h-100'>{t('deleteYourData')}</Button>
                                                 }
                                                 {this.state.data.uid !== this.state.user?.uid &&
-                                                    <Button target='_blank' href={`https://www.facebook.com/sharer.php?u=${this.props.location.href}`} variant='light' className='w-100 h-100'>แชร์โพสต์นี้</Button>
+                                                    <Button target='_blank' href={`https://www.facebook.com/sharer.php?u=${this.props.location.href}`} variant='light' className='w-100 h-100'>{t('shareThisPost')}</Button>
                                                 }
                                             </div>
                                         </div>
@@ -235,7 +236,7 @@ export default class View extends React.Component {
                                     {this.state.data.active === false &&
                                         <div className='row mt-3'>
                                             <div className='col-12'>
-                                                <Alert className='text-center' variant='secondary'>ผู้รับบริจาคได้ระบุว่าได้รับความช่วยเหลือแล้ว</Alert>
+                                                <Alert className='text-center' variant='secondary'>{t('receiverConfirmedDonation')}</Alert>
                                             </div>
                                         </div>
                                     }
@@ -245,19 +246,19 @@ export default class View extends React.Component {
                                 <div className='w-100'>
                                     {this.state.isDonated && this.state.isDonated.isDonated === true &&
                                         <Alert variant='secondary' className='d-flex' style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                                            คุณได้แสดงความประสงค์บริจาคกับบุคคลนี้ไปแล้ว <Button variant='link' onClick={async () => await this.removeDonation()} className='ml-2 text-danger p-0'>ยกเลิก</Button>
+                                            {t('alreadyDonated')} <Button variant='link' onClick={async () => await this.removeDonation()} className='ml-2 text-danger p-0'>{t('cancel')}</Button>
                                         </Alert>
                                     }
-                                    <h4>รายละเอียด</h4>
+                                    <h4>{t('details')}</h4>
                                     <p>{this.state.data.description}</p>
-                                    <h4>ความช่วยเหลือที่ต้องการ</h4>
+                                    <h4>{t('need')}</h4>
                                     <p className='mb-0'>{this.state.data.need}</p>
                                 </div>
 
                                 {(this.state.data.uid === this.state.user?.uid) && this.state.user && this.state.data !== 'loading' &&
                                     <div className='w-100 mt-3'>
                                         <hr />
-                                        <h4 className='mb-4'>ผู้ร่วมช่วยเหลือ <span className='badge badge-danger'>{this.state.data.donorsCount} คน</span></h4>
+                                        <h4 className='mb-4'>{t('donors')} <span className='badge badge-danger'>{this.state.data.donorsCount} {t('people')}</span></h4>
                                         <Donors donors={this.state.data.donors} />
                                     </div>
                                 }
@@ -279,3 +280,4 @@ export default class View extends React.Component {
         )
     }
 }
+export default withTranslation()(View)

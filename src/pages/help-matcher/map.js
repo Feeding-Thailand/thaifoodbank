@@ -10,8 +10,9 @@ import _ from 'lodash'
 import Person from '../../components/personCard'
 import { Link } from 'gatsby'
 import Spinner from 'react-bootstrap/Spinner'
+import { withTranslation } from 'react-i18next'
 
-export default class Mapping extends React.Component {
+class Mapping extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -36,39 +37,39 @@ export default class Mapping extends React.Component {
 
     }
     render() {
+        const {t, i18n} = this.props
         return (
             <div>
                 <div className=' bg-light-grey'>
                     <Header>
-                        <title>Help Matcher | ผู้ต้องการความช่วยเหลือรอบตัว</title>
+                        <title>Help Matcher | {t('needHelpAround')}</title>
                     </Header>
 
                     <NavHeader></NavHeader>
                     <Modal show={this.state.requestGeo} onHide={() => { }}>
                         <Modal.Header>
                             <Modal.Title>
-                                ขอเรียกใช้ข้อมูลตำแหน่งของท่าน
+                                {t('requestNavigationData')}
                             </Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
                             <p className='mb-0'>
-                                เว็บไซต์ Feeding Thailand ขอเรียกใช้ข้อมูลตำแหน่งจากอุปกรณ์ของท่าน
-                                เพื่อแสดงข้อมูลผู้ที่ต้องการความช่วยเหลือที่อยู่ใกล้ตัวท่าน
+                                {t('requestNavigationDataDescription')}
                             </p>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button onClick={() => window.location.replace('/help-matcher')} variant='light'>ไม่ยินยอม</Button>
-                            <Button onClick={async () => await this.getGeo()}>ยินยอม</Button>
+                            <Button onClick={() => window.location.replace('/help-matcher')} variant='light'>{t('deny')}</Button>
+                            <Button onClick={async () => await this.getGeo()}>{t('allow')}</Button>
                         </Modal.Footer>
                     </Modal>
 
                     <div className='container pt-5 pb-5'>
                         <div className='row mb-4'>
                             <div className='col-6'>
-                                <h2>ผู้ต้องการความช่วยเหลือรอบตัวท่าน</h2>
+                                <h2>{t('needHelpAround')}</h2>
                             </div>
                             <div className='col-md-6 pb-3 d-flex justify-content-md-end align-items-md-start'>
-                                <Link to='/help-matcher' className='btn btn-primary'>ดูผู้ต้องการความช่วยเหลือทั้งหมด</Link>
+                                <Link to='/help-matcher' className='btn btn-primary'>{t('viewAllReceivers')}</Link>
                             </div>
                         </div>
                         <div className='row'>
@@ -82,7 +83,7 @@ export default class Mapping extends React.Component {
                             {_.isEmpty(this.state.data) &&
                                 <div className='container'>
                                     <div className='w-100 pt-5 pb-5 alert alert-dark'>
-                                        <h4 className='text-center text-muted mb-0'>ไม่พบข้อมูลผู้ต้องการความช่วยเหลือ</h4>
+                                        <h4 className='text-center text-muted mb-0'>{t('noReceiverFound')}</h4>
                                     </div>
                                 </div>
                             }
@@ -100,3 +101,5 @@ export default class Mapping extends React.Component {
         )
     }
 }
+
+export default withTranslation()(Mapping)

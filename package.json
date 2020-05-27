@@ -23,6 +23,8 @@
     "geofirestore": "^3.4.3",
     "gulp": "^4.0.2",
     "gulp-sass": "^4.1.0",
+    "i18next": "^19.4.5",
+    "i18next-http-backend": "^1.0.12",
     "lodash": "^4.17.15",
     "mapbox-gl": "^1.10.0",
     "moment": "^2.26.0",
@@ -34,6 +36,7 @@
     "react-facebook": "^8.1.4",
     "react-grid-gallery": "^0.5.5",
     "react-helmet": "^6.0.0",
+    "react-i18next": "^11.5.0",
     "reaptcha": "^1.7.2"
   },
   "devDependencies": {
