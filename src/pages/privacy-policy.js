@@ -50,7 +50,7 @@ const Privacy = () => (
                 <p>
                     Facebook <a href='https://facebook.com/feedingthailand'>Feeding Thailand</a><br/>
                     เว็บไซต์ <a href='https://feedingthailand.co'>feedingthailand.co</a><br/>
-                    Email <a href='mailto:feedingthailand@gmail.com'>feedingthailand@gmail.com</a>
+                    Email <a href='mailto:info@feedingthailand.co'>info@feedingthailand.co</a>
                 </p>
             </div>
         </div>

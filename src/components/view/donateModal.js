@@ -23,6 +23,16 @@ export default class DonateModal extends React.Component {
         }
 
     }
+    signIn(option) {
+        if (option === 'google') {
+            const provider = new firebase.auth.GoogleAuthProvider()
+            firebase.auth().signInWithRedirect(provider)
+        }
+        else {
+            const provider = new firebase.auth.FacebookAuthProvider()
+            firebase.auth().signInWithRedirect(provider)
+        }
+    }
     formHandler(e) {
         const id = e.target.id
         if (id === 'isAnonymous') {

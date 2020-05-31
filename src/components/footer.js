@@ -17,7 +17,7 @@ const Footer = () => (
             </div>
             <div className='mb-2'>
                 <a href='/about-us' className='mr-3'>เกี่ยวกับเรา</a>
-                <a href='/press' className='mr-3'>สื่อมวลชน</a>
+                <a href='/projects' className='mr-3'>โครงการของเรา</a>
                 <a href='/privacy-policy' className='mr-3'>นโยบายข้อมูลส่วนบุคคล</a>
                 <a href='https://messenger.com/t/feedingthailand'>ติดต่อเรา</a>
             </div>
