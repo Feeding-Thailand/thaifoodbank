@@ -93,16 +93,7 @@ export default class View extends React.Component {
 
         }
     }
-    signIn(option) {
-        if (option === 'google') {
-            const provider = new firebase.auth.GoogleAuthProvider()
-            firebase.auth().signInWithRedirect(provider)
-        }
-        else {
-            const provider = new firebase.auth.FacebookAuthProvider()
-            firebase.auth().signInWithRedirect(provider)
-        }
-    }
+    
 
     async delete() {
         const id = queryString.parse(this.props.location.search).id
@@ -143,7 +134,7 @@ export default class View extends React.Component {
         return (
             <div>
                 <Header>
-                    <title>Feeding Thailand | Help Matcher</title>
+                    <title>Help Matcher | ผู้ต้องการความช่วยเหลือ</title>
                 </Header>
                 <NavHeader></NavHeader>
                 <div className='pt-5 pb-5 pl-3 pr-3' style={{ backgroundColor: '#f7fafc' }}>

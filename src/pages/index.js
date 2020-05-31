@@ -76,21 +76,36 @@ const AboutUs = () => (
 				<div className='col-md-6'></div>
 			</div>
 			<hr />
-			<h2 className='text-center mb-0'>โครงการของเรา</h2>
+			<h2 className='text-center mb-4'>โครงการของเรา</h2>
 			<div className='row'>
 				<PostHero
-					image={require('../assets/images/feeding.jpg')}
+					image={require('../assets/images/help-logo.png')}
 					link='/help-matcher'
 					title='Help Matcher'
 					excerpt='พื้นที่ที่ผู้ให้พบกับผู้รับ ผู้ที่ต้องการความช่วยเหลือสามารถใช้พื้นที่นี้ให้คนที่ต้องการให้ มอบความช่วยเหลือได้'
 				/>
 				<PostHero
-					image={require('../assets/images/food.jpg')}
-					link='/help-matcher'
+					image={require('../assets/images/tfb-logo.png')}
+					link='#'
 					title='Food Bank'
 					excerpt='ธนาคารอาหาร ร่วมส่งอาหารเข้ามายังศูนย์ Feeding Thailand เราจะจัดส่งให้แก่คนที่ต้องการ'
 				/>
+				<PostHero
+					image={require('../assets/images/job-matcher-logo.png')}
+					link='#'
+					title='Job Finder'
+					excerpt='พื้นที่ประชาสัมพันธ์ให้กับคนที่ต้องการงานในช่วงวิกฤต'
+				/>
+				<PostHero
+					image={require('../assets/images/online-university-logo.png')}
+					link='#'
+					title='Online Education'
+					excerpt='แพลตฟอร์มการศึกษาออนไลน์ เปิดโอกาสให้ทุกคนได้รับการศึกษา'
+				/>
 
+			</div>
+			<div className='text-center mb-4 mt-3'>
+				<Link to='projects'>ดูโครงการทั้งหมดของเรา<span className='material-icons'>chevron_right</span></Link>
 			</div>
 		</div>
 	</div>
@@ -99,9 +114,9 @@ const AboutUs = () => (
 const IndexPage = () => (
 	<div>
 		<Header>
-			<title>Feeding Thailand</title>
+			<title>Feeding Thailand | หน้าแรก</title>
 		</Header>
-		<div className='hero d-flex' style={{backgroundImage: `url(${require('../assets/images/hero-home.jpg')})`}}>
+		<div className='hero d-flex' style={{ backgroundImage: `url(${require('../assets/images/hero-home.jpg')})` }}>
 			<div className='container'>
 				<div className='row'>
 					<div className='col-12 mb-5 mb-md-0 d-flex' style={{ justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>

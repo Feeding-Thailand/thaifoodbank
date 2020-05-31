@@ -271,7 +271,7 @@ export default class Register extends React.Component {
                     <NavHeader />
                     <div className='bg-light-grey pt-5 pb-5 pl-3 pr-3'>
                         <Header>
-                            <title>ลงทะเบียนขอรับความช่วยเหลือ</title>
+                            <title>Help Matcher | ลงทะเบียนขอรับความช่วยเหลือ</title>
                         </Header>
 
                         <div className='bg-white rounded shadow-md container p-4' style={{ maxWidth: 720 }}>
