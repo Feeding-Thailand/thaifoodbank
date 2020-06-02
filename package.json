@@ -34,6 +34,7 @@
     "react-facebook": "^8.1.4",
     "react-grid-gallery": "^0.5.5",
     "react-helmet": "^6.0.0",
+    "react-slideshow-image": "^1.5.3",
     "reaptcha": "^1.7.2"
   },
   "devDependencies": {
