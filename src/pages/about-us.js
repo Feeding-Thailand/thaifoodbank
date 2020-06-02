@@ -2,15 +2,42 @@ import React from 'react'
 import Header from '../components/header'
 import JoinUs from '../components/joinUs'
 import Footer from '../components/footer'
+import Modal from 'react-bootstrap/Modal'
 import { Link } from 'gatsby'
-const Person = (props) => (
-    <div className='row mt-5 mb-5'>
-        <div className='col-md-3 col-4'>
-            <div className='profile-pic' style={{ backgroundImage: `url(${require(`../assets/images/${props.imgName}`)})` }} />
-        </div>
-        <div className='col-md-9 col-8 flex-center'>
-            <h5>{props.name}</h5>
-            <p className='text-muted mb-2'>
+class Person extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            showProfile: false
+        }
+    }
+    render() {
+        const props = this.props
+        return (
+            <div className='col-md-4 p-4 col-sm-6 col-12'>
+                <ProfileModal
+                    close={() => this.setState({ showProfile: false })}
+                    show={this.state.showProfile}
+                    name={props.name}
+                    description={props.description}
+                    fbLink={props.fbLink}
+                />
+                <div onClick={() => this.setState({ showProfile: true })} className='profile-pic shadow-md' style={{ cursor: 'pointer', backgroundImage: `url(${require(`../assets/images/${props.imgName}`)})` }} />
+                <h5 style={{ fontWeight: 400 }} className='mt-3 text-center'>{props.name}</h5>
+            </div>
+        )
+    }
+}
+const ProfileModal = (props) => (
+    <Modal show={props.show} onHide={() => props.close()}>
+        <Modal.Header>
+            <Modal.Title>
+                {props.name}
+            </Modal.Title>
+            <button onClick={() => props.close()} className='btn-icon'><span className='material-icons'>close</span></button>
+        </Modal.Header>
+        <Modal.Body>
+            <p className='mb-2'>
                 {props.description}
             </p>
             {props.fbLink &&
@@ -20,8 +47,8 @@ const Person = (props) => (
                     </a>
                 </div>
             }
-        </div>
-    </div>
+        </Modal.Body>
+    </Modal>
 )
 const AboutUs = () => (
     <div>
@@ -46,71 +73,169 @@ const AboutUs = () => (
                 </p>
                 <hr />
                 <h1>ทีมงาน Feeding Thailand</h1>
-                <Person
-                    imgName='891136.jpg'
-                    name='วชิรา พงษารัตน์'
-                    description='Ceo &amp; Founder บริษัท ราเซล จำกัด  www.lasellgroups.com 
-                    ปริญญาตรีการจัดการธุรกิจ มหาวิทยาลัยเกษตรศาสตร์, ปริญญาโทคณะการสร้างเจ้าของธุรกิจและการบริหารกิจการ มหาวิทยาลัยบูรพา
-                    '
-                />
-                <Person
-                    imgName='891141.jpg'
-                    name='รมณ พงษารัตน์'
-                    description='Founder เพื่อนสินเชื่อ (MoneyFriend) Law &amp; Finance Consultant ปริญญาตรีการจัดการการตลาด มหาวิทยาลัยเกษตรศาสตร์, คณะนิติศาสตร์ มหาวิทยาลัยสุโขทัยธรรมาธิราช'
-                />
-                <Person
-                    imgName='891192.jpg'
-                    name='Kyoka Abe'
-                    description='Class of 2020 The University of Edinburgh Scotland, UK. BA Painting'
-                />
-                <Person
-                    imgName='891268.jpg'
-                    name='อนุวัฒน์ แสวงศร'
-                    description='ปริญญาตรีวิศวกรรมไฟฟ้า มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าธนบุรี'
-                />
-                <Person
-                    imgName='891278.jpg'
-                    name='คัมภีร์พรรณ  สมบูรณ์เลิศสิริ'
-                    description={
-                        <>
-                            <span>ปริญญาตรีคณะศึกษาศาสตร์ การสอนภาษาจีน มหาวิทยาลัยบูรพา, Bejing Union University, Chinese Language and Literature (Teacher Training)</span><br />
-                            <span>ปริญญาโท Minzu University of China. Degree of Master of Arts in Linguistics and Applied Linguistics</span>
-                        </>
-                    }
-                />
-                <Person
-                    imgName='891286.jpg'
-                    name='อาจารย์ ดร.อุทุมพร สุระยศ'
-                    description={
-                        <>
-                            <span>Ph.D. Applied Marine Biotechnology and Engineering, Gangneung-Wonju National University,Republic of Korea</span><br />
-                            <span>MS. Food Science and Technology,Chiang Mai University, Thailand</span><br />
-                            <span>B.Sc. Biotechnology, Chiang Mai University, Thailand</span>
-                        </>
-                    }
-                />
-                <Person
-                    imgName='TU_EW00_RJ.jpg'
-                    name='ณรงค์พร เหล่าศรีสิน'
-                    description='วิทยากรอิสระ และนักเขียน'
-                />
-                <Person
-                    imgName='tatar.jpg'
-                    name='จารุวรรณ เชื้อดี'
-                    description='คณะศึกษาศาสตร์ ภาพนิ่ง ภาพยนต์ มหาวิทลาลัย บูรพา ปัจจุบัน Winchill Dessert &amp; Bistro (Founder) ศิลปินนักร้องอิสระ'
-                />
-                <Person
-                    imgName='sirawit.jpg'
-                    name='สิรวิชญ์ พงศ์นคินทร์'
-                    description='นักเรียนหลังจบการศึกษาชั้นมัธยมศึกษาปีที่ 6 ปัจจุบันกำลังฝึกงานด้านการพัฒนาซอฟต์แวร์เพื่อต่อยอดความรู้ไปในการทำงานจริง (ผู้สร้างและจัดการระบบเว็บไซต์)'
-                    fbLink='https://www.facebook.com/pluminf'
-                />
-                <Person
-                    imgName='porames-2.jpg'
-                    name='ปรเมศวร์ วัฒนประสาน'
-                    description='เพื่อนสิรวิชญ์ ศึกษาหลักสูตรคณะแพทยาศาสตร์-วิศวกรรมศาสตร์ โรงพยาบาลรามาธิบดี มหาวิทยาลัยมหิดล (ผู้ออกแบบและสร้างเว็บไซต์)'
-                    fbLink='https://www.facebook.com/big.porames/'
-                />
+                <div className='row mb-5'>
+                    <Person
+                        imgName='891136.jpg'
+                        name='วชิรา พงษารัตน์'
+                        description={
+                            <div>
+                                <b>ประวัติการศึกษา</b>
+                                <ul>
+                                    <li>ปริญญาตรี คณะบริหาร สาขาการจัดการธุรกิจระหว่างประเทศ มหาวิทยาลัยเกษตรศาสตร์</li>
+                                    <li>ปริญญาโท คณะบริหาร สาขาการจัดการผู้ประกอบการธุรกิจขนาดกลางและขนาดย่อม มหาวิทยาลัยบูรพา</li>
+                                </ul>
+                                <b>ประวัติการทำงาน</b>
+                                <ul>
+                                    <li>ประธานเจ้าหน้าที่บริหารและผู้ก่อตั้ง บริษัท ราเซล จำกัด</li>
+                                </ul>
+                            </div>
+                        }
+                    />
+                    <Person
+                        imgName='891141.jpg'
+                        name='รมณ พงษารัตน์'
+                        description={
+                            <div>
+                                <b>ประวัติการศึกษา</b>
+                                <ul>
+                                    <li>ปริญญาตรี คณะวิทยาศาสตร์และการจัดการ สาขาการจัดการการตลาด</li>
+                                    <li>ปริญญาโท คณะนิติศาสตร์ มหาวิทยาลัยสุโขทัยธรรมธิราช</li>
+                                </ul>
+                                <b>ประวัติการทำงาน</b>
+                                <ul>
+                                    <li>ประธานเจ้าหน้าที่บริหารและผู้ก่อตั้ง บริษัท เพื่อนสินเชื่อ จำกัด</li>
+                                </ul>
+                            </div>
+                        }
+                    />
+                    <Person
+                        imgName='891192.jpg'
+                        name='เคียวกะ อาเบะ'
+                        description={
+                            <div>
+                                <b>ประวัติการศึกษา</b>
+                                <ul>
+                                    <li>คณะศิลปศาสตร์สาขาจิตรกรรม มหาวิทยาลัย เอดินเบิร์ก ประเทศอังกฤษ</li>
+                                </ul>
+                                <b>ประวัติการทำงาน</b>
+                                <ul>
+                                    <li>ครูพิเศษ วิชาทัศนศิลป์และภาษาญี่ปุ่น</li>
+                                </ul>
+                            </div>
+                        }
+                    />
+                    <Person
+                        imgName='891268.jpg'
+                        name='อนุวัฒน์ แสวงศร'
+                        description={
+                            <div>
+                                <b>ประวัติการศึกษา</b>
+                                <ul>
+                                    <li>ปริญญาตรี คณะวิศวกรรมศาสตร์ สาขาวิศวกรรมไฟฟ้า มหาวิทยาลัยเทคโนโลยีพพระจอมเกล้าธนบุรี</li>
+                                </ul>
+                                <b>ประวัติการทำงาน</b>
+                                <ul>
+                                    <li>อาชีพอิสระ</li>
+                                </ul>
+                            </div>
+                        }
+                    />
+                    <Person
+                        imgName='891278.jpg'
+                        name='คัมภีร์พรรณ สมบูรณ์เลิศสิริ'
+                        description={
+                            <div>
+                                <b>ประวัติการศึกษา</b>
+                                <ul>
+                                    <li>ปริญญาตรี คณะศึกษาศาสตร์ สาขาการสอนภาษาจีน มหาวิทยาลัยบูรพา</li>
+                                    <li>ปริญญาโท คณะศึกษาศาสตร์ สาขาภาษาศาสตร์ประยุกต์ มหาวิทยาลัย มินซู ประเทศจีน</li>
+                                </ul>
+                                <b>ประวัติการทำงาน</b>
+                                <ul>
+                                    <li>ผู้ก่อตั้งสถานบันสอนภาษาจีนออนไลน์ Say Hi Chinese</li>
+                                </ul>
+                            </div>
+                        }
+                    />
+                    <Person
+                        imgName='891286.jpg'
+                        name='ดร. อุทุมพร สุระยศ'
+                        description={
+                            <div>
+                                <b>ประวัติการศึกษา</b>
+                                <ul>
+                                    <li>ปริญญาตรี เทคโนโลยีชีวภาพ มหาวิทยาลัยเชียงใหม่</li>
+                                    <li>ปริญญาโท วิทยาศาสตร์อาหารและเทคโนโลยี มหาวิทยาลัยเชียงใหม่</li>
+                                    <li>ปริญญาเอก เทคโนโลยีชีวภาพและวิศวกรรมทางทะเลประยุกต์ มหาวิทยาลัยนานาชาติ คังเลียง-วอนจู ประเทศเกาหลีใต้</li>
+                                </ul>
+                                <b>ประวัติการทำงาน</b>
+                                <ul>
+                                    <li>พนักงานต้อนรับสายการบิน Japan Airlines</li>
+                                    <li>นักวิจัยที่สถาบันวิจัยวิทยาศาสตร์ทางทะเลชายฝั่งตะวันออก ประเทศเกาหลีใต้</li>
+                                </ul>
+                            </div>
+                        }
+                    />
+                    <Person
+                        imgName='TU_EW00_RJ.jpg'
+                        name='ณรงค์พร เหล่าศรีสิน'
+                        description={
+                            <div>
+                                <b>ประวัติการศึกษา</b>
+                                <ul>
+                                    <li>ปริญญาตรี คณะวิศวกรรมศาสตร์ สาขาวิศวกรรมอิเล็กทรอนิกส์  สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง</li>
+                                    <li>ปริญญาโท คณะบริหารธุรกิจ</li>
+                                </ul>
+                                <b>ประวัติการทำงาน</b>
+                                <ul>
+                                    <li>วิทยากรอิสระและนักเขียนอิสระ</li>
+                                </ul>
+                            </div>
+                        }
+                    />
+                    <Person
+                        imgName='tatar.jpg'
+                        name='จารุวรรณ เชื้อดี'
+                        description={
+                            <div>
+                                <b>ประวัติการศึกษา</b>
+                                <ul>
+                                    <li>ปริญญาตรี คณะศึกษาศาสตร์ สาขาภาพนิ่งและภาพยนตร์ มหาวิทยาลัยบูรพา</li>
+                                </ul>
+                                <b>ประวัติการทำงาน</b>
+                                <ul>
+                                    <li>ผู้ก่อตั้ง Winchill Dessert &amp; Bistro</li>
+                                </ul>
+                            </div>
+                        }
+                    />
+                    <Person
+                        imgName='sirawit.jpg'
+                        name='สิรวิชญ์ พงศ์นคินทร์'
+                        description={
+                            <div>
+                                <b>ประวัติการศึกษา</b>
+                                <ul>
+                                    <li>มัธยมปลาย โรงเรียนมหิดลวิทยานุสรณ์</li>
+                                    <li>ปัจจุบันศึกษาคณะวิศวกรรมศาสตร์คอมพิวเตอร์ มหาวิทยาลัย National University of Singapore</li>
+                                </ul>
+                            </div>
+                        }
+                    />
+                    <Person
+                        imgName='porames-2.jpg'
+                        name='ปรเมศวร์ วัฒนประสาน'
+                        description={
+                            <div>
+                                <b>ประวัติการศึกษา</b>
+                                <ul>
+                                    <li>มัธยมปลาย โรงเรียนมหิดลวิทยานุสรณ์</li>
+                                    <li>ปัจจุบันศึกษาคณะแพทยศาสตร์ หลักสูตรแพทยศาสตร์บัณฑิต-วิศวกรรมศาสตร์มหาบัณฑิต โรงพยาบาลรามาธิบดี มหาวิทยาลัยมหิดล</li>
+                                </ul>
+                            </div>
+                        }
+                    />
+                </div>
             </div>
         </div>
         <JoinUs />
