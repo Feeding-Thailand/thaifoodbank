@@ -247,8 +247,8 @@ p {
 .text-alt {
   opacity: 0.8;
   position: absolute;
-  bottom: 1em;
-  left: 1em; }
+  bottom: 1.3em;
+  left: 1.5em; }
 
 .bg-art {
   background-size: contain;
