@@ -10,10 +10,8 @@ import { apiEndpoint } from '../../components/constants'
 import Modal from 'react-bootstrap/Modal'
 import Spinner from 'react-bootstrap/Spinner'
 import firebase from '../../components/firebase'
-import Form from 'react-bootstrap/Form'
 import Alert from 'react-bootstrap/Alert'
 import * as moment from 'moment'
-import Reaptcha from 'reaptcha'
 
 import DonateModal from '../../components/view/donateModal'
 

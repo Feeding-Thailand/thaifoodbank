@@ -129,7 +129,7 @@ const IndexPage = () => (
 					<div className='col-12 mb-5 mb-md-0 d-flex' style={{ justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
 						<img className='mb-3' src={require('../assets/images/feeding-thailand-logo.svg')} height='120px' />
 						<h3 className='text-white'>ช่วยเหลือคนไทยในภาวะวิกฤต</h3>
-						<Link to='/help-matcher' className='btn btn-lg btn-primary shadow-md mt-3'>ลงทะเบียนขอรับความช่วยเหลือ</Link>
+						<Link to='/help-matcher' className='btn btn-lg btn-primary shadow-md mt-3'>ค้นหาหรือขอรับความช่วยเหลือ</Link>
 					</div>
 				</div>
 			</div>
