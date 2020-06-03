@@ -46,7 +46,7 @@ class Counter extends React.Component {
 				<div className='container mb-5' style={{maxWidth: 800}}>
 					<div className='aspect-1-1 shadow-lg-new' style={{ backgroundImage: `url(${require('../assets/images/1589284815752_0.jpg')})` }}>
 						<div className='text-alt'>
-							<span className='sarabun text-white'>หนึ่งในครอบครัวที่ได้รับการช่วเหลือจาก Feeding Thailand</span>
+							<span className='sarabun text-white'>หนึ่งในครอบครัวที่ได้รับการช่วยเหลือจาก Feeding Thailand</span>
 						</div>
 					</div>
 				</div>
