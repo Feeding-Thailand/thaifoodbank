@@ -21,7 +21,7 @@ function formatText(text) {
 const Person = (props) => (
     <div className='col-md-6 mb-4'>
         <Link to={`/help-matcher/view?id=${props.id}`}>
-            <div className='item pb-3 shadow-md pt-3' style={{ backgroundImage: !_.isUndefined(props.data.photos) ? `url(https://firebasestorage.googleapis.com/v0/b/thaifoodbank.appspot.com/o/${props.id}%2f${props.data.photos[0]}?alt=media)` : 'url()' }} >
+            <div className='item pb-3 shadow-md pt-3' style={{ backgroundImage: !_.isUndefined(props.data.photos) ? `url(https://firebasestorage.googleapis.com/v0/b/thaifoodbank.appspot.com/o/${props.id}%2f1.jpg?alt=media)` : 'url()' }} >
                 <div className='date-badge'>                    
                     <p><span style={{fontWeight: 500}} className='badge badge-primary'>{moment(props.data.createdAt).fromNow()}</span></p>
                 </div>
