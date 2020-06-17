@@ -187,6 +187,7 @@ class RegisterForm extends React.Component {
                             label={this.state.fileName ? this.state.fileName : 'อัพโหลดรูปภาพ'}
                             custom
                             id='photo'
+                            accept='image/*'
                         />
                         {this.state.uploadForbidden === true &&
                         <small className='text-danger'>อัพโหลดได้เฉพาะรูปภาพที่มีขนาดน้อยกว่า 2 Mb</small>
