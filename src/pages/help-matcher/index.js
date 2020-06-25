@@ -46,7 +46,7 @@ export default class HelpMatcher extends React.Component {
                     this.setState({ latestPost: { ...req.data.data, id: req.data.id } })
                 }
                 else {
-                    this.setState({ latestPost: 'n/a'})
+                    this.setState({ latestPost: 'n/a' })
                 }
             }
             else {
@@ -63,6 +63,11 @@ export default class HelpMatcher extends React.Component {
                 <div style={{ backgroundColor: '#f7fafc' }}>
                     <NavHeader></NavHeader>
                     <div className='container pt-5 pb-5' >
+                        <div className='mb-5 text-center'>
+                            <h1>Help Matcher</h1>
+                            <p className='text-muted'>พื้นที่ที่ผู้ให้พบกับผู้รับ ผู้ที่ต้องการความช่วยเหลือสามารถใช้พื้นที่นี้ให้คนที่ต้องการให้ มอบความช่วยเหลือได้</p>
+                            <img style={{maxWidth: 720}} className='w-100 mt-3' alt='รายละเอียด Help Matcher' src={require('../../assets/images/help-matcher-fyi.png')} />
+                        </div>
                         {this.state.latestPost !== 'loading' && this.state.latestPost !== 'n/a' &&
                             <div className='row mb-4'>
                                 <div className='col-12'>

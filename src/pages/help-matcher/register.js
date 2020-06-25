@@ -187,6 +187,7 @@ class RegisterForm extends React.Component {
                             label={this.state.fileName ? this.state.fileName : 'อัพโหลดรูปภาพ'}
                             custom
                             id='photo'
+                            accept='image/*'
                         />
                         {this.state.uploadForbidden === true &&
                         <small className='text-danger'>อัพโหลดได้เฉพาะรูปภาพที่มีขนาดน้อยกว่า 2 Mb</small>
@@ -271,7 +272,7 @@ export default class Register extends React.Component {
                     <NavHeader />
                     <div className='bg-light-grey pt-5 pb-5 pl-3 pr-3'>
                         <Header>
-                            <title>ลงทะเบียนขอรับความช่วยเหลือ</title>
+                            <title>Help Matcher | ลงทะเบียนขอรับความช่วยเหลือ</title>
                         </Header>
 
                         <div className='bg-white rounded shadow-md container p-4' style={{ maxWidth: 720 }}>
