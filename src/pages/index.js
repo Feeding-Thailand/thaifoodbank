@@ -4,6 +4,7 @@ import Footer from '../components/footer'
 import { Link } from 'gatsby'
 import PostHero from '../components/post-hero-md'
 import JoinUs from '../components/joinUs'
+import HallOfFame from '../components/hallOfFame'
 import firebase from '../components/firebase'
 
 class Counter extends React.Component {
@@ -21,7 +22,7 @@ class Counter extends React.Component {
 	render() {
 		return (
 			<div className='mt-1'>
-				<div className='container pt-5 pb-5 flex-center' style={{ minHeight: 250 }}>
+				<div className='container pt-5 pb-3 flex-center' style={{ minHeight: 250 }}>
 					<div className='row'>
 						<div className='col-md-4 p-3'>
 							<div className='counter text-center'>
@@ -42,8 +43,8 @@ class Counter extends React.Component {
 							</div>
 						</div>
 					</div>
-				</div>
-				<div className='container mb-5' style={{maxWidth: 800}}>
+				</div>				
+				<div className='container mb-5 mt-3' style={{maxWidth: 800}}>
 					<div className='aspect-1-1 shadow-lg-new' style={{ backgroundImage: `url(${require('../assets/images/1589284815752_0.jpg')})` }}>
 						<div className='text-alt'>
 							<span className='sarabun text-white'>หนึ่งในครอบครัวที่ได้รับการช่วยเหลือจาก Feeding Thailand</span>
@@ -73,7 +74,7 @@ const Posts = () => (
 )
 const AboutUs = () => (
 	<div>
-		<div className='container pt-3 pb-3'>
+		<div className='container pt-3 pb-4'>
 			<div className='row mt-4'>
 				<div className='col-md-6'>
 					<h2>เกี่ยวกับเรา</h2>
@@ -138,6 +139,7 @@ const IndexPage = () => (
 			<AboutUs />
 
 		</div>
+		<HallOfFame/>
 		<Counter />
 		<JoinUs />
 		<Footer />
