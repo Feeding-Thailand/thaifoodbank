@@ -12,6 +12,16 @@ import Alert from 'react-bootstrap/Alert'
 import Modal from 'react-bootstrap/Modal'
 import Spinner from 'react-bootstrap/Spinner'
 
+const UploadingModal = (props) => (
+    <Modal show={props.uploading} onHide={() => { }}>
+        <Modal.Body className='text-center pt-5 pb-5'>
+            <img alt='please wait ...' className='img-fluid mb-4' width='200px' src={require("../../assets/images/clock.png")} />
+            <h1>กำลังอัพโหลดข้อมูล</h1>
+            <p className='mb-0'>กรุณาอย่าปิดหน้าต่างนี้ โปรดรอสักครู่</p>
+        </Modal.Body>
+    </Modal>
+)
+
 class RegisterForm extends React.Component {
     constructor(props) {
         super(props)
@@ -63,6 +73,12 @@ class RegisterForm extends React.Component {
             } catch (err) {
                 const response = err.response.data.status
                 console.log(response)
+                if (response === 700) {
+                    this.pIdFieldRef.focus()
+                }
+                else if (response === 701) {
+                    this.postcodeFieldRef.focus()
+                }
                 this.setState({ error: true, saving: false, errStatus: response })
             }
         }
@@ -85,7 +101,7 @@ class RegisterForm extends React.Component {
             const file = e.target.files[0]
             const ext = file.name.split('.').pop()
             if (file.size < 2 * 1024 * 1024 && (ext === 'jpg' || ext === 'jpeg' || ext === 'png')) {
-                this.setState({ fileName: file.name.substring(0,20), uploadForbidden: false })
+                this.setState({ fileName: file.name.substring(0, 20), uploadForbidden: false })
                 this.getBase64(file).then((base64) => {
                     this.setState({ 'imageDataURL': base64 })
                 })
@@ -106,6 +122,7 @@ class RegisterForm extends React.Component {
         else {
             return (
                 <Form onChange={(e) => this.formHandler(e)}>
+                    <UploadingModal uploading={this.state.saving} />
                     <Modal scrollable size='lg' show={this.state.showPolicy} onHide={() => this.setState({ showPolicy: false })}>
                         <Modal.Header>
                             <Modal.Title>ข้อตกลงการใช้ข้อมูลส่วนบุคคล</Modal.Title>
@@ -163,7 +180,7 @@ class RegisterForm extends React.Component {
                     </Form.Group>
                     <Form.Group controlId="pid">
                         <Form.Label>รหัสประจำตัวประชาชน <button type='button' onClick={() => this.setState({ showPolicy: true, section: 'pid' })} className='btn btn-icon'><span style={{ fontSize: 18 }} className='text-primary mb-1 material-icons'>help</span></button></Form.Label>
-                        <Form.Control placeholder="รหัสประจำตัวประชาชน" isInvalid={(this.state.next && !this.state.pid) || (this.state.errStatus === 700)} />
+                        <Form.Control ref={(ref) => { this.pIdFieldRef = ref }} placeholder="รหัสประจำตัวประชาชน" isInvalid={(this.state.next && !this.state.pid) || (this.state.errStatus === 700)} />
 
                         {this.state.errStatus === 700 &&
                             <small className='text-danger'>รหัสประจำตัวประชาชนไม่ถูกต้อง</small>
@@ -171,7 +188,7 @@ class RegisterForm extends React.Component {
                     </Form.Group>
                     <Form.Group controlId="postcode">
                         <Form.Label>รหัสไปรษณีย์</Form.Label>
-                        <Form.Control placeholder="รหัสไปรษณีย์" isInvalid={this.state.errStatus === 701 || (this.state.next && !this.state.postcode)} />
+                        <Form.Control ref={(ref) => { this.postcodeFieldRef = ref }} placeholder="รหัสไปรษณีย์" isInvalid={this.state.errStatus === 701 || (this.state.next && !this.state.postcode)} />
                         {this.state.errStatus === 701 &&
                             <small className='text-danger'>รหัสไปรษณีย์ไม่ถูกต้อง</small>
                         }
@@ -190,8 +207,16 @@ class RegisterForm extends React.Component {
                             accept='image/*'
                         />
                         {this.state.uploadForbidden === true &&
-                        <small className='text-danger'>อัพโหลดได้เฉพาะรูปภาพที่มีขนาดน้อยกว่า 2 Mb</small>
+                            <small className='text-danger'>อัพโหลดได้เฉพาะรูปภาพที่มีขนาดน้อยกว่า 2 Mb</small>
                         }
+                        <div className='mt-3 mb-4 alert alert-warning'>
+                            <b>คำเตือน โปรดตรวจสอบว่ารูปภาพที่ท่านอัพโหลดมีความเหมาะสม</b>
+                            <ul className='mb-0'>
+                                <li>รูปภาพดังกล่าว เป็นรูปภาพของท่านเอง</li>
+                                <li>ควรหลีกเลี่ยงการใช้รูปภาพเด็กหรือเยาวชน เพื่อป้องกันบุคคลไม่หวังดีนำไปใช้ในทางไม่เหมาะสม</li>
+                                <li>ห้ามใช้ภาพเอกสารส่วนตัวของท่าน เช่น บัตรประชาชน เพื่อหลีกเลี่ยงการถูกในไปใช้อย่างผิดกฎหมายต่อตัวท่าน</li>
+                            </ul>
+                        </div>
                     </Form.Group>
                     <Form.Group controlId="need">
                         <Form.Label>สิ่งของที่ต้องการให้ช่วยเหลือ</Form.Label>
