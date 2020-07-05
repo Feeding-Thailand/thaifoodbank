@@ -307,8 +307,9 @@ export default class Register extends React.Component {
                                 <h3 style={{ fontWeight: 400 }}>ขอรับความช่วยเหลือ</h3>
                                 <p className='bigger-p'>เมื่อท่านลงทะเบียนประสงค์ขอรับความช่วยเหลือทางเว็บไซต์ ระบบจะบันทึกข้อมูลเพื่อนำไปแสดงผลให้ผู้ประสงค์
                                 มอบความช่วยเหลือให้ติดต่อหาท่านโดยตรงเพื่อมอบความช่วยเหลือแก่ท่านในลำดับถัดไป
-                            </p>
+                                </p>
                             </div>
+
                             <div>
                                 {this.state.loggedIn === 'loading' || this.state.redirect === 'loading' &&
                                     <div className='flex-center w-100 mt-3 mb-3' style={{ alignItems: 'center' }}>

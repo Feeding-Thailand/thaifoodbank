@@ -58,7 +58,7 @@ export default class HelpMatcher extends React.Component {
         return (
             <div>
                 <Header>
-
+                    <title>Help Matcher</title>
                 </Header>
                 <div style={{ backgroundColor: '#f7fafc' }}>
                     <NavHeader></NavHeader>
@@ -66,7 +66,11 @@ export default class HelpMatcher extends React.Component {
                         <div className='mb-5 text-center'>
                             <h1>Help Matcher</h1>
                             <p className='text-muted'>พื้นที่ที่ผู้ให้พบกับผู้รับ ผู้ที่ต้องการความช่วยเหลือสามารถใช้พื้นที่นี้ให้คนที่ต้องการให้ มอบความช่วยเหลือได้</p>
+                            
+                            
                             <img style={{maxWidth: 720}} className='w-100 mt-3' alt='รายละเอียด Help Matcher' src={require('../../assets/images/help-matcher-fyi.png')} />
+                            <br/><br/>
+                            <Link to='help-matcher/faq' variant='link'>อ่านคำถามที่พบบ่อย<span className='material-icons'>chevron_right</span></Link>
                         </div>
                         {this.state.latestPost !== 'loading' && this.state.latestPost !== 'n/a' &&
                             <div className='row mb-4'>
